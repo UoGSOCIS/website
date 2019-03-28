@@ -1,0 +1,13 @@
+
+
+<ol type="{{type}}">
+
+    {{#each items}}
+        <li>{{name}}</li>
+        {{#if items}}
+            {{> list this}}
+        {{/if}}
+    {{/each}}
+
+</ol>
+

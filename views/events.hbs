@@ -1,0 +1,30 @@
+<div class="container">
+    <div class="col-md-8 col-md-offset-2">
+        <article class="article-container">
+            <h2>Recurring Events</h2>
+            <hr>
+            <p>Your SOCIS executive team hosts a public meeting every Monday at 5:30 in Reynolds 1101.</p>
+        </article>
+
+        <article class="article-container">
+            <h2>Upcoming Events</h2>
+            <hr>
+
+            {{#if upComingEvents }}
+                {{> eventListLinks upComingEvents }}
+            {{else}}
+                <p>
+                    There are not currently any upcoming events. Check out the <a target="_blank" href="https://www.facebook.com/groups/UoGSOCIS/">Facebook</a> feed to keep yourself up to date about all SOCIS news!
+                </p>
+            {{/if}}
+
+        </article>
+        <article class="article-container">
+            <h2>Past Events</h2>
+            <hr>
+
+            {{> eventListLinks pastEvents }}
+
+        </article>
+    </div>
+</div>

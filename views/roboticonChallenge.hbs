@@ -1,0 +1,28 @@
+<div class="container">
+    <div class="col-md-8 col-md-offset-2">
+
+        {{#each challenges}}
+            {{>roboticonChallenge this}}
+        {{else}}
+        <article class="article-container">
+            <h3>No challenges found for {{currentYear}} </h3>
+        </article>
+        {{/each}}
+
+        <article class="article-container">
+            <section>
+                <h2>Rules</h2>
+                <hr>
+                <ol>
+                    <li>Teams may only use parts from their kits.</li>
+                    <li>Teams must use a standard LEGO Mindstorm EV3 kit.</li>
+                    <li>Teams can only use one touch, one ultrasonic, and one light/colour sensor.</li>
+                    <li>Teams MUST have their Bluetooth turned off on their brick.</li>
+                    <li>Robots must not be larger than 1 foot x 1 foot x 1 foot.</li>
+                    <li>Teams will designate one person to end their run, and only that person may call the run.</li>
+                </ol>
+            </section>
+        </article>
+
+    </div>
+</div>

@@ -1,0 +1,22 @@
+
+{{#each posts}}
+    <div class="row">
+        <div class="col-sm-6"><a href="{{url}}">{{title}}</a></div>
+        <div class="col-sm-6">
+            <p style="text-align: right;">{{date}} {{event_time}}</p>
+        </div>
+    </div>
+{{else}}
+
+<div class="row">
+    <div class="col-xs-12">
+        <p class="text-center">
+            There are not currently any upcoming events. Check out the
+            <a target="_blank" href="https://www.facebook.com/groups/UoGSOCIS/">Facebook</a> and
+            <a target="_blank" href="https://twitter.com/uogsocis">Twitter</a> feeds to keep yourself up to
+            date about all SOCIS news!
+        </p>
+    </div>
+</div>
+
+{{/each}}

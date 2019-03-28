@@ -1,0 +1,123 @@
+<div class="container">
+    <div class="col-md-8 col-md-offset-2">
+        <article class="article-container">
+            <h2>Roboticon {{currentYear}}</h2>
+            <hr>
+            <img src="/img/roboticon_student.jpg" href="Guelph Roboticon" class="dynamic-img" />
+            <section>
+                <p class="lead text-center">Roboticon is back for the 18<sup>th</sup> year at College Royal at the
+                    University of Guelph!</p>
+                <hr class="grey">
+                <p>
+                    Roboticon is back for {{currentYear}} at College Royal at the University of Guelph! The University of Guelph
+                    would like to invite you to Roboticon {{currentYear}}. This year's robot-building and programming challenge
+                    will be occurring on Saturday, March 16<sup>th</sup> and Sunday, March 17<sup>th</sup>, {{currentYear}}
+                    at the University of Guelph.
+                </p>
+                <p>
+                    Roboticon is an annual event run in partnership with SOCIS and the
+                    <a target="_blank" href="http://www.socs.uoguelph.ca/" >School of Computer Science</a>. It is an
+                    exciting opportunity for high school students to learn more about the field of Computer Science by
+                    designing and building <b>LEGO Mindstorms</b> robots to complete a series of challenges designed by
+                    our undergraduate students. Under strict rules and time limits, teams of students are challenged to
+                    build and program robots by sharpening teamwork skills and performing set tasks against a field of competitors.
+                </p>
+                <p>
+                    Our First Place winners will receive a brand new LEGO Mindstorms EV3 kit and we will be giving away
+                    Second and Third Place LEGO gift card prizes! There will also be raffle prizes.
+                </p>
+                <p>
+                    This event is open to <b>all high school students!</b> Roboticon is a completely free event to
+                    attend. The School of Computer Science will loan and mail out LEGO Mindstorms EV3 kits to teams that
+                    register on a first come, first serve basis. All meals will be provided. Get a team and a teacher
+                    together to register your team!
+                </p>
+                <p>
+                    Happy Building! <br>The Roboticon Team
+                </p>
+            </section>
+        </article>
+
+        <article class="article-container">
+            <section>
+                <h2>Event Format</h2>
+                <hr>
+                <ul>
+                    <li>Teams of up to four high-school students will build and program
+                        robots using LEGO Mindstorms kits to compete in two challenges</li>
+                    <li>The first challenge will be posted below, so students will have the
+                        opportunity to get a head start on designs</li>
+                    <li>Upon arrival, the students will have time to build and test their
+                        designs on our practice track</li>
+                    <li>There will be two heats for the first challenge, with build time in
+                        between for students to tweak and update their designs</li>
+                    <li>The second challenge will be presented at the end of the first day
+                        of competition, with two heats occurring on the second day</li>
+                    <li>Winners and prizes will be announced!</li>
+                </ul>
+            </section>
+        </article>
+
+        <article class="article-container">
+            <section>
+                <h2>Registration</h2>
+                <hr>
+                <p class="lead">If you wish to register a team, send an email to
+                    <a href="mailto:liaison@socs.uoguelph.ca">liaison@socs.uoguelph.ca</a> with the following info:</p>
+                <ul>
+                    <li>Coach/Primary Contact and preferred email address</li>
+                    <li>School or Homeschool you represent</li>
+                    <li>Team Name</li>
+                    <li>Team member names (these can be filled in closer to the date of the
+                        competition as long as we have a final number about two weeks before
+                        the competition)</li>
+                    <li>Mailing address if you wish to borrow a Mindstorms Kit</li>
+                </ul>
+            </section>
+        </article>
+
+        <article class="article-container">
+            <section>
+                <h2>Rules</h2>
+                <hr>
+                <ol>
+                    <li>Teams may only use parts from their kits.</li>
+                    <li>Teams must use a standard LEGO Mindstorm EV3 kit.</li>
+                    <li>Teams can only use two touch, one ultrasonic / infrared, one gyrosope, and one light/colour sensor.</li>
+                    <li>Teams MUST have their Bluetooth turned off on their brick.</li>
+                    <li>Robots must not be larger than 1 foot x 1 foot x 1 foot.</li>
+                    <li>Teams will designate one person to end their run, and only that person may call the run.</li>
+                </ol>
+            </section>
+        </article>
+
+
+        {{#each challenges}}
+            {{>roboticonChallenge this}}
+        {{else}}
+            <article class="article-container">
+                <h3>No challenges found for {{currentYear}} </h3>
+                <p>Please check back again soon</p>
+            </article>
+        {{/each}}
+
+
+        <article class="article-container">
+            <section>
+                <h2>Previous Years Contests</h2>
+
+                {{#each challengeYears}}
+                    <a href="/roboticon/{{this}}">{{this}}</a><br>
+                {{/each}}
+
+            </section>
+        </article>
+
+        <article class="article-container">
+            <section id="disqus">
+                <h2>Comments</h2>
+
+            </section>
+        </article>
+    </div>
+</div>

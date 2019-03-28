@@ -1,0 +1,32 @@
+#
+# This is a systemd service
+# This gets put in /etc/systemd/system/
+#
+# This is controlled by using
+# sudo systemctl [start|stop|restart|status] socis_web.service
+#
+#
+# To view the log use the journalctl command
+#
+
+[Unit]
+Description=Node.js API server for the enuk project
+Requires=After=mongod.service       # Requires the mysql service to run first
+
+[Service]
+ExecStart=/usr/local/bin/node /path/to/server/server.js
+# Required on some systems
+WorkingDirectory=/path/to/server
+Restart=always
+ # Restart service after 10 seconds if node service crashes
+ RestartSec=10
+ # Output to syslog
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=nodejs-socis-web
+#User=<alternate user>
+#Group=<alternate group>
+#Environment=NODE_ENV=production PORT=1337
+
+[Install]
+WantedBy=multi-user.target

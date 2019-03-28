@@ -1,0 +1,53 @@
+
+<div class="container">
+    <div class="col-md-10 col-md-offset-1">
+        <article class="article-container">
+            <h2>Guelph Coding Community</h2>
+            <hr>
+            <p>
+                The Guelph Coding Community has been organizing student run Tech Talks since 2013. GCC talks are currently being held every other Thursday night at 5:30pm in the THRN 2420 Mac Lab. Check the site for upcoming sessions and information about the speakers and their topics.
+                <br><br>
+                If you would like to give your own talk during a GCC event, feel free to <a href="mailto:gcc@socis.ca">email</a> the GCC organizers!
+            </p>
+            <p>
+                There is a sign-up page for the Winter 2018 sessions located <a href="https://docs.google.com/spreadsheets/d/1BlKlG3LtAWAS5sPW7W9_UavsgqQGCXpj6hy33vdagMQ/edit?usp=sharing" target="_blank">here</a>.
+            </p>
+        </article>
+
+        <article class="article-container">
+            <h2>Upcoming Events</h2>
+            <hr>
+
+            {{#if upcomingGCC }}
+                {{> eventListLinks upcomingGCC }}
+            {{else}}
+                <iframe width="100%" height="500" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vRlOy0YpjNMAwW4GPfbY3nO2W-GokaqpdWvoXOCfop6qNhEMoHhE0QXcE7Pif7NURKSnCvU2oGub2-I/pubhtml?gid=634347005&amp;single=true&amp;widget=true&amp;headers=false"></iframe>
+            {{/if}}
+
+        </article>
+        <article class="article-container">
+            <h2>Past Events</h2>
+            <hr>
+
+            {{#each pastGCC}}
+                <article>
+                    <div class="fluid-container past-gcc-event">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <h3><a href="{{url}}">{{date}}</a></h3>
+                                <p>Presenters: {{speakers}}</p>
+                            </div>
+                            <div class="col-lg-6">
+                                {% if post.files != "none" %}
+                                <a class="view-past-gcc-event-files" target="_blank" href="{{files}}">View Presentations</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </article>
+                <hr class="grey hide-last">
+            {{/each}}
+
+        </article>
+    </div>
+</div>

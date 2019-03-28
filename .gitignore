@@ -1,0 +1,14 @@
+**/node_modules
+*.sw*
+*.local
+jsdoc/*
+out/*
+*.ini
+**/.nyc_output
+
+
+# IntelliJ
+**/.idea
+
+# VS Code
+**/.vscode

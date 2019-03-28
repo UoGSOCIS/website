@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {{#if title}}
+    <title>{{title}}</title>
+    {{else}}
+    <title>SOCIS - University of Guelph</title>
+    {{/if}}
+
+    <meta charset="utf-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta content="SOCIS" name="author">
+    <meta content="Computer Science We are a group of computer science students for computer science students. We coordinate with the School of Computer Science in …" name="description">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:title" content="SOCIS - University of Guelph" />
+    <meta property="og:description" content="We are the Society of Computing and Information Science, a student organization for the University of Guelph's School of Computer Science." />
+    <meta property="og:url" content="http://socis.ca" />
+    <meta property="og:image" content="http://socis.ca/img/gravatar.jpg" />
+
+    <link href="http://socis.ca" rel="canonical">
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/main.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+
+    <link href="//atom.xml" rel="alternate" title="SOCIS" type="application/atom+xml">
+
+</head>
+<body>
+
+{{#if whiteBackground }}
+    <body style="background-color: #FFF;">
+{{else}}
+    <body>
+{{/if}}
+
+<div id="wrap">
+
+    <header>
+        <div class="container">
+            <nav class="navbar" role="navigation">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="/">SOCIS</a>
+                </div>
+                <div class="collapse navbar-collapse" id="main-navbar-collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="/events/">Events</a></li>
+                        <li><a href="/gcc/">GCC</a></li>
+                        <li><a href="/roboticon/">Roboticon</a></li>
+                        <li><a href="/cusec/">CUSEC</a></li>
+                        <li><a href="/csgames/">CS Games</a></li>
+                        <li><a href="/about/">About</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+
+    {{{body}}}
+    <div id="push"></div>
+</div>
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-9">
+                <p>
+                    SOCIS supports open-source! Contribute to this site on <a href="https://github.com/UoGSOCIS/website">Github</a>.
+                </p>
+                <p>
+                    This site was built using <a href="//getbootstrap.com">Bootstrap</a> and <a href="https://expressjs.com/">Express</a>.
+                </p>
+            </div>
+            <div class="social-btns col-xs-3">
+                <a target="_blank" href="https://www.facebook.com/groups/UoGSOCIS/"><i class="fab fa-facebook-square"></i></a>
+                <a target="_blank" href="https://twitter.com/uogsocis"><i class="fab fa-twitter-square"></i></a>
+                <a target="_blank" href="https://www.instagram.com/socis.uog/"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="/js/jquery-1.11.1.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+</body>
+</html>

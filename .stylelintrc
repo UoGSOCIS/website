@@ -1,0 +1,14 @@
+
+extends: "stylelint-config-standard"
+rules: {
+  block-no-empty: true,
+  color-no-invalid-hex: true,
+  color-hex-case: "lower",
+  comment-no-empty: true,
+  font-family-no-missing-generic-family-keyword: true,
+  no-extra-semicolons: true,
+  no-invalid-double-slash-comments: true,
+  property-no-unknown: true,
+  string-quotes: "double",
+  unit-no-unknown: true,
+}
