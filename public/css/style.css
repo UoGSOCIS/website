@@ -1,4 +1,4 @@
-/*body {
+/* body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
@@ -10,5 +10,5 @@ a {
 
 
 
-ol>li>ol {list-style-type: lower-alpha;}
-ol>li>ol>li>ol {list-style-type: lower-roman;}
+ol > li > ol { list-style-type: lower-alpha; }
+ol > li > ol > li > ol { list-style-type: lower-roman; }

@@ -9,6 +9,10 @@ const uuidv4 = require("uuid/v4");
  * for the school year 2018/2019 the year would be 2018
  */
 module.exports = new mongoose.Schema({
+    order: {
+        type: Number,
+        default: 0,
+    },
     uuid: {
         type: String,
         required: true,

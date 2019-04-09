@@ -27,6 +27,27 @@ router.get("/events", function(req, res) {
     res.render("events", {});
 });
 
+/*
+router.get("/admin/exec", function(req, res) {
+
+
+    const date = new Date();
+    var curYear = date.getFullYear() - (date.getMonth() < 4 ? 1 : 0);
+
+    Exec.getExecForYear(curYear)
+    .then((exec) => {
+
+        res.render("admin_exec", {
+            whiteBackground: true,
+            currentExec: exec,
+        });
+    })
+    .catch((err) => {
+        return res.render("error", {whiteBackground: true, message: err.message, status: 500, });
+    });
+});
+
+
 router.post("/admin/exec", function(req, res) {
 
     //return res.send(400);
@@ -40,7 +61,7 @@ router.post("/admin/exec", function(req, res) {
     .save();
 
     toSave.then(() => {
-        return res.render("error", {whiteBackground: true, message: "success", status: 200, });
+        return res.status(201).json({ message: "success", status: 200, });
     })
     .catch((err) => {
         return res.render("error", {whiteBackground: true, message: err.message, status: 500, });
@@ -71,6 +92,7 @@ router.post("/admin/roboticon", function(req, res) {
 
     });
 });
+*/
 
 router.get("/about", function(req, res) {
 
@@ -84,12 +106,10 @@ router.get("/about", function(req, res) {
             currentExec: exec,
             execYearStart: curYear,
             execYearEnd: curYear+1,
-
         });
     })
     .catch((err) => {
         return res.render("error", {whiteBackground: true, message: err.message, status: 500, });
-
     });
 });
 

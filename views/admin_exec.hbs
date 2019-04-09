@@ -1,0 +1,131 @@
+
+
+{{!< layouts/default}}
+{{! The tag above means - insert everything in this file into the {content} of the main.hbs template }}
+
+
+
+<form>
+
+    <div class="form-group form-inline">
+        <label for="email">year:</label>
+        <select name="year" id="year" class="form-control">
+        </select>
+
+        <label name="role" for="email">Role:</label>
+        <select  name="role" id="role" onchange="changed(this)" class="form-control">
+            <option value="president">President</option>
+            <option value="vp-internal">VP Internal</option>
+            <option value="vp-external">VP External</option>
+            <option value="secretary">Secretary</option>
+            <option value="treasurer">Treasurer</option>
+            <option value="community">Community Liason</option>
+            <option value="admin">System Admin</option>
+            <option value="senior-rep">Senior Representative</option>
+            <option value="junior-rep">Junior Representative</option>
+        </select>
+    </div>
+
+
+    <div class="form-group">
+        <label for="email">Email address:</label>
+        <input type="email" class="form-control" id="email">
+    </div>
+    <div class="form-group">
+        <label for="pwd">Name:</label>
+        <input type="name" class="form-control" id="name">
+    </div>
+    <button type="submit" class="btn btn-default">Submit</button>
+</form>
+
+
+
+
+<div>
+    <h3>Current Exec Roster</h3>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th class="col-sm-2" scope="col">Position</th>
+            <th class="col-sm-2" scope="col">Email</th>
+            <th scope="col">Name</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{#each currentExec}}
+            <tr>
+                <th scope="row">{{rank}}</th>
+                <td>{{role}}</td>
+                <td>{{email}}</td>
+                <td>{{name}}</td>
+            </tr>
+        {{else}}
+            <tr><td>NO EXEC</td></tr>
+        {{/each}}
+
+        </tbody>
+    </table>
+
+</div>
+
+
+<script>
+    
+    function load() {
+        var spinner = document.getElementById("year");
+        var currentYear = new Date().getFullYear();
+
+        for (var i = currentYear - 3; i < currentYear + 3; i++) {
+            var option = document.createElement("option");
+
+            if (i === currentYear) {
+                option.selected = true;
+            }
+            option.value = i;
+            option.innerText = i;
+
+            spinner.add(option);
+        }
+    }
+
+
+    window.onload = load;
+    
+    function changed(spinner) {
+        document.getElementById("email").value = spinner.value + "@socis.ca";
+    }
+
+    function createExeec() {
+
+
+        var exec = {
+            name:  document.getElementById("name").value ,
+            email:  document.getElementById("email").value ,
+            year:  document.getElementById("year").value ,
+            role:  document.getElementById("role").value
+        };
+
+
+        // upload the post and the attachments here
+        $.ajax({url: "/admin/exec",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(exec),
+            complete: function(xhr, status){
+
+                var responseCode = xhr.status;
+                var response = JSON.parse(xhr.responseText);
+
+                if (responseCode === 201) {
+                    uploadFilesForPost(response);
+                    return;
+                }
+
+                alert("error! " + response.message);
+            },
+        });
+    }
+
+</script>

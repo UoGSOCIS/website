@@ -13,6 +13,7 @@ const logger = source("logger");
  */
 const r = express.Router();
 
+r.use(express.static(path.join(config.__projectdir, "/public/")));
 r.use("/js", express.static(path.join(config.__projectdir, "/public/js/")));
 r.use("/css", express.static(path.join(config.__projectdir, "/public/css/")));
 r.use("/img", express.static(path.join(config.__projectdir, "/public/img/")));
