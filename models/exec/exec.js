@@ -114,7 +114,6 @@ class Exec {
 
     static getExecForYear(year) {
 
-
         return ExecModel.find({year: year, })
         .sort({order: "asc", })
         .then((results) => {
