@@ -26,6 +26,8 @@ likely reject it and ask that you split it up.
 We reserve the right to reject pull requests and close issues if we do not
 agree with how they affect the website.
 
+See [CONTRIBUTING.md](CONTRIBUTING.md) for more information.
+
 
 Installation
 ------------
