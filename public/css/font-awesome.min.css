@@ -36,12 +36,14 @@
 .fa-rotate-270 { filter: progid:dximagetransform.microsoft.basicimage(rotation=3); -webkit-transform: rotate(270deg); -ms-transform: rotate(270deg); transform: rotate(270deg); }
 .fa-flip-horizontal { filter: progid:dximagetransform.microsoft.basicimage(rotation=0, mirror=1); -webkit-transform: scale(-1, 1); -ms-transform: scale(-1, 1); transform: scale(-1, 1); }
 .fa-flip-vertical { filter: progid:dximagetransform.microsoft.basicimage(rotation=2, mirror=1); -webkit-transform: scale(1, -1); -ms-transform: scale(1, -1); transform: scale(1, -1); }
+
 :root .fa-rotate-90,
 :root .fa-rotate-180,
 :root .fa-rotate-270,
 :root .fa-flip-horizontal,
 :root .fa-flip-vertical { filter: none; }
 .fa-stack { position: relative; display: inline-block; width: 2em; height: 2em; line-height: 2em; vertical-align: middle; }
+
 .fa-stack-1x,
 .fa-stack-2x { position: absolute; left: 0; width: 100%; text-align: center; }
 .fa-stack-1x { line-height: inherit; }
@@ -60,6 +62,7 @@
 .fa-th::before { content: "\f00a"; }
 .fa-th-list::before { content: "\f00b"; }
 .fa-check::before { content: "\f00c"; }
+
 .fa-remove::before,
 .fa-close::before,
 .fa-times::before { content: "\f00d"; }
@@ -67,6 +70,7 @@
 .fa-search-minus::before { content: "\f010"; }
 .fa-power-off::before { content: "\f011"; }
 .fa-signal::before { content: "\f012"; }
+
 .fa-gear::before,
 .fa-cog::before { content: "\f013"; }
 .fa-trash-o::before { content: "\f014"; }
@@ -79,6 +83,7 @@
 .fa-arrow-circle-o-up::before { content: "\f01b"; }
 .fa-inbox::before { content: "\f01c"; }
 .fa-play-circle-o::before { content: "\f01d"; }
+
 .fa-rotate-right::before,
 .fa-repeat::before { content: "\f01e"; }
 .fa-refresh::before { content: "\f021"; }
@@ -107,10 +112,12 @@
 .fa-align-right::before { content: "\f038"; }
 .fa-align-justify::before { content: "\f039"; }
 .fa-list::before { content: "\f03a"; }
+
 .fa-dedent::before,
 .fa-outdent::before { content: "\f03b"; }
 .fa-indent::before { content: "\f03c"; }
 .fa-video-camera::before { content: "\f03d"; }
+
 .fa-photo::before,
 .fa-image::before,
 .fa-picture-o::before { content: "\f03e"; }
@@ -118,6 +125,7 @@
 .fa-map-marker::before { content: "\f041"; }
 .fa-adjust::before { content: "\f042"; }
 .fa-tint::before { content: "\f043"; }
+
 .fa-edit::before,
 .fa-pencil-square-o::before { content: "\f044"; }
 .fa-share-square-o::before { content: "\f045"; }
@@ -149,6 +157,7 @@
 .fa-arrow-right::before { content: "\f061"; }
 .fa-arrow-up::before { content: "\f062"; }
 .fa-arrow-down::before { content: "\f063"; }
+
 .fa-mail-forward::before,
 .fa-share::before { content: "\f064"; }
 .fa-expand::before { content: "\f065"; }
@@ -162,6 +171,7 @@
 .fa-fire::before { content: "\f06d"; }
 .fa-eye::before { content: "\f06e"; }
 .fa-eye-slash::before { content: "\f070"; }
+
 .fa-warning::before,
 .fa-exclamation-triangle::before { content: "\f071"; }
 .fa-plane::before { content: "\f072"; }
@@ -177,12 +187,14 @@
 .fa-folder-open::before { content: "\f07c"; }
 .fa-arrows-v::before { content: "\f07d"; }
 .fa-arrows-h::before { content: "\f07e"; }
+
 .fa-bar-chart-o::before,
 .fa-bar-chart::before { content: "\f080"; }
 .fa-twitter-square::before { content: "\f081"; }
 .fa-facebook-square::before { content: "\f082"; }
 .fa-camera-retro::before { content: "\f083"; }
 .fa-key::before { content: "\f084"; }
+
 .fa-gears::before,
 .fa-cogs::before { content: "\f085"; }
 .fa-comments::before { content: "\f086"; }
@@ -227,20 +239,26 @@
 .fa-filter::before { content: "\f0b0"; }
 .fa-briefcase::before { content: "\f0b1"; }
 .fa-arrows-alt::before { content: "\f0b2"; }
+
 .fa-group::before,
 .fa-users::before { content: "\f0c0"; }
+
 .fa-chain::before,
 .fa-link::before { content: "\f0c1"; }
 .fa-cloud::before { content: "\f0c2"; }
 .fa-flask::before { content: "\f0c3"; }
+
 .fa-cut::before,
 .fa-scissors::before { content: "\f0c4"; }
+
 .fa-copy::before,
 .fa-files-o::before { content: "\f0c5"; }
 .fa-paperclip::before { content: "\f0c6"; }
+
 .fa-save::before,
 .fa-floppy-o::before { content: "\f0c7"; }
 .fa-square::before { content: "\f0c8"; }
+
 .fa-navicon::before,
 .fa-reorder::before,
 .fa-bars::before { content: "\f0c9"; }
@@ -261,26 +279,34 @@
 .fa-caret-left::before { content: "\f0d9"; }
 .fa-caret-right::before { content: "\f0da"; }
 .fa-columns::before { content: "\f0db"; }
+
 .fa-unsorted::before,
 .fa-sort::before { content: "\f0dc"; }
+
 .fa-sort-down::before,
 .fa-sort-desc::before { content: "\f0dd"; }
+
 .fa-sort-up::before,
 .fa-sort-asc::before { content: "\f0de"; }
 .fa-envelope::before { content: "\f0e0"; }
 .fa-linkedin::before { content: "\f0e1"; }
+
 .fa-rotate-left::before,
 .fa-undo::before { content: "\f0e2"; }
+
 .fa-legal::before,
 .fa-gavel::before { content: "\f0e3"; }
+
 .fa-dashboard::before,
 .fa-tachometer::before { content: "\f0e4"; }
 .fa-comment-o::before { content: "\f0e5"; }
 .fa-comments-o::before { content: "\f0e6"; }
+
 .fa-flash::before,
 .fa-bolt::before { content: "\f0e7"; }
 .fa-sitemap::before { content: "\f0e8"; }
 .fa-umbrella::before { content: "\f0e9"; }
+
 .fa-paste::before,
 .fa-clipboard::before { content: "\f0ea"; }
 .fa-lightbulb-o::before { content: "\f0eb"; }
@@ -313,6 +339,7 @@
 .fa-desktop::before { content: "\f108"; }
 .fa-laptop::before { content: "\f109"; }
 .fa-tablet::before { content: "\f10a"; }
+
 .fa-mobile-phone::before,
 .fa-mobile::before { content: "\f10b"; }
 .fa-circle-o::before { content: "\f10c"; }
@@ -320,6 +347,7 @@
 .fa-quote-right::before { content: "\f10e"; }
 .fa-spinner::before { content: "\f110"; }
 .fa-circle::before { content: "\f111"; }
+
 .fa-mail-reply::before,
 .fa-reply::before { content: "\f112"; }
 .fa-github-alt::before { content: "\f113"; }
@@ -334,14 +362,17 @@
 .fa-flag-checkered::before { content: "\f11e"; }
 .fa-terminal::before { content: "\f120"; }
 .fa-code::before { content: "\f121"; }
+
 .fa-mail-reply-all::before,
 .fa-reply-all::before { content: "\f122"; }
+
 .fa-star-half-empty::before,
 .fa-star-half-full::before,
 .fa-star-half-o::before { content: "\f123"; }
 .fa-location-arrow::before { content: "\f124"; }
 .fa-crop::before { content: "\f125"; }
 .fa-code-fork::before { content: "\f126"; }
+
 .fa-unlink::before,
 .fa-chain-broken::before { content: "\f127"; }
 .fa-question::before { content: "\f128"; }
@@ -381,28 +412,38 @@
 .fa-external-link-square::before { content: "\f14c"; }
 .fa-share-square::before { content: "\f14d"; }
 .fa-compass::before { content: "\f14e"; }
+
 .fa-toggle-down::before,
 .fa-caret-square-o-down::before { content: "\f150"; }
+
 .fa-toggle-up::before,
 .fa-caret-square-o-up::before { content: "\f151"; }
+
 .fa-toggle-right::before,
 .fa-caret-square-o-right::before { content: "\f152"; }
+
 .fa-euro::before,
 .fa-eur::before { content: "\f153"; }
 .fa-gbp::before { content: "\f154"; }
+
 .fa-dollar::before,
 .fa-usd::before { content: "\f155"; }
+
 .fa-rupee::before,
 .fa-inr::before { content: "\f156"; }
+
 .fa-cny::before,
 .fa-rmb::before,
 .fa-yen::before,
 .fa-jpy::before { content: "\f157"; }
+
 .fa-ruble::before,
 .fa-rouble::before,
 .fa-rub::before { content: "\f158"; }
+
 .fa-won::before,
 .fa-krw::before { content: "\f159"; }
+
 .fa-bitcoin::before,
 .fa-btc::before { content: "\f15a"; }
 .fa-file::before { content: "\f15b"; }
@@ -455,11 +496,13 @@
 .fa-stack-exchange::before { content: "\f18d"; }
 .fa-arrow-circle-o-right::before { content: "\f18e"; }
 .fa-arrow-circle-o-left::before { content: "\f190"; }
+
 .fa-toggle-left::before,
 .fa-caret-square-o-left::before { content: "\f191"; }
 .fa-dot-circle-o::before { content: "\f192"; }
 .fa-wheelchair::before { content: "\f193"; }
 .fa-vimeo-square::before { content: "\f194"; }
+
 .fa-turkish-lira::before,
 .fa-try::before { content: "\f195"; }
 .fa-plus-square-o::before { content: "\f196"; }
@@ -468,9 +511,11 @@
 .fa-envelope-square::before { content: "\f199"; }
 .fa-wordpress::before { content: "\f19a"; }
 .fa-openid::before { content: "\f19b"; }
+
 .fa-institution::before,
 .fa-bank::before,
 .fa-university::before { content: "\f19c"; }
+
 .fa-mortar-board::before,
 .fa-graduation-cap::before { content: "\f19d"; }
 .fa-yahoo::before { content: "\f19e"; }
@@ -498,8 +543,10 @@
 .fa-steam::before { content: "\f1b6"; }
 .fa-steam-square::before { content: "\f1b7"; }
 .fa-recycle::before { content: "\f1b8"; }
+
 .fa-automobile::before,
 .fa-car::before { content: "\f1b9"; }
+
 .fa-cab::before,
 .fa-taxi::before { content: "\f1ba"; }
 .fa-tree::before { content: "\f1bb"; }
@@ -511,27 +558,34 @@
 .fa-file-word-o::before { content: "\f1c2"; }
 .fa-file-excel-o::before { content: "\f1c3"; }
 .fa-file-powerpoint-o::before { content: "\f1c4"; }
+
 .fa-file-photo-o::before,
 .fa-file-picture-o::before,
 .fa-file-image-o::before { content: "\f1c5"; }
+
 .fa-file-zip-o::before,
 .fa-file-archive-o::before { content: "\f1c6"; }
+
 .fa-file-sound-o::before,
 .fa-file-audio-o::before { content: "\f1c7"; }
+
 .fa-file-movie-o::before,
 .fa-file-video-o::before { content: "\f1c8"; }
 .fa-file-code-o::before { content: "\f1c9"; }
 .fa-vine::before { content: "\f1ca"; }
 .fa-codepen::before { content: "\f1cb"; }
 .fa-jsfiddle::before { content: "\f1cc"; }
+
 .fa-life-bouy::before,
 .fa-life-buoy::before,
 .fa-life-saver::before,
 .fa-support::before,
 .fa-life-ring::before { content: "\f1cd"; }
 .fa-circle-o-notch::before { content: "\f1ce"; }
+
 .fa-ra::before,
 .fa-rebel::before { content: "\f1d0"; }
+
 .fa-ge::before,
 .fa-empire::before { content: "\f1d1"; }
 .fa-git-square::before { content: "\f1d2"; }
@@ -539,10 +593,13 @@
 .fa-hacker-news::before { content: "\f1d4"; }
 .fa-tencent-weibo::before { content: "\f1d5"; }
 .fa-qq::before { content: "\f1d6"; }
+
 .fa-wechat::before,
 .fa-weixin::before { content: "\f1d7"; }
+
 .fa-send::before,
 .fa-paper-plane::before { content: "\f1d8"; }
+
 .fa-send-o::before,
 .fa-paper-plane-o::before { content: "\f1d9"; }
 .fa-history::before { content: "\f1da"; }
@@ -553,6 +610,7 @@
 .fa-share-alt::before { content: "\f1e0"; }
 .fa-share-alt-square::before { content: "\f1e1"; }
 .fa-bomb::before { content: "\f1e2"; }
+
 .fa-soccer-ball-o::before,
 .fa-futbol-o::before { content: "\f1e3"; }
 .fa-tty::before { content: "\f1e4"; }
@@ -592,6 +650,7 @@
 .fa-ioxhost::before { content: "\f208"; }
 .fa-angellist::before { content: "\f209"; }
 .fa-cc::before { content: "\f20a"; }
+
 .fa-shekel::before,
 .fa-sheqel::before,
 .fa-ils::before { content: "\f20b"; }

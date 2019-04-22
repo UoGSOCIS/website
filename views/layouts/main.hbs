@@ -16,6 +16,7 @@
     <meta property="og:description" content="We are the Society of Computing and Information Science, a student organization for the University of Guelph's School of Computer Science." />
     <meta property="og:url" content="http://socis.ca" />
     <meta property="og:image" content="http://socis.ca/img/gravatar.jpg" />
+    <meta name="google-signin-client_id" content="339218334359-3jd48348o1trdvm75uq3h1qerit3i8hc.apps.googleusercontent.com">
 
     <link href="http://socis.ca" rel="canonical">
 
@@ -58,7 +59,10 @@
                         <li><a href="/cusec/">CUSEC</a></li>
                         <li><a href="/csgames/">CS Games</a></li>
                         <li><a href="/about/">About</a></li>
-                        <li><a href="/admin/exec">New Exec</a></li>
+                        <li><a href="/admin" style="display: none;" id="navbar-admin-option">Admin</a></li>
+                        <li><div class="g-signin2" data-onsuccess="onSignIn"></div></li>
+                        <li><a href="/" onclick="signOut();" style="display: none;" id="navbar-signout-option">Sign out</a></li>
+
                     </ul>
                 </div>
             </nav>
@@ -91,6 +95,41 @@
 
 <script src="/js/jquery-1.11.1.min.js"></script>
 <script src="/js/bootstrap.min.js"></script>
+
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+
+<script>
+    function onSignIn(googleUser) {
+        var id_token = googleUser.getAuthResponse().id_token;
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/authenticate');
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onload = function() {
+            console.log('Signed in as: ' + xhr.responseText);
+            console.log('Status: ' + xhr.status);
+
+            if (xhr.status === 400) {
+                signOut();
+            } else {
+                document.getElementById("navbar-admin-option").style.display = "block";
+                document.getElementById("navbar-signout-option").style.display = "block";
+            }
+        };
+        xhr.send(JSON.stringify({token: id_token}));
+    }
+
+
+    function signOut() {
+        var auth2 = gapi.auth2.getAuthInstance();
+        auth2.signOut().then(function () {
+            console.log('User signed out.');
+            document.getElementById("navbar-admin-option").style.display = "none";
+            document.getElementById("navbar-signout-option").style.display = "none";
+        });
+    }
+
+</script>
 
 </body>
 </html>

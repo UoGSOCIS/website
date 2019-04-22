@@ -1,5 +1,5 @@
 html,
- body {
+body {
   height: 100%;
 }
 
@@ -139,8 +139,8 @@ footer .social-btns a {
 }
 
 .jumbotron .hero h1,
- .jumbotron .hero hr,
- .jumbotron .hero p {
+.jumbotron .hero hr,
+.jumbotron .hero p {
   color: #fff;
   text-shadow: 1px 1px 4px #000;
   font-size: 20px;
