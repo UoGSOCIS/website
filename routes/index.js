@@ -74,7 +74,7 @@ router.post("/authenticate", function(req, res) {
 });
 
 
-router.get("/admin", function(rew, res) {
+router.get("/admin", function(req, res) {
 
     // note this is temporary contents
     const date = new Date();

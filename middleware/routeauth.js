@@ -24,8 +24,7 @@ function routeAuth(req, res, next) {
         return next();
     }
 
-    if (!req.session || !req.session.user) {
-
+    if (!req.session || !req.session.token) {
         const err = error.Error.Unauthorized("You need to be authenticated");
         next(err);
         return;
