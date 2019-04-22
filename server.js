@@ -1,23 +1,23 @@
-var createError = require("http-errors");
-var express = require("express");
-var path = require("path");
-var cookieParser = require("cookie-parser");
+const express = require("express");
+const path = require("path");
+const cookieParser = require("cookie-parser");
 const http = require("http");
-var source = require("rfr");
-var favicon = require("serve-favicon");
+const source = require("rfr");
+const favicon = require("serve-favicon");
 const mongoose = require("mongoose");
 
+const session = require("express-session");
 
 const logger = source("logger");
-var indexRouter = source("routes/index");
-var usersRouter = source("routes/users");
-var staticPaths = source("routes/static");
+const indexRouter = source("routes/index");
+const usersRouter = source("routes/users");
+const staticPaths = source("routes/static");
+const middleware = source("middleware");
+const error = source("models/http-errors");
 
-var views = source("views");
-
+const views = source("views");
 const config = source("config");
-
-var app = express();
+const app = express();
 const server = http.Server(app);
 
 app.set("title", "SOCIS - University of Guelph");
@@ -32,7 +32,20 @@ app.set("view engine", "hbs");
 app.use(express.json());
 app.use(express.urlencoded({ extended: false, }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, "public")));
+
+/* Configure session management */
+const sessionSettings = { // set the session
+    secret: config.session.secret,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {},
+};
+
+app.use(session(sessionSettings));
+
+// require that the api and the /admin routes the user has a session
+app.use(middleware.routeAuth);
+
 
 app.use(staticPaths);
 app.use("/", indexRouter);
@@ -40,21 +53,11 @@ app.use("/users", usersRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-    next(createError(404));
+    next(new error.Error(404));
 });
 
-// error handler
-// eslint-disable-next-line no-unused-vars
-app.use(function(err, req, res, next) {
-    // set locals, only providing error in development
-    //res.locals.message = err.message;
-    //res.locals.error = req.app.get("env") === "development" ? err : {};
-
-    logger.error("error: " + err);
-    // render the error page
-    res.status(err.status || 500);
-    res.render("error", {whiteBackground: true, status: err.status || 500, message: err.message, });
-});
+// add error handeling middle ware, this will send the error messages
+app.use(middleware.errorHandler);
 
 /* set up the database and start the server */
 const database = config.database;
