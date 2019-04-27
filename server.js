@@ -15,6 +15,8 @@ const middleware = source("middleware");
 const views = source("views");
 const config = source("config");
 const app = express();
+const helmet = require("helmet");
+
 const server = http.Server(app);
 
 app.set("title", "SOCIS - University of Guelph");
@@ -26,8 +28,19 @@ app.engine("hbs", views.engine);
 app.set("view engine", "hbs");
 
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: false, }));
+/* Configure app middleware */
+// security
+app.use(helmet());
+// file and form processing
+app.use(express.json({
+    limit: "15mb",
+}));
+app.use(express.urlencoded({
+    limit: "15mb",
+    extended: true,
+    parameterLimit: 5000,
+}));
+
 app.use(cookieParser());
 
 /* Configure session management */

@@ -21,8 +21,8 @@ class Exec {
         return this._model._id;
     }
 
-    get uuid() {
-        return this._model.uuid;
+    get id() {
+        return this._model._id.toString();
     }
 
     get name() {
@@ -43,11 +43,6 @@ class Exec {
 
     get order() {
         return this._model.order;
-    }
-
-    setUuid(uuid) {
-        this._model.uuid = uuid;
-        return this;
     }
 
     setOrder(order) {
@@ -78,14 +73,8 @@ class Exec {
     static isValid(exec) {
         let err = new errors.exec.InvalidFormatError();
 
-
-        if (exec.order && Number.isInteger(exec.order)) {
+        if (exec.order && !Number.isInteger(exec.order)) {
             err.message = `Exec order  (${exec.order}) is not valid, must be an integer.`;
-            return Promise.reject(err);
-        }
-
-        if (typeof exec.uuid !== "string" || !validator.isUUID(exec.uuid, 4)) {
-            err.message = `Exec UUID (${exec.uuid}) is not valid.`;
             return Promise.reject(err);
         }
 

@@ -1,0 +1,41 @@
+#Mocha Configuration
+#To see all the latest available options and what they mean see: https://mochajs.org/api/mocha
+
+# Propagate uncaught errors
+allow-uncaught: true 
+
+# Allows the full test suite to run even if there are multiple errors
+bail: false 
+
+# Check for leaks in global variables
+check-leaks: true
+
+# Enables colours
+color: true
+
+# Shows expected and actual value side-by-side for failed tests
+diff: true
+
+# All tests within a suite must be run
+forbid-only: true
+
+# All tests must have a callback
+forbid-pending: true
+
+# Note: Disable to hide stack trace
+full-trace: true
+
+# Runs all test suites in sub-folders of the specified test directory
+recursive: true
+
+# Uses the Test-Anything Protocol
+reporter: tap
+
+# Retries a failed test once
+retries: 1
+
+# Milliseconds to determine a slow test
+slow: 100
+
+# Test-driven Development Interface
+ui: tdd

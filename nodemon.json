@@ -1,0 +1,10 @@
+{
+    "ignore": [
+        "doc/*",
+        "jsdoc/*",
+        "uploads/*",
+        "test/*",
+        "*.md"
+    ],
+    "verbose": true
+}
