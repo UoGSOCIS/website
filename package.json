@@ -7,8 +7,8 @@
     "start": "nodemon start server.js",
     "lint": "npm run eslint && npm run stylelint",
     "lint-fix": "npm run eslint-fix && npm run stylelint-fix",
-    "eslint": "eslint  config logger models routes server.js --max-warnings=0",
-    "eslint-fix": "eslint config logger models routes server.js --fix",
+    "eslint": "eslint  config logger models router server.js --max-warnings=0",
+    "eslint-fix": "eslint config logger models router server.js --fix",
     "stylelint": "stylelint public/css --max-warnings=0 --rd",
     "stylelint-fix": "stylelint public/css --fix"
   },

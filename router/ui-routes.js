@@ -1,3 +1,12 @@
+/**
+ * This file sets the route handlers for all the routes
+ * that render pages
+ *
+ * @author Marshall Asch <masch@uoguelph.ca>
+ * @module router
+ */
+"use-strict";
+
 const express = require("express");
 const router = express.Router();
 const source = require("rfr");

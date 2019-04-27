@@ -9,11 +9,8 @@ const mongoose = require("mongoose");
 const session = require("express-session");
 
 const logger = source("logger");
-const indexRouter = source("routes/index");
-const usersRouter = source("routes/users");
-const staticPaths = source("routes/static");
+const router = source("router");
 const middleware = source("middleware");
-const error = source("models/http-errors");
 
 const views = source("views");
 const config = source("config");
@@ -46,15 +43,7 @@ app.use(session(sessionSettings));
 // require that the api and the /admin routes the user has a session
 app.use(middleware.routeAuth);
 
-
-app.use(staticPaths);
-app.use("/", indexRouter);
-app.use("/users", usersRouter);
-
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-    next(new error.Error(404));
-});
+app.use(router);
 
 // add error handeling middle ware, this will send the error messages
 app.use(middleware.errorHandler);
