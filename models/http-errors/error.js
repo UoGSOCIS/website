@@ -41,6 +41,9 @@ class Error {
         };
     }
 
+    static NotFound(message) {
+        return new Error(statusCodes.NOT_FOUND, message);
+    }
 
     static BadRequest(message) {
         return new Error(statusCodes.BAD_REQUEST, message);

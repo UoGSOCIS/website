@@ -1,0 +1,15 @@
+/**
+ * Package for API routers. Provides the routers for all subroutes of "/api".
+ *
+ * @module router/api
+ */
+"use strict";
+
+const express = require("express");
+const router = express.Router();
+
+const v1 = require("./v1");
+
+router.use("/v1", v1);
+
+module.exports = router;

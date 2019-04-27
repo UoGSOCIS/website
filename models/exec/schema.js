@@ -1,7 +1,6 @@
 "use strict";
 
 const mongoose = require("mongoose");
-const uuidv4 = require("uuid/v4");
 
 
 /**
@@ -12,11 +11,6 @@ module.exports = new mongoose.Schema({
     order: {
         type: Number,
         default: 0,
-    },
-    uuid: {
-        type: String,
-        required: true,
-        default: uuidv4(),
     },
     name: {
         type: String,

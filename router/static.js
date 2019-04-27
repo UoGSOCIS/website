@@ -1,3 +1,9 @@
+/**
+ * This file sets the static file route handlers.
+ *
+ * @author Marshall Asch <masch@uoguelph.ca>
+ * @module router
+ */
 "use-strict";
 
 var source = require("rfr");
