@@ -6,6 +6,7 @@
   "scripts": {
     "start": "nodemon start server.js",
     "test": "NODE_ENV=test mocha --exit",
+    "coverage": "nyc npm test --branches=0 --functions=0 --lines=0 --statements=0 --clean",
     "lint": "npm run eslint && npm run stylelint",
     "lint-fix": "npm run eslint-fix && npm run stylelint-fix",
     "eslint": "eslint  config logger models router server.js --max-warnings=0",
@@ -48,6 +49,7 @@
     "chai-as-promised": "^7.1.1",
     "eslint": "^5.16.0",
     "mocha": "^6.1.4",
+    "nyc": "^14.0.0",
     "stylelint": "^9.10.1",
     "stylelint-config-standard": "^18.3.0"
   }
