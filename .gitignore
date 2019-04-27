@@ -5,7 +5,7 @@ jsdoc/*
 out/*
 *.ini
 **/.nyc_output
-
+**/coverage
 
 # IntelliJ
 **/.idea
