@@ -1,5 +1,7 @@
 [![Build Status](https://travis-ci.com/UoGSOCIS/website.svg?branch=master)](https://travis-ci.com/UoGSOCIS/website)
 [![Maintainability](https://api.codeclimate.com/v1/badges/bba39909ad36bfb0d108/maintainability)](https://codeclimate.com/github/UoGSOCIS/website/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/bba39909ad36bfb0d108/test_coverage)](https://codeclimate.com/github/UoGSOCIS/website/test_coverage)
+
 SOCIS Website
 ==================
 
