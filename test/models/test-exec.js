@@ -7,7 +7,7 @@
  */
 "use strict";
 
-var source = require("rfr");
+const source = require("rfr");
 const chai = require("chai");
 
 const asPromised = require("chai-as-promised");
@@ -15,6 +15,8 @@ const assert = chai.assert;
 
 const Exec = source("models/exec");
 const connection = source("test/connection");
+const logger = source("logger");
+
 
 chai.use(asPromised);
 
@@ -173,21 +175,114 @@ suite("Exec", function() {
 
             return assert.isRejected(exec.save());
         });
+
+        suiteTeardown(function() {
+
+            if (!connection.db) {
+                return;
+            }
+
+            return connection.db.collections().then((collections) => {
+                let drops = [];
+                collections.forEach((collection) => {
+                    drops.push(collection.deleteMany({}));
+                });
+
+                return Promise.all(drops);
+            });
+        });
     });
 
-    suiteTeardown(function() {
+    suite("getExecForYear(year)", function() {
 
-        if (!connection.db) {
-            return;
-        }
+        var pres1;
+        var pres2;
+        var admin1;
+        var admin2;
 
-        return connection.db.collections().then((collections) => {
-            let drops = [];
-            collections.forEach((collection) => {
-                drops.push(collection.remove({}));
+        suiteSetup(function() {
+
+            pres1 = new Exec()
+            .setEmail("pres@socis.ca")
+            .setRole("president")
+            .setName("Bob Marley")
+            .setOrder(1)
+            .setYear(2018);
+
+            admin1 = new Exec()
+            .setEmail("admin@socis.ca")
+            .setRole("System Admin")
+            .setName("John Smith")
+            .setOrder(2)
+            .setYear(2018);
+
+            pres2 = new Exec()
+            .setEmail("pres@socis.ca")
+            .setRole("president")
+            .setName("Jessey Jane")
+            .setOrder(2)
+            .setYear(2008);
+
+            admin2 = new Exec()
+            .setEmail("admin@socis.ca")
+            .setRole("System Admin")
+            .setName("John Franklin")
+            .setOrder(1)
+            .setYear(2008);
+
+            // save the execs to the db
+            pres1.save()
+            .then((exec) => {
+                pres1 = exec;
+                return admin1.save();
+            })
+            .then((exec) => {
+                admin1 = exec;
+                return pres2.save();
+            })
+            .then((exec) => {
+                pres2 = exec;
+                return admin2.save();
+            })
+            .then((exec) => {
+                admin2 = exec;
+            })
+            .catch((err) => {
+                logger.error("Unexpected error", err);
             });
+        });
 
-            return Promise.all(drops);
+        test("that they are returned sorted by order field, not the order they were added", function() {
+
+            return Exec.getExecForYear(2018)
+            .then((execList) => {
+                assert.equal(execList.length, 2);
+                assert.equal(execList[0].id, pres1.id);
+                assert.equal(execList[1].id, admin1.id);
+
+                return Exec.getExecForYear(2008);
+            })
+            .then((execList) => {
+                assert.equal(execList.length, 2);
+                assert.equal(execList[0].id, admin2.id);
+                assert.equal(execList[1].id, pres2.id);
+            });
+        });
+
+        suiteTeardown(function() {
+
+            if (!connection.db) {
+                return;
+            }
+
+            return connection.db.collections().then((collections) => {
+                let drops = [];
+                collections.forEach((collection) => {
+                    drops.push(collection.deleteMany({}));
+                });
+
+                return Promise.all(drops);
+            });
         });
     });
 });
