@@ -10,7 +10,7 @@
 
 const source = require("rfr");
 
-//const request = require("supertest");
+const request = require("supertest");
 const chai = require("chai");
 const asPromised = require("chai-as-promised");
 const assert = chai.assert;
@@ -91,8 +91,24 @@ suite("APIv1 exec routes", function() {
         });
 
 
-        test("test1", function() {
+        test("get exec for current year", function() {
 
+            return request(app)
+            .get("/api/v1/execs")
+            //.set("Authorization", `Bearer ${user1.api_tokens[0]}`)
+            .expect(statusCodes.OK)
+            .then((res) => {
+                check.api["v1"].isPagingObject(res.body);
+
+                assert.lengthOf(res.body.items, 2);
+
+                check.api["v1"].isExecObject(res.body.items[0]);
+                check.api["v1"].isExecObject(res.body.items[1]);
+
+                assert.equal(res.body.items[0].id, pres1.id);
+                assert.equal(res.body.items[1].id, admin1.id);
+
+            });
         });
 
         // clear the execs DB
