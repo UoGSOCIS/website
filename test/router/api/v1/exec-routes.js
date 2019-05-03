@@ -178,6 +178,36 @@ suite("APIv1 exec routes", function() {
             });
         });
 
+        test("get exec with invalid year", function() {
+
+            return request(app)
+            .get("/api/v1/execs?year=abc")
+            .expect(statusCodes.BAD_REQUEST)
+            .then((res) => {
+                check.api["v1"].isGenericResponse(statusCodes.BAD_REQUEST, res.body);
+            });
+        });
+
+        test("get exec with invalid limit", function() {
+
+            return request(app)
+            .get("/api/v1/execs?limit=abc")
+            .expect(statusCodes.BAD_REQUEST)
+            .then((res) => {
+                check.api["v1"].isGenericResponse(statusCodes.BAD_REQUEST, res.body);
+            });
+        });
+
+        test("get exec with invalid offset", function() {
+
+            return request(app)
+            .get("/api/v1/execs?offset=-1")
+            .expect(statusCodes.BAD_REQUEST)
+            .then((res) => {
+                check.api["v1"].isGenericResponse(statusCodes.BAD_REQUEST, res.body);
+            });
+        });
+
         // clear the execs DB
         suiteTeardown(function() {
             return connection.db.collections().then((collections) => {

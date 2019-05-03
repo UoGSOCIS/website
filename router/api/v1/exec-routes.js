@@ -94,6 +94,8 @@ r.route("/")
     if (!req.query.year) {
         const date = new Date();
         year = date.getFullYear() - (date.getMonth() < 4 ? 1 : 0);  // current -1 if it is Jan  - april else current
+    } else if (isNaN(req.query.year)) {
+        return next(Error.BadRequest("year is invalid"));
     } else {
         year = req.query.year;
     }
