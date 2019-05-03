@@ -30,6 +30,8 @@ set when they are created or edited. This will contain a list of [Exec Objects](
 | Query Parameter | Type | Value |
 | --------------- | ---- | ----- |
 | year | integer | *Optional. * Default value is currentYear - 1 for Jan-April, or currentYear otherwise. |
+| offset          | Integer | *Optional.* The offset into the results that you want, default value of 0
+| limit           | Integer | *Optional.* The maximum number of results to get minimum 1 maximum 50 default 20 |
 
 
 #### Success response

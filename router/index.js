@@ -13,7 +13,7 @@ const staticPaths = require("./static.js");
 const uiRoutes = require("./ui-routes.js");
 const apiRoutes = source("router/api");
 
-const error = source("models/http-errors");
+const Error = source("models/responses").Error;
 
 
 /* Add all routes to the router middleware, which will be exported by this
@@ -42,7 +42,7 @@ router.use("/api", apiRoutes);
 router.use(uiRoutes);
 
 router.use(function (req, res, next) {
-    next(error.Error.NotFound());
+    next(Error.NotFound());
 });
 
 

@@ -8,7 +8,7 @@
 "use strict";
 
 const source = require("rfr");
-const error = source("models/http-errors");
+const Error = source("models/responses").Error;
 
 const auth = require("google-auth-library");
 const logger = source("logger");
@@ -45,7 +45,7 @@ function routeAuth(req, res, next) {
     if (token) {
         token = token.substring(7);
     } else {
-        next(error.Error.Unauthorized("You need to be authenticated"));
+        next(Error.Unauthorized("You need to be authenticated"));
         return;
     }
 
@@ -60,14 +60,14 @@ function routeAuth(req, res, next) {
 
         if (aud !== config.google.client_id) {
             logger.error("The token is not for the correct audience");
-            next(error.Error.Unauthorized("The token is not for the correct audience"));
+            next(Error.Unauthorized("The token is not for the correct audience"));
             return;
         }
 
         // verify that the domain name was from the socis organization
         if (domain !== "socis.ca") {
             logger.error("The user is not a SOCIS email address. ");
-            next(error.Error.Unauthorized("The user is not a SOCIS email address."));
+            next(Error.Unauthorized("The user is not a SOCIS email address."));
             return;
         }
 
@@ -77,7 +77,7 @@ function routeAuth(req, res, next) {
         next();
     }).catch((err) => {
         logger.error("Something when horribly wrong: " + err);
-        next(error.Error.InternalServerError(err.message));
+        next(Error.InternalServerError(err.message));
     });
 }
 

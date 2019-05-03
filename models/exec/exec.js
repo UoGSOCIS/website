@@ -101,10 +101,46 @@ class Exec {
         return Promise.resolve(exec);
     }
 
-    static getExecForYear(year) {
+    /**
+     * count() retrieves the number of exces from the database.
+     *
+     * @param {Number} year   - The year of the cohort
+     * @return {Promise} resolves with the number of execs in the database;
+     *                   rejects with Error
+     */
+    static count(year) {
+        let mongooseQuery = ExecModel.countDocuments({year: year, });
+
+        return mongooseQuery.exec();
+    }
+
+    /**
+     * getExecForYear(year, searchParams) retrieves the exces from the database.
+     *
+     * @param {Number} year - The year of the cohort
+     * @param {Object} searchParams - An object containing query parameters
+     * @param {Number} [searchParams.offset] - The offset into the results
+     * @param {Number} [searchParams.limit]  - The limit to the number to count
+     * @return {Promise} resolves with the list of execs in the database;
+     *                   rejects with Error
+     */
+    static getExecForYear(year, searchParams) {
+
+        let limit = 20;
+        let offset = 0;
+
+        if (searchParams && searchParams.limit) {
+            limit = searchParams.limit;
+        }
+
+        if (searchParams && searchParams.offset) {
+            offset = searchParams.offset;
+        }
 
         return ExecModel.find({year: year, })
         .sort({order: "asc", })
+        .skip(offset)
+        .limit(limit)
         .then((results) => {
 
             let execs = [];
@@ -126,6 +162,16 @@ class Exec {
         });
     }
 
+    toApiV1() {
+        return {
+            id: this.id,
+            email: this.email,
+            name: this.name,
+            role: this.role,
+            year: this.year,
+            order: this.order,
+        };
+    }
 }
 
 

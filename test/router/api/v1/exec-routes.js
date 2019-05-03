@@ -53,7 +53,6 @@ suite("APIv1 exec routes", function() {
             .setOrder(2)
             .setYear(new Date().getFullYear());
 
-
             pres2 = new Exec()
             .setEmail("pres@socis.ca")
             .setRole("president")
@@ -90,12 +89,10 @@ suite("APIv1 exec routes", function() {
             });
         });
 
-
         test("get exec for current year", function() {
 
             return request(app)
             .get("/api/v1/execs")
-            //.set("Authorization", `Bearer ${user1.api_tokens[0]}`)
             .expect(statusCodes.OK)
             .then((res) => {
                 check.api["v1"].isPagingObject(res.body);
@@ -111,6 +108,76 @@ suite("APIv1 exec routes", function() {
             });
         });
 
+        test("get exec for a different year", function() {
+
+            return request(app)
+            .get("/api/v1/execs?year=2008")
+            .expect(statusCodes.OK)
+            .then((res) => {
+                check.api["v1"].isPagingObject(res.body);
+
+                assert.lengthOf(res.body.items, 2);
+
+                check.api["v1"].isExecObject(res.body.items[0]);
+                check.api["v1"].isExecObject(res.body.items[1]);
+
+                assert.equal(res.body.items[0].id, admin2.id);
+                assert.equal(res.body.items[1].id, pres2.id);
+
+            });
+        });
+
+        test("get exec for a year with no execs", function() {
+
+            return request(app)
+            .get("/api/v1/execs?year=2010")
+            .expect(statusCodes.OK)
+            .then((res) => {
+                check.api["v1"].isPagingObject(res.body);
+
+                assert.lengthOf(res.body.items, 0);
+                assert.isNull(res.body.next);
+                assert.isNull(res.body.previous);
+            });
+        });
+
+        test("get exec with an limit", function() {
+
+            return request(app)
+            .get("/api/v1/execs?limit=1")
+            .expect(statusCodes.OK)
+            .then((res) => {
+                check.api["v1"].isPagingObject(res.body);
+
+                assert.lengthOf(res.body.items, 1);
+
+                check.api["v1"].isExecObject(res.body.items[0]);
+                assert.equal(res.body.limit, 1);
+                assert.equal(res.body.total, 2);
+
+                assert.equal(res.body.items[0].id, pres1.id);
+            });
+        });
+
+        test("get exec with an limit and offset", function() {
+
+            return request(app)
+            .get("/api/v1/execs?limit=1&offset=1")
+            .expect(statusCodes.OK)
+            .then((res) => {
+                check.api["v1"].isPagingObject(res.body);
+
+                assert.lengthOf(res.body.items, 1);
+
+                check.api["v1"].isExecObject(res.body.items[0]);
+
+                assert.equal(res.body.limit, 1);
+                assert.equal(res.body.total, 2);
+
+                assert.equal(res.body.items[0].id, admin1.id);
+            });
+        });
+
         // clear the execs DB
         suiteTeardown(function() {
             return connection.db.collections().then((collections) => {
@@ -122,7 +189,6 @@ suite("APIv1 exec routes", function() {
                 return Promise.all(drops);
             });
         });
-
     });
 
     suite("POST /api/v1/execs", function() {
@@ -136,6 +202,4 @@ suite("APIv1 exec routes", function() {
     suite("DELETE /api/v1/execs/:execId", function() {
 
     });
-
-
 });

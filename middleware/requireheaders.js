@@ -9,7 +9,7 @@
 var source = require("rfr");
 
 const logger = source("logger");
-const Error = source("models/http-errors");
+const Error = source("models/responses").Error;
 
 
 /**
