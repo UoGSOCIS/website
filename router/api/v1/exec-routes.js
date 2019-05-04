@@ -10,6 +10,7 @@ const source = require("rfr");
 const execs = source("models/exec");
 const statusCodes = require("http-status-codes");
 
+const errors = source("models/error");
 const response = source("models/responses");
 const Error = response.Error;
 const PagingObject = response.PagingObject;
@@ -135,8 +136,60 @@ r.route("/")
  * @route {POST} /api/v1/execs
  * @authentication either a JWT token or an existing session.
  */
-.post(function(req, res) {
-    res.status(501).json({status: 501, message: "Not Implemented", });
+.post(function(req, res, next) {
+
+    // if the body is not an array, send bad request
+    if (!Array.isArray(req.body)) {
+        return next(Error.BadRequest("The request is not an array"));
+    }
+
+    let execToSave = [];
+
+    req.body.forEach((reqExec) => {
+        const exec = new execs.Exec()
+        .setName(reqExec.name)
+        .setOrder(reqExec.order)
+        .setEmail(reqExec.email)
+        .setYear(reqExec.year)
+        .setRole(reqExec.role);
+
+        execToSave.push(exec);
+    });
+
+    // validate each exec
+    let validations = [];
+    execToSave.forEach((exec) => {
+        validations.push(execs.Exec.isValid(exec));
+    });
+
+    Promise.all(validations)
+    .then((execs) => {
+        // if all the execs passed validation, save them
+        let promises = [];
+
+        execs.forEach((exec) => {
+            promises.push(exec.save());
+        });
+
+        return Promise.all(promises);
+    })
+    .then((execs) => {
+
+        let created = [];
+        execs.forEach((exec) => {
+            created.push(exec.toApiV1());
+        });
+
+        res.status(statusCodes.CREATED).json(created);
+    })
+    .catch((err) => {
+
+        if (err instanceof errors.exec.InvalidFormatError) {
+            return next(Error.BadRequest(err.message));
+        }
+
+        next(err);
+    });
 })
 
 /**
