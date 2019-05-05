@@ -10,8 +10,8 @@ the executive members of SOCIS. All of these endpoints accept and return `Conten
 
 | Implemented | HTTP Method | Endpoint | Description |
 | ----- | ----- | ---- | ---- |
-| ✘ | GET | [`/api/v1/execs`](#get-exec-list) | Get paged response of the execs |
-| ✘ | POST | [`/api/v1/execs`](#new-exec) | Create new Executives |
+| ✓ | GET | [`/api/v1/execs`](#get-exec-list) | Get paged response of the execs |
+| ✓ | POST | [`/api/v1/execs`](#new-exec) | Create new Executives |
 | ✘ | PATCH | [`/api/v1/execs`](#update-exec) | This is used to update a list of execs, used to update a whole cohort|
 | ✘ | DELETE | [`/api/v1/execs/:execId`](#delete-exec) | This will delete a single exec |
 
@@ -88,7 +88,7 @@ If any of the updates fails then none of the changes will be accepted.
 
 - `400 Bad Request`
 - `401 Unauthorized`
-
+- `404 Not Found`
 
 ### Delete Exec
 

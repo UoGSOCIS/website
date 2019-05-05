@@ -29,6 +29,14 @@ chai.use(asPromised);
 //FIXME: Need a way to authenticate a user for testing without using a real google account
 
 suite("APIv1 exec routes", function() {
+
+    let userToken;
+
+    suiteSetup(function() {
+        //FIXME Need to automatically generate this token
+        userToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjVkODg3ZjI2Y2UzMjU3N2M0YjVhOGExZTFhNTJlMTlkMzAxZjgxODEiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJhY2NvdW50cy5nb29nbGUuY29tIiwiYXpwIjoiMzM5MjE4MzM0MzU5LTNqZDQ4MzQ4bzF0cmR2bTc1dXEzaDFxZXJpdDNpOGhjLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwiYXVkIjoiMzM5MjE4MzM0MzU5LTNqZDQ4MzQ4bzF0cmR2bTc1dXEzaDFxZXJpdDNpOGhjLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwic3ViIjoiMTE3OTc1OTY5NDQyMTQ3MTY1NDQ4IiwiaGQiOiJzb2Npcy5jYSIsImVtYWlsIjoiYWRtaW5Ac29jaXMuY2EiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiYXRfaGFzaCI6IlR6YVdoTmJJNE5aMUd4bUpNMklfSkEiLCJuYW1lIjoiU29jaXMgU3lzQWRtaW4iLCJwaWN0dXJlIjoiaHR0cHM6Ly9saDUuZ29vZ2xldXNlcmNvbnRlbnQuY29tLy1uaUs0eFNucVRwQS9BQUFBQUFBQUFBSS9BQUFBQUFBQUFBQS9BQ0hpM3JkX0JHdW9fcGhwUWtYbUYtakdaa2xuQ2JhUmNBL3M5Ni1jL3Bob3RvLmpwZyIsImdpdmVuX25hbWUiOiJTb2NpcyIsImZhbWlseV9uYW1lIjoiU3lzQWRtaW4iLCJsb2NhbGUiOiJlbiIsImlhdCI6MTU1NzA4ODUyNiwiZXhwIjoxNTU3MDkyMTI2LCJqdGkiOiJlNmE5YWIzM2Q2OTYyMDM1ZTIzZjVlZGU4ZGRkMzA5YjE2YjZiMjdkIn0.UpY-F6zN61MVY5MI4LNttESKSEmfzJJPZ8QSISjqIw7bKB5XcFj4YfTRA7TynKNQi62ghwI7oKrSyQO0VeuzOFEw0TGkGn06nrJrHH_9iwSHiY68h2cDuMeK8deDdyAIrimGsHpUUXLcZvNWnQBd1h0ImeI0n1a2hQiBfr2RQ2tjCnrww59nQIiLqfmsbKj89XcdDuQF86htCdD_HQmwSCQoCYZyrfQApS7DhCc9fbGb4p1UDdFGVRCSDJSJWj7fnQj-969fUUjSDuA4SR6N9k5y-DDua433kYZ6-G6JW3wG1VSjjF8MY0cIz57LZPmDox-AJS-O365bgaXaMPfJvQ";
+    });
+
     suite("GET /api/v1/execs", function() {
 
         var pres1;
@@ -223,14 +231,6 @@ suite("APIv1 exec routes", function() {
 
     suite("POST /api/v1/execs", function() {
 
-        let userToken;
-
-        suiteSetup(function() {
-
-            //FIXME Need to automatically generate this token
-            userToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjVkODg3ZjI2Y2UzMjU3N2M0YjVhOGExZTFhNTJlMTlkMzAxZjgxODEiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJhY2NvdW50cy5nb29nbGUuY29tIiwiYXpwIjoiMzM5MjE4MzM0MzU5LTNqZDQ4MzQ4bzF0cmR2bTc1dXEzaDFxZXJpdDNpOGhjLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwiYXVkIjoiMzM5MjE4MzM0MzU5LTNqZDQ4MzQ4bzF0cmR2bTc1dXEzaDFxZXJpdDNpOGhjLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwic3ViIjoiMTE3OTc1OTY5NDQyMTQ3MTY1NDQ4IiwiaGQiOiJzb2Npcy5jYSIsImVtYWlsIjoiYWRtaW5Ac29jaXMuY2EiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiYXRfaGFzaCI6IllvUjFMMXFsQkRZenEwTUJ0N0FlNlEiLCJuYW1lIjoiU29jaXMgU3lzQWRtaW4iLCJwaWN0dXJlIjoiaHR0cHM6Ly9saDUuZ29vZ2xldXNlcmNvbnRlbnQuY29tLy1uaUs0eFNucVRwQS9BQUFBQUFBQUFBSS9BQUFBQUFBQUFBQS9BQ0hpM3JkX0JHdW9fcGhwUWtYbUYtakdaa2xuQ2JhUmNBL3M5Ni1jL3Bob3RvLmpwZyIsImdpdmVuX25hbWUiOiJTb2NpcyIsImZhbWlseV9uYW1lIjoiU3lzQWRtaW4iLCJsb2NhbGUiOiJlbiIsImlhdCI6MTU1NzA4MTQzMCwiZXhwIjoxNTU3MDg1MDMwLCJqdGkiOiJmMDdkMGYzNDk0NGExZDVjNWYxMWIxY2U3ZWNiNzg1NWY2NWEyYTQwIn0.umYVwujTr0Swg6ePgZ0-SyWb7hvG_K2gGWLuTIivJiFBhv_W4vCofzTDxe-LmctrX3d68Vh1Sne3mAeH76sl6YEZGbpFW_ge1CWHVnHhgafCvrgq_lnk00lLujxo5M0bof5WT2DfrTtRNZ3AZWqPegPqNmZ7RcbUUrblwbV5nicsS1zr716PgutYFzItYXK99UAgkL5Y2zzc0DbGcUCHSnuevwFiNFU3No6u9OyTjADYTnOKb8o1j-c3qQV1UIFs-n-087ifnFCK95jU405Vc3692XGEsheo530EJU6YeB7HsLugrhqz3qwmcSnmou6CqpUmLwsktjccOG8aCr5pig";
-        });
-
         test("a single exec not in a list", function() {
             return request(app)
             .post("/api/v1/execs")
@@ -394,6 +394,206 @@ suite("APIv1 exec routes", function() {
 
     suite("PATCH /api/v1/execs", function() {
 
+        var pres1;
+        var pres2;
+        var admin1;
+        var admin2;
+
+        suiteSetup(function() {
+            pres1 = new Exec()
+            .setEmail("pres@socis.ca")
+            .setRole("president")
+            .setName("Bob Marley")
+            .setOrder(1)
+            .setYear(new Date().getFullYear());
+
+            admin1 = new Exec()
+            .setEmail("admin@socis.ca")
+            .setRole("System Admin")
+            .setName("John Smith")
+            .setOrder(2)
+            .setYear(new Date().getFullYear());
+
+            pres2 = new Exec()
+            .setEmail("pres@socis.ca")
+            .setRole("president")
+            .setName("Jessey Jane")
+            .setOrder(2)
+            .setYear(2008);
+
+            admin2 = new Exec()
+            .setEmail("admin@socis.ca")
+            .setRole("System Admin")
+            .setName("John Franklin")
+            .setOrder(1)
+            .setYear(2008);
+
+            // save the execs to the db
+            pres1.save()
+            .then((exec) => {
+                pres1 = exec;
+                return admin1.save();
+            })
+            .then((exec) => {
+                admin1 = exec;
+                return pres2.save();
+            })
+            .then((exec) => {
+                pres2 = exec;
+                return admin2.save();
+            })
+            .then((exec) => {
+                admin2 = exec;
+            })
+            .catch((err) => {
+                    logger.error("Unexpected error", err);
+                });
+
+        });
+
+        test("update a single exec that is not in a list", function() {
+
+            let update1 = JSON.parse(JSON.stringify(pres1));
+
+            update1.name = "The greatest president";
+            return request(app)
+            .patch("/api/v1/execs")
+            .set("Content-Type", "application/json")
+            .set("Authorization", `Bearer ${userToken}`)
+            .send(update1)
+            .expect(statusCodes.BAD_REQUEST)
+            .then((res) => {
+                check.api["v1"].isGenericResponse(statusCodes.BAD_REQUEST, res.body);
+            });
+        });
+
+        test("update an exec that does not exist in the db", function() {
+            let update1 = JSON.parse(JSON.stringify(pres1));
+
+            update1.id = "5ccf449cd0c3a1ac66636b64";
+            return request(app)
+            .patch("/api/v1/execs")
+            .set("Content-Type", "application/json")
+            .set("Authorization", `Bearer ${userToken}`)
+            .send([update1])
+            .expect(statusCodes.NOT_FOUND)
+            .then((res) => {
+                check.api["v1"].isGenericResponse(statusCodes.NOT_FOUND, res.body);
+            });
+        });
+
+        test("missing authentication", function() {
+
+            let update1 = JSON.parse(JSON.stringify(pres1));
+
+            update1.name = "The worst president";
+            return request(app)
+            .patch("/api/v1/execs")
+            .set("Content-Type", "application/json")
+            .send([update1])
+            .expect(statusCodes.UNAUTHORIZED)
+            .then((res) => {
+                check.api["v1"].isGenericResponse(statusCodes.UNAUTHORIZED, res.body);
+            });
+        });
+
+        test("not all the fields are set", function() {
+
+            let update1 = {
+                id: pres1.id,
+                name: "mediocre president",
+            };
+
+            return request(app)
+            .patch("/api/v1/execs")
+            .set("Authorization", `Bearer ${userToken}`)
+            .set("Content-Type", "application/json")
+            .send([update1])
+            .expect(statusCodes.OK)
+            .then((res) => {
+                check.api["v1"].isExecObject(res.body);
+                assert.equal(res.body.id, pres1.id);
+                assert.equal(res.body.email, pres1.email);
+                assert.equal(res.body.name, update1.name);
+                assert.equal(res.body.role, pres1.role);
+                assert.equal(res.body.order, pres1.order);
+                assert.equal(res.body.year, pres1.year);
+            });
+        });
+
+
+        test("multiple updates, one set is valid the other is not", function() {
+
+            let update1 = JSON.parse(JSON.stringify(admin1));
+            let update2 = JSON.parse(JSON.stringify(admin2));
+
+            update1.name = "The best system admin ever!";
+            update2.email = "invalid@125.3.2.5";
+
+            return request(app)
+            .patch("/api/v1/execs")
+            .set("Authorization", `Bearer ${userToken}`)
+            .set("Content-Type", "application/json")
+            .send([update1, update2])
+            .expect(statusCodes.BAD_REQUEST)
+            .then((res) => {
+                check.api["v1"].isGenericResponse(statusCodes.BAD_REQUEST, res.body);
+
+                return Exec.findById(admin1.id);
+            })
+            .then((execFromDb) => {
+                assert.equal(execFromDb.toApiV1(), admin1);
+
+                return Exec.findById(admin2.id);
+            })
+            .then((execFromDb) => {
+                assert.equal(execFromDb.toApiV1(), admin2);
+            })
+            .catch(() => {
+                assert.isTrue(false, "Something went wrong");
+            });
+        });
+
+        test("valid full set of changes", function() {
+
+            let update1 = {
+                id: pres2.id,
+                name: "mediocre president",
+                email: "el-presidente@socis.ca",
+                order: 34,
+                year: 2017,
+                role: "President",
+            };
+
+            return request(app)
+            .patch("/api/v1/execs")
+            .set("Authorization", `Bearer ${userToken}`)
+            .set("Content-Type", "application/json")
+            .send([update1])
+            .expect(statusCodes.OK)
+            .then((res) => {
+                check.api["v1"].isExecObject(res.body);
+                assert.equal(res.body.id, pres2.id);
+                assert.equal(res.body.email, update1.email);
+                assert.equal(res.body.name, update1.name);
+                assert.equal(res.body.role, update1.role);
+                assert.equal(res.body.order, update1.order);
+                assert.equal(res.body.year, update1.year);
+            });
+        });
+
+
+        // clear the execs DB
+        suiteTeardown(function() {
+            return connection.db.collections().then((collections) => {
+                let drops = [];
+                collections.forEach((collection) => {
+                    drops.push(collection.deleteMany({}));
+                });
+
+                return Promise.all(drops);
+            });
+        });
     });
 
     suite("DELETE /api/v1/execs/:execId", function() {

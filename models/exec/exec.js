@@ -154,6 +154,22 @@ class Exec {
         });
     }
 
+    static getById(id) {
+
+        return ExecModel.getById(id).then((found) => {
+            if (!found) {
+                const err = new errors.exec.NotFoundError(`Exec ${id} was not found.`);
+                return Promise.reject(err);
+            }
+
+            let exec = new Exec();
+            exec._model = found;
+
+            return Promise.resolve(exec);
+        });
+    }
+
+
     save() {
         return Exec.isValid(this).then(() => {
             return this._model.save();
