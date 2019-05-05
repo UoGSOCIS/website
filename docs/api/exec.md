@@ -12,7 +12,7 @@ the executive members of SOCIS. All of these endpoints accept and return `Conten
 | ----- | ----- | ---- | ---- |
 | ✓ | GET | [`/api/v1/execs`](#get-exec-list) | Get paged response of the execs |
 | ✓ | POST | [`/api/v1/execs`](#new-exec) | Create new Executives |
-| ✘ | PATCH | [`/api/v1/execs`](#update-exec) | This is used to update a list of execs, used to update a whole cohort|
+| ✓ | PATCH | [`/api/v1/execs`](#update-exec) | This is used to update a list of execs, used to update a whole cohort|
 | ✘ | DELETE | [`/api/v1/execs/:execId`](#delete-exec) | This will delete a single exec |
 
 

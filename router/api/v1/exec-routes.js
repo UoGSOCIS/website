@@ -207,8 +207,81 @@ r.route("/")
  * @route {PATCH} /api/v1/execs
  * @authentication either a JWT token or an existing session.
  */
-.patch(function(req, res) {
-    res.status(501).json({status: 501, message: "Not Implemented", });
+.patch(function(req, res, next) {
+    // if the body is not an array, send bad request
+    if (!Array.isArray(req.body)) {
+        return next(Error.BadRequest("The request is not an array"));
+    }
+
+    let execs = [];
+    req.body.forEach((reqExec) => {
+        execs.push(Exec.getById(reqExec.id));
+    });
+
+    return Promise.all(execs)
+    .then((execs) => {
+
+        // validate each changes
+        let validations = [];
+        for (var i = 0; i < execs.length; i++) {
+
+            if (req.body[i].name) {
+                execs[i].setName(req.body[i].name);
+            }
+
+            if (req.body[i].email) {
+                execs[i].setEmail(req.body[i].email);
+            }
+
+            if (req.body[i].role) {
+                execs[i].setRole(req.body[i].role);
+            }
+
+            if (req.body[i].year) {
+                execs[i].setYear(req.body[i].year);
+            }
+
+            if (req.body[i].order) {
+                execs[i].setOrder(req.body[i].order);
+            }
+
+            validations.push(Exec.isValid(execs[i]));
+        }
+        return Promise.all(validations);
+    })
+    .then((execs) => {
+
+        let toSave = [];
+        execs.forEach((exec) => {
+
+            toSave.push(exec.save());
+        });
+
+        return Promise.all(toSave);
+    })
+    .then((saved) => {
+        let toSend = [];
+        saved.forEach((exec) => {
+            toSend.push(exec.toApiV1());
+        });
+
+        res.status(statusCodes.OK).json(toSend);
+    })
+    .catch((err) => {
+
+        if (err instanceof errors.exec.NotFoundError) {
+            return next(Error.NotFound(err.message));
+        }
+
+        if (err instanceof errors.exec.InvalidFormatError
+            || err instanceof ValidationError) {
+            return next(Error.BadRequest(err.message));
+        }
+
+        logger.error("fatal error: ", err);
+
+        next(err);
+    });
 });
 
 r.route("/:execId")

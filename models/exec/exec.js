@@ -156,7 +156,7 @@ class Exec {
 
     static getById(id) {
 
-        return ExecModel.getById(id).then((found) => {
+        return ExecModel.findById(id).then((found) => {
             if (!found) {
                 const err = new errors.exec.NotFoundError(`Exec ${id} was not found.`);
                 return Promise.reject(err);

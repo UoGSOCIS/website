@@ -34,7 +34,7 @@ suite("APIv1 exec routes", function() {
 
     suiteSetup(function() {
         //FIXME Need to automatically generate this token
-        userToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjVkODg3ZjI2Y2UzMjU3N2M0YjVhOGExZTFhNTJlMTlkMzAxZjgxODEiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJhY2NvdW50cy5nb29nbGUuY29tIiwiYXpwIjoiMzM5MjE4MzM0MzU5LTNqZDQ4MzQ4bzF0cmR2bTc1dXEzaDFxZXJpdDNpOGhjLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwiYXVkIjoiMzM5MjE4MzM0MzU5LTNqZDQ4MzQ4bzF0cmR2bTc1dXEzaDFxZXJpdDNpOGhjLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwic3ViIjoiMTE3OTc1OTY5NDQyMTQ3MTY1NDQ4IiwiaGQiOiJzb2Npcy5jYSIsImVtYWlsIjoiYWRtaW5Ac29jaXMuY2EiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiYXRfaGFzaCI6IlR6YVdoTmJJNE5aMUd4bUpNMklfSkEiLCJuYW1lIjoiU29jaXMgU3lzQWRtaW4iLCJwaWN0dXJlIjoiaHR0cHM6Ly9saDUuZ29vZ2xldXNlcmNvbnRlbnQuY29tLy1uaUs0eFNucVRwQS9BQUFBQUFBQUFBSS9BQUFBQUFBQUFBQS9BQ0hpM3JkX0JHdW9fcGhwUWtYbUYtakdaa2xuQ2JhUmNBL3M5Ni1jL3Bob3RvLmpwZyIsImdpdmVuX25hbWUiOiJTb2NpcyIsImZhbWlseV9uYW1lIjoiU3lzQWRtaW4iLCJsb2NhbGUiOiJlbiIsImlhdCI6MTU1NzA4ODUyNiwiZXhwIjoxNTU3MDkyMTI2LCJqdGkiOiJlNmE5YWIzM2Q2OTYyMDM1ZTIzZjVlZGU4ZGRkMzA5YjE2YjZiMjdkIn0.UpY-F6zN61MVY5MI4LNttESKSEmfzJJPZ8QSISjqIw7bKB5XcFj4YfTRA7TynKNQi62ghwI7oKrSyQO0VeuzOFEw0TGkGn06nrJrHH_9iwSHiY68h2cDuMeK8deDdyAIrimGsHpUUXLcZvNWnQBd1h0ImeI0n1a2hQiBfr2RQ2tjCnrww59nQIiLqfmsbKj89XcdDuQF86htCdD_HQmwSCQoCYZyrfQApS7DhCc9fbGb4p1UDdFGVRCSDJSJWj7fnQj-969fUUjSDuA4SR6N9k5y-DDua433kYZ6-G6JW3wG1VSjjF8MY0cIz57LZPmDox-AJS-O365bgaXaMPfJvQ";
+        userToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjVkODg3ZjI2Y2UzMjU3N2M0YjVhOGExZTFhNTJlMTlkMzAxZjgxODEiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJhY2NvdW50cy5nb29nbGUuY29tIiwiYXpwIjoiMzM5MjE4MzM0MzU5LTNqZDQ4MzQ4bzF0cmR2bTc1dXEzaDFxZXJpdDNpOGhjLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwiYXVkIjoiMzM5MjE4MzM0MzU5LTNqZDQ4MzQ4bzF0cmR2bTc1dXEzaDFxZXJpdDNpOGhjLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwic3ViIjoiMTE3OTc1OTY5NDQyMTQ3MTY1NDQ4IiwiaGQiOiJzb2Npcy5jYSIsImVtYWlsIjoiYWRtaW5Ac29jaXMuY2EiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiYXRfaGFzaCI6Ii1BSE9ZYjB2WjZ4RUR1VjJNVFQ1SUEiLCJuYW1lIjoiU29jaXMgU3lzQWRtaW4iLCJwaWN0dXJlIjoiaHR0cHM6Ly9saDUuZ29vZ2xldXNlcmNvbnRlbnQuY29tLy1uaUs0eFNucVRwQS9BQUFBQUFBQUFBSS9BQUFBQUFBQUFBQS9BQ0hpM3JkX0JHdW9fcGhwUWtYbUYtakdaa2xuQ2JhUmNBL3M5Ni1jL3Bob3RvLmpwZyIsImdpdmVuX25hbWUiOiJTb2NpcyIsImZhbWlseV9uYW1lIjoiU3lzQWRtaW4iLCJsb2NhbGUiOiJlbiIsImlhdCI6MTU1NzA5OTMzNywiZXhwIjoxNTU3MTAyOTM3LCJqdGkiOiIzN2ViZWNlNDFkZmYyYjM2ZmUzMThmZjI5NzRkZmE1NjMzNTI3NWYxIn0.M9DrR8TP1Sqimq8QGtDoWDklikGc62tTh74r2Q14iGZlg659Hg02hijd7HINGupti1efx1NWAGonZ--xApAS7XAFZVd_C_IyrxLAmJtdtATThYlS7EOTzGOkXvvUa-Hj5SI1cjwU7BIrcCGHi_uFFELX5USWof5PAUipZUmM3AKSkcdaZtuOzNfze0Agw8xKgwWUxOacmVua6092QFnXTe9S3J5MJ_hLryYdUbD9qdSzgqcuEnQmohcbwhXRksQlOojvTUTxFvYmM4CDWRzQaZRC25WmGcfhvA-mADjNEL9wQGu8F6KXwoJO0gM_eEvOG-RMwCY_wMnmbd_32PR-xw";
     });
 
     suite("GET /api/v1/execs", function() {
@@ -429,25 +429,25 @@ suite("APIv1 exec routes", function() {
             .setYear(2008);
 
             // save the execs to the db
-            pres1.save()
+            return pres1.save()
             .then((exec) => {
                 pres1 = exec;
                 return admin1.save();
             })
             .then((exec) => {
-                admin1 = exec;
+                admin1 = exec.toApiV1();
                 return pres2.save();
             })
             .then((exec) => {
-                pres2 = exec;
+                pres2 = exec.toApiV1();
                 return admin2.save();
             })
             .then((exec) => {
-                admin2 = exec;
+                admin2 = exec.toApiV1();
             })
             .catch((err) => {
-                    logger.error("Unexpected error", err);
-                });
+                logger.error("Unexpected error", err);
+            });
 
         });
 
@@ -511,16 +511,18 @@ suite("APIv1 exec routes", function() {
             .send([update1])
             .expect(statusCodes.OK)
             .then((res) => {
-                check.api["v1"].isExecObject(res.body);
-                assert.equal(res.body.id, pres1.id);
-                assert.equal(res.body.email, pres1.email);
-                assert.equal(res.body.name, update1.name);
-                assert.equal(res.body.role, pres1.role);
-                assert.equal(res.body.order, pres1.order);
-                assert.equal(res.body.year, pres1.year);
+
+                assert.isArray(res.body);
+                assert.lengthOf(res.body, 1);
+                check.api["v1"].isExecObject(res.body[0]);
+                assert.equal(res.body[0].id, pres1.id);
+                assert.equal(res.body[0].email, pres1.email);
+                assert.equal(res.body[0].name, update1.name);
+                assert.equal(res.body[0].role, pres1.role);
+                assert.equal(res.body[0].order, pres1.order);
+                assert.equal(res.body[0].year, pres1.year);
             });
         });
-
 
         test("multiple updates, one set is valid the other is not", function() {
 
@@ -539,18 +541,29 @@ suite("APIv1 exec routes", function() {
             .then((res) => {
                 check.api["v1"].isGenericResponse(statusCodes.BAD_REQUEST, res.body);
 
-                return Exec.findById(admin1.id);
+                return Exec.getById(admin1.id);
             })
             .then((execFromDb) => {
-                assert.equal(execFromDb.toApiV1(), admin1);
+                assert.equal(execFromDb.id, admin1.id);
+                assert.equal(execFromDb.email, admin1.email);
+                assert.equal(execFromDb.name, admin1.name);
+                assert.equal(execFromDb.role, admin1.role);
+                assert.equal(execFromDb.order, admin1.order);
+                assert.equal(execFromDb.year, admin1.year);
 
-                return Exec.findById(admin2.id);
+                return Exec.getById(admin2.id);
             })
             .then((execFromDb) => {
-                assert.equal(execFromDb.toApiV1(), admin2);
+
+                assert.equal(execFromDb.id, admin2.id);
+                assert.equal(execFromDb.email, admin2.email);
+                assert.equal(execFromDb.name, admin2.name);
+                assert.equal(execFromDb.role, admin2.role);
+                assert.equal(execFromDb.order, admin2.order);
+                assert.equal(execFromDb.year, admin2.year);
             })
             .catch(() => {
-                assert.isTrue(false, "Something went wrong");
+                assert.fail("Something went wrong");
             });
         });
 
@@ -572,16 +585,17 @@ suite("APIv1 exec routes", function() {
             .send([update1])
             .expect(statusCodes.OK)
             .then((res) => {
-                check.api["v1"].isExecObject(res.body);
-                assert.equal(res.body.id, pres2.id);
-                assert.equal(res.body.email, update1.email);
-                assert.equal(res.body.name, update1.name);
-                assert.equal(res.body.role, update1.role);
-                assert.equal(res.body.order, update1.order);
-                assert.equal(res.body.year, update1.year);
+                assert.isArray(res.body);
+                assert.lengthOf(res.body, 1);
+                check.api["v1"].isExecObject(res.body[0]);
+                assert.equal(res.body[0].id, pres2.id);
+                assert.equal(res.body[0].email, update1.email);
+                assert.equal(res.body[0].name, update1.name);
+                assert.equal(res.body[0].role, update1.role);
+                assert.equal(res.body[0].order, update1.order);
+                assert.equal(res.body[0].year, update1.year);
             });
         });
-
 
         // clear the execs DB
         suiteTeardown(function() {

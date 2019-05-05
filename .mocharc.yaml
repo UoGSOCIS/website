@@ -29,7 +29,7 @@ full-trace: true
 recursive: true
 
 # Uses the Test-Anything Protocol
-reporter: tap
+reporter: spec
 
 # Retries a failed test once
 retries: 1
