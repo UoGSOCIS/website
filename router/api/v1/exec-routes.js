@@ -7,13 +7,18 @@
 
 const express = require("express");
 const source = require("rfr");
-const execs = source("models/exec");
+const Exec = source("models/exec");
 const statusCodes = require("http-status-codes");
+const logger = source("logger");
 
 const errors = source("models/error");
 const response = source("models/responses");
 const Error = response.Error;
 const PagingObject = response.PagingObject;
+
+
+const mongoose = require("mongoose");
+const ValidationError = mongoose.Error.ValidationError;
 
 /**
  * Offset is an enum defining the ranges for the offset query parameter (Min and Default).
@@ -106,13 +111,13 @@ r.route("/")
     .setOffset(offset)
     .setLimit(limit);
 
-    execs.count(year)
+    Exec.count(year)
     .then((count) => {
         po.setTotal(count)
         .setPrevious(PagingObject.getPreviousUrl(req, po.offset, po.limit))
         .setNext(PagingObject.getNextUrl(req, po.offset, po.limit, po.total));
 
-        return execs.getExecForYear(year, {
+        return Exec.getExecForYear(year, {
             limit: limit,
             offset: offset,
         });
@@ -126,6 +131,8 @@ r.route("/")
         res.status(statusCodes.OK).json(po);
     })
     .catch((err) => {
+
+        logger.error("Something went wrong getting the exec list ", err);
         next(err);
     });
 })
@@ -146,7 +153,8 @@ r.route("/")
     let execToSave = [];
 
     req.body.forEach((reqExec) => {
-        const exec = new execs.Exec()
+
+        const exec = new Exec()
         .setName(reqExec.name)
         .setOrder(reqExec.order)
         .setEmail(reqExec.email)
@@ -159,7 +167,7 @@ r.route("/")
     // validate each exec
     let validations = [];
     execToSave.forEach((exec) => {
-        validations.push(execs.Exec.isValid(exec));
+        validations.push(Exec.isValid(exec));
     });
 
     Promise.all(validations)
@@ -184,7 +192,8 @@ r.route("/")
     })
     .catch((err) => {
 
-        if (err instanceof errors.exec.InvalidFormatError) {
+        if (err instanceof errors.exec.InvalidFormatError
+        || err instanceof ValidationError) {
             return next(Error.BadRequest(err.message));
         }
 

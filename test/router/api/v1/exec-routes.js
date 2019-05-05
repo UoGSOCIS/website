@@ -223,6 +223,173 @@ suite("APIv1 exec routes", function() {
 
     suite("POST /api/v1/execs", function() {
 
+        let userToken;
+
+        suiteSetup(function() {
+
+            //FIXME Need to automatically generate this token
+            userToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjVkODg3ZjI2Y2UzMjU3N2M0YjVhOGExZTFhNTJlMTlkMzAxZjgxODEiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJhY2NvdW50cy5nb29nbGUuY29tIiwiYXpwIjoiMzM5MjE4MzM0MzU5LTNqZDQ4MzQ4bzF0cmR2bTc1dXEzaDFxZXJpdDNpOGhjLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwiYXVkIjoiMzM5MjE4MzM0MzU5LTNqZDQ4MzQ4bzF0cmR2bTc1dXEzaDFxZXJpdDNpOGhjLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwic3ViIjoiMTE3OTc1OTY5NDQyMTQ3MTY1NDQ4IiwiaGQiOiJzb2Npcy5jYSIsImVtYWlsIjoiYWRtaW5Ac29jaXMuY2EiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiYXRfaGFzaCI6IllvUjFMMXFsQkRZenEwTUJ0N0FlNlEiLCJuYW1lIjoiU29jaXMgU3lzQWRtaW4iLCJwaWN0dXJlIjoiaHR0cHM6Ly9saDUuZ29vZ2xldXNlcmNvbnRlbnQuY29tLy1uaUs0eFNucVRwQS9BQUFBQUFBQUFBSS9BQUFBQUFBQUFBQS9BQ0hpM3JkX0JHdW9fcGhwUWtYbUYtakdaa2xuQ2JhUmNBL3M5Ni1jL3Bob3RvLmpwZyIsImdpdmVuX25hbWUiOiJTb2NpcyIsImZhbWlseV9uYW1lIjoiU3lzQWRtaW4iLCJsb2NhbGUiOiJlbiIsImlhdCI6MTU1NzA4MTQzMCwiZXhwIjoxNTU3MDg1MDMwLCJqdGkiOiJmMDdkMGYzNDk0NGExZDVjNWYxMWIxY2U3ZWNiNzg1NWY2NWEyYTQwIn0.umYVwujTr0Swg6ePgZ0-SyWb7hvG_K2gGWLuTIivJiFBhv_W4vCofzTDxe-LmctrX3d68Vh1Sne3mAeH76sl6YEZGbpFW_ge1CWHVnHhgafCvrgq_lnk00lLujxo5M0bof5WT2DfrTtRNZ3AZWqPegPqNmZ7RcbUUrblwbV5nicsS1zr716PgutYFzItYXK99UAgkL5Y2zzc0DbGcUCHSnuevwFiNFU3No6u9OyTjADYTnOKb8o1j-c3qQV1UIFs-n-087ifnFCK95jU405Vc3692XGEsheo530EJU6YeB7HsLugrhqz3qwmcSnmou6CqpUmLwsktjccOG8aCr5pig";
+        });
+
+        test("a single exec not in a list", function() {
+            return request(app)
+            .post("/api/v1/execs")
+            .set("Content-Type", "application/json")
+            .set("Authorization", `Bearer ${userToken}`)
+            .send({
+                name: "test Exec",
+                email: "admin@socis.ca",
+                order: 3,
+                year: 2019,
+                role: "system admin",
+            })
+            .expect(statusCodes.BAD_REQUEST)
+            .then((res) => {
+
+                check.api["v1"].isGenericResponse(statusCodes.BAD_REQUEST, res.body);
+            });
+        });
+
+        test("a valid exec object in a list", function() {
+            return request(app)
+            .post("/api/v1/execs")
+            .set("Content-Type", "application/json")
+            .set("Authorization", `Bearer ${userToken}`)
+            .send([{
+                name: "test Exec",
+                email: "admin@socis.ca",
+                order: 3,
+                year: 2019,
+                role: "system admin",
+            }])
+            .expect(statusCodes.CREATED)
+            .then((res) => {
+
+                assert.isArray(res.body);
+                assert.lengthOf(res.body, 1);
+
+                check.api["v1"].isExecObject(res.body[0]);
+            });
+        });
+
+        test("a valid object and an invalid object", function() {
+
+            return request(app)
+            .post("/api/v1/execs")
+            .set("Content-Type", "application/json")
+            .set("Authorization", `Bearer ${userToken}`)
+            .send([
+                {
+                    name: "test Exec1",
+                    email: "pres@socis.ca",
+                    order: 2,
+                    year: 2019,
+                    role: "president",
+                },
+                {
+                    name: "test Exec2",
+                    email: "year-rep@socis.ca",
+                    order: "a",
+                    year: 2019,
+                    role: "year rep",
+                }
+            ])
+            .expect(statusCodes.BAD_REQUEST)
+            .then((res) => {
+                check.api["v1"].isGenericResponse(statusCodes.BAD_REQUEST, res.body);
+            });
+        });
+
+        test("a non authorized user making the request", function() {
+
+            return request(app)
+            .post("/api/v1/execs")
+            .set("Content-Type", "application/json")
+            .send([{
+                name: "test Exec",
+                email: "admin@socis.ca",
+                order: 3,
+                year: 2019,
+                role: "system admin",
+            }])
+            .expect(statusCodes.UNAUTHORIZED)
+            .then((res) => {
+                check.api["v1"].isGenericResponse(statusCodes.UNAUTHORIZED, res.body);
+            });
+        });
+
+        test("incorrect field type", function() {
+            return request(app)
+            .post("/api/v1/execs")
+            .set("Content-Type", "application/json")
+            .set("Authorization", `Bearer ${userToken}`)
+            .send([
+                {
+                    name: "test Exec1",
+                    email: "pres@191.168.3.3",  // this email should fail the validation
+                    order: 2,
+                    year: 2019,
+                    role: "president",
+                }])
+            .expect(statusCodes.BAD_REQUEST)
+            .then((res) => {
+                check.api["v1"].isGenericResponse(statusCodes.BAD_REQUEST, res.body);
+            });
+        });
+
+        test("extra fields should be ignored", function() {
+
+            return request(app)
+            .post("/api/v1/execs")
+            .set("Content-Type", "application/json")
+            .set("Authorization", `Bearer ${userToken}`)
+            .send([
+                {
+                    name: "test Exec1",
+                    email: "pres@socis.ca",
+                    order: 2,
+                    year: 2019,
+                    role: "president",
+                    id: "507f1f77bcf86cd799439011", //this is a extra field
+                }])
+            .expect(statusCodes.CREATED)
+            .then((res) => {
+                assert.isArray(res.body);
+                assert.lengthOf(res.body, 1);
+                check.api["v1"].isExecObject(res.body[0]);
+                assert.notEqual(res.body[0].id, "507f1f77bcf86cd799439011");
+            });
+        });
+
+        test("missing required fields", function() {
+            return request(app)
+            .post("/api/v1/execs")
+            .set("Content-Type", "application/json")
+            .set("Authorization", `Bearer ${userToken}`)
+            .send([
+                {
+                    name: "test Exec1",
+                    email: "pres@socis.ca",
+                    order: 2,
+                    year: 2019,
+                }])
+            .expect(statusCodes.BAD_REQUEST)
+            .then((res) => {
+                check.api["v1"].isGenericResponse(statusCodes.BAD_REQUEST, res.body);
+            });
+        });
+
+        // clear the execs DB
+        suiteTeardown(function() {
+            return connection.db.collections().then((collections) => {
+                let drops = [];
+                collections.forEach((collection) => {
+                    drops.push(collection.deleteMany({}));
+                });
+
+                return Promise.all(drops);
+            });
+        });
     });
 
     suite("PATCH /api/v1/execs", function() {
