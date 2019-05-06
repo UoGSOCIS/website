@@ -431,7 +431,7 @@ suite("APIv1 exec routes", function() {
             // save the execs to the db
             return pres1.save()
             .then((exec) => {
-                pres1 = exec;
+                pres1 = exec.toApiV1();
                 return admin1.save();
             })
             .then((exec) => {
@@ -612,5 +612,94 @@ suite("APIv1 exec routes", function() {
 
     suite("DELETE /api/v1/execs/:execId", function() {
 
+        var exec1;
+        var exec2;
+
+        suiteSetup(function() {
+            exec1 = new Exec()
+            .setEmail("pres@socis.ca")
+            .setRole("president")
+            .setName("Bob Marley")
+            .setOrder(1)
+            .setYear(2016);
+
+            exec2 = new Exec()
+            .setEmail("admin@socis.ca")
+            .setRole("System Admin")
+            .setName("John Smith")
+            .setOrder(2)
+            .setYear(2016);
+
+            // save the execs to the db
+            return exec1.save()
+            .then((exec) => {
+                exec1 = exec;
+                return exec2.save();
+            })
+            .then((exec) => {
+                exec2 = exec;
+            })
+            .catch((err) => {
+                    logger.error("Unexpected error", err);
+                });
+
+        });
+
+        test("missing authentication", function() {
+
+            return request(app)
+            .delete(`/api/v1/execs/${exec1.id}`)
+            .expect(statusCodes.UNAUTHORIZED)
+            .then((res) => {
+                check.api["v1"].isGenericResponse(statusCodes.UNAUTHORIZED, res.body);
+            });
+        });
+
+        test("deleting non existent exec", function() {
+            return request(app)
+            .delete("/api/v1/execs/5ccf7ab78caf96e09f00ab22")
+            .set("Authorization", `Bearer ${userToken}`)
+            .expect(statusCodes.NOT_FOUND)
+            .then((res) => {
+                check.api["v1"].isGenericResponse(statusCodes.NOT_FOUND, res.body);
+            });
+        });
+        
+        test("deleting an exec that has already been deleted", function () {
+            return request(app)
+            .delete(`/api/v1/execs/${exec2.id}`)
+            .expect(statusCodes.NO_CONTENT)
+            .then(() => {
+
+                // try deleting it again
+                return request(app)
+                .delete(`/api/v1/execs/${exec2.id}`)
+                .set("Authorization", `Bearer ${userToken}`)
+                .expect(statusCodes.NOT_FOUND)
+                .then((res) => {
+                    check.api["v1"].isGenericResponse(statusCodes.NOT_FOUND, res.body);
+                });
+            });
+        });
+
+        test("deleting a valid exec", function() {
+
+            return request(app)
+            .delete(`/api/v1/execs/${exec1.id}`)
+            .set("Authorization", `Bearer ${userToken}`)
+            .expect(statusCodes.NO_CONTENT);
+        });
+
+        // clear the execs DB
+        suiteTeardown(function() {
+            return connection.db.collections().then((collections) => {
+                let drops = [];
+                collections.forEach((collection) => {
+                    drops.push(collection.deleteMany({}));
+                });
+
+                return Promise.all(drops);
+            });
+        });
     });
 });
