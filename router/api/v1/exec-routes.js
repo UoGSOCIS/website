@@ -292,8 +292,26 @@ r.route("/:execId")
  * @authentication either a JWT token or an existing session.
  * @routeparams {string} :execId - the id of the exec object to delete
  */
-.delete(function(req, res) {
-    res.status(501).json({status: 501, message: "Not Implemented", });
+.delete(function(req, res, next) {
+
+    Exec.getById(req.params.execId)
+    .then((exec) => {
+
+        return exec.delete();
+    })
+    .then(() => {
+        res.status(statusCodes.NO_CONTENT).send();
+    })
+    .catch((err) => {
+
+        if (err instanceof errors.exec.NotFoundError) {
+            return next(Error.NotFound(err.message));
+        }
+
+        logger.error("fatal error: ", err);
+
+        next(err);
+    });
 });
 
 module.exports = r;

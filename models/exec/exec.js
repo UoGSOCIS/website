@@ -6,6 +6,7 @@ const validator = require("validator");
 const source = require("rfr");
 const schema = source("models/exec/schema");
 const errors = source("models/error");
+const logger = source("logger");
 
 
 const ExecModel = mongoose.model("Exec", schema);
@@ -175,6 +176,29 @@ class Exec {
             return this._model.save();
         }).then(() => {
             return this;
+        });
+    }
+
+    /**
+     * delete() removes an exec from the database.
+     * @return {Promise} resolves with the exec if removed successfully
+     *                   rejects with error on failure
+     */
+    delete() {
+        return ExecModel.findOneAndDelete({
+            _id: this.id,
+        }).then((exec) => {
+            if (!exec) {
+
+                logger.warn("The exec could not be deleted because it doesn't exist");
+                return Promise.reject(new errors.exec.NotFoundError(`Exec ${this.id} was not found.`));
+            }
+
+            return Promise.resolve(exec);
+        }).catch((err) => {
+            logger.error("exec (" + this.id + ") could not be deleted.", err);
+
+            return Promise.reject(err);
         });
     }
 
