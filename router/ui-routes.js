@@ -13,15 +13,10 @@ const source = require("rfr");
 
 const numToWords = require("number-to-words");
 
-const auth = require("google-auth-library");
-
-const config = source("config");
-const client = new auth.OAuth2Client(config.google.client_id);
-
-const logger = source("logger");
+const authentication = source("authentication");
 const Exec = source("models/exec");
 const Challenge = source("models/roboticon");
-var myMarked = require("marked");
+const myMarked = require("marked");
 
 myMarked.setOptions({
     renderer: new myMarked.Renderer(),
@@ -43,43 +38,19 @@ router.get("/events", function(req, res) {
 });
 
 
-router.post("/authenticate", function(req, res) {
+router.post("/authenticate", function(req, res, next) {
 
-    var token = req.body.token;
-    client.verifyIdToken({
-        idToken: token,
-        audience: config.google.client_id,
-    }).then((ticket) => {
-
-        const payload = ticket.getPayload();
-
-        const userid = payload["sub"];
-        const aud = payload["aud"];
-
-        const domain = payload["hd"];
-
-        if (aud !== config.google.client_id) {
-            logger.error("The token is not for the correct audience");
-            res.status(400).send("The token is not for the correct audience");
-            return;
-        }
-
-        // verify that the domain name was from the socis organization
-        if (domain !== "socis.ca") {
-            logger.error("The user is not a SOCIS email address. ");
-            res.status(400).send("The user is not a SOCIS email address. ");
-            return;
-        }
-
+    authentication.verify(req.body.token)
+    .then((decoded) => {
         // probably going to want to create our own user account data here
-        req.session.token = payload;
+        req.session.token = decoded;
 
-        res.send(userid);
-    }).catch((err) => {
-        logger.error("Something when horribly wrong: " + err);
-        res.status(400).send("Failed to validate the token");
+        const userId = decoded.sub;
+        res.send(userId);
+    })
+    .catch((err) => {
+        next(Error.Unauthorized(err.message));
     });
-
 });
 
 

@@ -10,11 +10,8 @@
 const source = require("rfr");
 const Error = source("models/responses").Error;
 
-const auth = require("google-auth-library");
-const logger = source("logger");
+const authentication = source("authentication");
 
-const config = source("config");
-const client = new auth.OAuth2Client(config.google.client_id);
 /**
  * routeAuth is an express middleware that checks a user is logged into the
  * application before allowing  access to protected routes.
@@ -45,39 +42,17 @@ function routeAuth(req, res, next) {
     if (token) {
         token = token.substring(7);
     } else {
-        next(Error.Unauthorized("You need to be authenticated"));
-        return;
+        return next(Error.Unauthorized("You need to be authenticated"));
     }
 
-    client.verifyIdToken({
-        idToken: token,
-        audience: config.google.client_id,
-    }).then((ticket) => {
-
-        const payload = ticket.getPayload();
-        const aud = payload["aud"];
-        const domain = payload["hd"];
-
-        if (aud !== config.google.client_id) {
-            logger.error("The token is not for the correct audience");
-            next(Error.Unauthorized("The token is not for the correct audience"));
-            return;
-        }
-
-        // verify that the domain name was from the socis organization
-        if (domain !== "socis.ca") {
-            logger.error("The user is not a SOCIS email address. ");
-            next(Error.Unauthorized("The user is not a SOCIS email address."));
-            return;
-        }
-
-        // probably going to want to create our own user account data here
-        req.session.token = payload;
+    authentication.verify(token)
+    .then((decoded) => {
+        req.session.token = decoded;
 
         next();
-    }).catch((err) => {
-        logger.error("Something when horribly wrong: " + err);
-        next(Error.InternalServerError(err.message));
+    })
+    .catch((err) => {
+        next(Error.Unauthorized(err.message));
     });
 }
 

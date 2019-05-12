@@ -24,18 +24,46 @@ const statusCodes = require("http-status-codes");
 const connection = source("test/connection");
 const check = source("test/router/api/assert");
 
-chai.use(asPromised);
+const authentication = source("authentication");
+const config = source("config");
 
-//FIXME: Need a way to authenticate a user for testing without using a real google account
+
+chai.use(asPromised);
 
 suite("APIv1 exec routes", function() {
 
     let userToken;
 
     suiteSetup(function() {
-        //FIXME Need to automatically generate this token
-        userToken =
-"eyJhbGciOiJSUzI1NiIsImtpZCI6IjI4ZjU4MTNlMzI3YWQxNGNhYWYxYmYyYTEyMzY4NTg3ZTg4MmI2MDQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJhY2NvdW50cy5nb29nbGUuY29tIiwiYXpwIjoiMzM5MjE4MzM0MzU5LTNqZDQ4MzQ4bzF0cmR2bTc1dXEzaDFxZXJpdDNpOGhjLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwiYXVkIjoiMzM5MjE4MzM0MzU5LTNqZDQ4MzQ4bzF0cmR2bTc1dXEzaDFxZXJpdDNpOGhjLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwic3ViIjoiMTE3OTc1OTY5NDQyMTQ3MTY1NDQ4IiwiaGQiOiJzb2Npcy5jYSIsImVtYWlsIjoiYWRtaW5Ac29jaXMuY2EiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiYXRfaGFzaCI6IkFOMlB5WnAwWDFhN0V1ZjdmT182MHciLCJuYW1lIjoiU29jaXMgU3lzQWRtaW4iLCJwaWN0dXJlIjoiaHR0cHM6Ly9saDUuZ29vZ2xldXNlcmNvbnRlbnQuY29tLy1uaUs0eFNucVRwQS9BQUFBQUFBQUFBSS9BQUFBQUFBQUFBQS9BQ0hpM3JkX0JHdW9fcGhwUWtYbUYtakdaa2xuQ2JhUmNBL3M5Ni1jL3Bob3RvLmpwZyIsImdpdmVuX25hbWUiOiJTb2NpcyIsImZhbWlseV9uYW1lIjoiU3lzQWRtaW4iLCJsb2NhbGUiOiJlbiIsImlhdCI6MTU1NzYwODczNywiZXhwIjoxNTU3NjEyMzM3LCJqdGkiOiJiZGQ2ZTdiN2ZmYWM1ZWJmNGMxZTY4MzgzN2JiOTUwNjlhN2M3NmVmIn0.HjM_1CbriztVtHfIwgM_sxTY1-MKxPKGbSxH6NMDzCR9nE-0kP0KV7jwn1Sx-Zd-FDT6cgwxglhEF14IDBh8GMsUoCFAegIYZwmkyqry0uNczTT2MUIrs5a-a5CRvdaxgNUpzXHkdAQgH6xcTXH7uQ8eqR_NvWcafqfkH-LeK-kChueIUI-WPtcwgOvvrJc7Z14svR3Z3iCI7sSEH1Ku-o6pHYVJ0lEtL39iyDdgc7Cxyl2IdypXChzvnHNsMCLygnr6ictVoiBldnmAiFgVX7B4OoDIembEJIwb4wjcBjW4vcAB9IDreDDn0bRXvq8whT1au-pjqEaxTTecQbs4zQ";
+
+        const iat = Date.now();
+        const exp = iat + 5 * 60000;    // 5 min from now
+
+        return authentication.sign({
+            iss: config.jwt.iss[0],
+            azp: config.jwt.aud,
+            aud: config.jwt.aud,
+            sub: "1179434225147165448",
+            hd: "socis.ca",
+            email: "test_account@socis.ca",
+            email_verified: true,
+            at_hash: "2EB436643D1F1E733B8224FF2D56CB1F62CF5C55",
+            name: "This is a test run of sign",
+            picture: "https://images.pexels.com/photos/104827/cat-pet-animal-domestic-104827.jpeg",
+            given_name: "Test",
+            family_name: "User",
+            locale: "en",
+            iat: iat,
+            exp: exp,
+        })
+        .then((token) => {
+            userToken = token;
+        })
+        .catch((err) => {
+            logger.error("Error creating user test token", err);
+        });
+
+
     });
 
     suite("GET /api/v1/execs", function() {
@@ -641,8 +669,8 @@ suite("APIv1 exec routes", function() {
                 exec2 = exec;
             })
             .catch((err) => {
-                    logger.error("Unexpected error", err);
-                });
+                logger.error("Unexpected error", err);
+            });
 
         });
 
