@@ -106,6 +106,5 @@ And the status will be `204 No Content`.
 
 #### Error responses
 
-- `400 Bad Request`
 - `401 Unauthorized`
 - `404 Not Found`
