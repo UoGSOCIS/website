@@ -6,8 +6,8 @@
  */
 "use strict";
 
-var source = require("rfr");
-const error = source("models/http-errors");
+const source = require("rfr");
+const Error = source("models/responses").Error;
 
 /**
  * errorHandler is an express middleware that ends the middleware chain and
@@ -26,15 +26,15 @@ const error = source("models/http-errors");
 function errorHandler (err, req, res, next) {
     // Handle parsing errors in malformed JSON as Bad Requests.
     if (err instanceof SyntaxError) {
-        err = error.Error.BadRequest("Bad JSON format");
+        err = Error.BadRequest("Bad JSON format");
     }
 
     // All errors not returned by our application will be treated as
     // Server Errors by default. If a new error is uncovered which should *not*
     // be a 500 Server Error, then add a case above where the error is cast to
     // a http.Response as is done with SyntaxError.
-    if (err && !(err instanceof error.Error)) {
-        err = error.Error.InternalServerError();
+    if (err && !(err instanceof Error)) {
+        err = Error.InternalServerError();
     }
 
     // If there was an error, then render an error page.

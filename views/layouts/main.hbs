@@ -116,6 +116,7 @@
                 document.getElementById("navbar-signout-option").style.display = "block";
             }
         };
+        console.log(id_token);
         xhr.send(JSON.stringify({token: id_token}));
     }
 

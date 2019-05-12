@@ -7,8 +7,10 @@
 
 "use strict";
 
-var source = require("rfr");
-const error = source("models/http-errors");
+const source = require("rfr");
+const Error = source("models/responses").Error;
+
+const authentication = source("authentication");
 
 /**
  * routeAuth is an express middleware that checks a user is logged into the
@@ -24,13 +26,34 @@ function routeAuth(req, res, next) {
         return next();
     }
 
-    if (!req.session || !req.session.token) {
-        const err = error.Error.Unauthorized("You need to be authenticated");
-        next(err);
+    // can GET api routes without auth
+    if (/^\/api\/.*/.test(req.path) === true && req.method === "GET") {
+        return next();
+    }
+
+    // pass through if the user has a session
+    if (req.session && req.session.token) {
+        next();
         return;
     }
 
-    next();
+    // try checking for a bearer token
+    var token = req.get("authorization");
+    if (token) {
+        token = token.substring(7);
+    } else {
+        return next(Error.Unauthorized("You need to be authenticated"));
+    }
+
+    authentication.verify(token)
+    .then((decoded) => {
+        req.session.token = decoded;
+
+        next();
+    })
+    .catch((err) => {
+        next(Error.Unauthorized(err.message));
+    });
 }
 
 module.exports = routeAuth;

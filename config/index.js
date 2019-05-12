@@ -89,6 +89,6 @@ module.exports = {
      * @param {string} file - path to configuration ini file
      * @return {Object} the new configuration loaded from the file
      */
-    google: config.google,
+    jwt: config.jwt,
     configure: configure,
 };

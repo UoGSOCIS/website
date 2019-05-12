@@ -10,10 +10,10 @@ the executive members of SOCIS. All of these endpoints accept and return `Conten
 
 | Implemented | HTTP Method | Endpoint | Description |
 | ----- | ----- | ---- | ---- |
-| ✘ | GET | [`/api/v1/execs`](#get-exec-list) | Get paged response of the execs |
-| ✘ | POST | [`/api/v1/execs`](#new-exec) | Create new Executives |
-| ✘ | PATCH | [`/api/v1/execs`](#update-exec) | This is used to update a list of execs, used to update a whole cohort|
-| ✘ | DELETE | [`/api/v1/execs/:execId`](#delete-exec) | This will delete a single exec |
+| ✓ | GET | [`/api/v1/execs`](#get-exec-list) | Get paged response of the execs |
+| ✓ | POST | [`/api/v1/execs`](#new-exec) | Create new Executives |
+| ✓ | PATCH | [`/api/v1/execs`](#update-exec) | This is used to update a list of execs, used to update a whole cohort|
+| ✓ | DELETE | [`/api/v1/execs/:execId`](#delete-exec) | This will delete a single exec |
 
 
 ### Get Exec List
@@ -30,6 +30,8 @@ set when they are created or edited. This will contain a list of [Exec Objects](
 | Query Parameter | Type | Value |
 | --------------- | ---- | ----- |
 | year | integer | *Optional. * Default value is currentYear - 1 for Jan-April, or currentYear otherwise. |
+| offset          | Integer | *Optional.* The offset into the results that you want, default value of 0
+| limit           | Integer | *Optional.* The maximum number of results to get minimum 1 maximum 50 default 20 |
 
 
 #### Success response
@@ -86,7 +88,7 @@ If any of the updates fails then none of the changes will be accepted.
 
 - `400 Bad Request`
 - `401 Unauthorized`
-
+- `404 Not Found`
 
 ### Delete Exec
 
@@ -104,6 +106,5 @@ And the status will be `204 No Content`.
 
 #### Error responses
 
-- `400 Bad Request`
 - `401 Unauthorized`
 - `404 Not Found`
