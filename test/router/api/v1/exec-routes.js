@@ -301,6 +301,22 @@ suite("APIv1 exec routes", function() {
             });
         });
 
+        test("a valid exec object, wong content type", function() {
+            return request(app)
+            .post("/api/v1/execs")
+            .set("Content-Type", "x-www-form-urlencoded")
+            .set("Authorization", `Bearer ${userToken}`)
+            .send("name=test user1")
+            .send("email=user1@socis.ca")
+            .send("order=2")
+            .send("year=2019")
+            .send("role=admin")
+            .expect(statusCodes.BAD_REQUEST)
+            .then((res) => {
+                check.api["v1"].isGenericResponse(statusCodes.BAD_REQUEST, res.body);
+            });
+        });
+
         test("a valid object and an invalid object", function() {
 
             return request(app)
@@ -490,6 +506,23 @@ suite("APIv1 exec routes", function() {
             .set("Content-Type", "application/json")
             .set("Authorization", `Bearer ${userToken}`)
             .send(update1)
+            .expect(statusCodes.BAD_REQUEST)
+            .then((res) => {
+                check.api["v1"].isGenericResponse(statusCodes.BAD_REQUEST, res.body);
+            });
+        });
+
+        test("update a single exec, wong content type", function() {
+            return request(app)
+            .patch("/api/v1/execs")
+            .set("Content-Type", "x-www-form-urlencoded")
+            .set("Authorization", `Bearer ${userToken}`)
+            .send("id=5ccf449cd0c3a1ac66636b64")
+            .send("name=test user1")
+            .send("email=user1@socis.ca")
+            .send("order=2")
+            .send("year=2019")
+            .send("role=admin")
             .expect(statusCodes.BAD_REQUEST)
             .then((res) => {
                 check.api["v1"].isGenericResponse(statusCodes.BAD_REQUEST, res.body);
