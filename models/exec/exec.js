@@ -157,6 +157,10 @@ class Exec {
 
     static getById(id) {
 
+        if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+            return Promise.reject(new errors.exec.InvalidFormatError(`id ${id} is not valid.`));
+        }
+
         return ExecModel.findById(id).then((found) => {
             if (!found) {
                 const err = new errors.exec.NotFoundError(`Exec ${id} was not found.`);

@@ -284,7 +284,7 @@ r.route("/")
     });
 });
 
-r.route("/:execId")
+r.route("/:execId([0-9a-fA-F]{24})")
 /**
  * Delete an exec
  * @name delete exec

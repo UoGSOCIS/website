@@ -496,7 +496,7 @@ suite("APIv1 exec routes", function() {
             });
         });
 
-        test("update an exec that does not exist in the db", function() {
+        test("update an exec that does not exist in the db, valid format", function() {
             let update1 = JSON.parse(JSON.stringify(pres1));
 
             update1.id = "5ccf449cd0c3a1ac66636b64";
@@ -508,6 +508,21 @@ suite("APIv1 exec routes", function() {
             .expect(statusCodes.NOT_FOUND)
             .then((res) => {
                 check.api["v1"].isGenericResponse(statusCodes.NOT_FOUND, res.body);
+            });
+        });
+
+        test("update an exec that does not exist in the db,invalid format", function() {
+            let update1 = JSON.parse(JSON.stringify(pres1));
+
+            update1.id = "execId";
+            return request(app)
+            .patch("/api/v1/execs")
+            .set("Content-Type", "application/json")
+            .set("Authorization", `Bearer ${userToken}`)
+            .send([update1])
+            .expect(statusCodes.BAD_REQUEST)
+            .then((res) => {
+                check.api["v1"].isGenericResponse(statusCodes.BAD_REQUEST, res.body);
             });
         });
 
@@ -684,9 +699,19 @@ suite("APIv1 exec routes", function() {
             });
         });
 
-        test("deleting non existent exec", function() {
+        test("deleting non existent exec, correct id format", function() {
             return request(app)
             .delete("/api/v1/execs/5ccf7ab78caf96e09f00ab22")
+            .set("Authorization", `Bearer ${userToken}`)
+            .expect(statusCodes.NOT_FOUND)
+            .then((res) => {
+                check.api["v1"].isGenericResponse(statusCodes.NOT_FOUND, res.body);
+            });
+        });
+
+        test("deleting non existent exec, bad id format", function() {
+            return request(app)
+            .delete("/api/v1/execs/execId")
             .set("Authorization", `Bearer ${userToken}`)
             .expect(statusCodes.NOT_FOUND)
             .then((res) => {
