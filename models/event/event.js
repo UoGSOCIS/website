@@ -16,10 +16,6 @@ class Event {
         this._model = new EventModel({});
     }
 
-    get _mongoId() {
-        return this._model._id;
-    }
-
     get id() {
         return this._model._id.toString();
     }
@@ -150,28 +146,24 @@ class Event {
      *                   rejects with error on failure
      */
     delete() {
-        return EventModel.findOneAndDelete({
+        return EventModel.deleteOne({
             _id: this.id,
-        }).then((event) => {
-            if (!event) {
+        }).then((result) => {
 
+            if (!result || result.deletedCount === 0) {
                 logger.warn("The event could not be deleted because it doesn't exist");
                 return Promise.reject(new errors.event.NotFoundError(`Event ${this.id} was not found.`));
             }
 
-            return Promise.resolve(event);
-        }).catch((err) => {
-            logger.error("event (" + this.id + ") could not be deleted.", err);
-
-            return Promise.reject(err);
+            return Promise.resolve(this);
         });
     }
 
     toApiV1() {
         return {
             id: this.id,
-            start_time: this.startTime,
-            end_time: this.endTime,
+            start_time: this.startTime.toISOString(),
+            end_time: this.endTime.toISOString(),
             location: this.location,
             title: this.title,
             description: this.description,
@@ -179,6 +171,5 @@ class Event {
         };
     }
 }
-
 
 module.exports = Event;

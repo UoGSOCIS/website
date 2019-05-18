@@ -169,6 +169,17 @@ suite("Event", function() {
 
             return assert.isRejected(Event.isValid(event));
         });
+
+        test("tag list not an array", function() {
+            let event = new Event()
+            .setTitle("The first event")
+            .setDescription("This is the first event ever created")
+            .setLocation("Reynolds 1101")
+            .setStartTime("2019-04-05T19:00:00.000z")
+            .setTags("event");
+
+            return assert.isRejected(Event.isValid(event));
+        });
     });
 
     suite("save()", function() {
@@ -303,6 +314,104 @@ suite("Event", function() {
 
                 return Promise.all(drops);
             });
+        });
+    });
+
+    suite("delete()", function() {
+
+        var event1;
+
+        suiteSetup(function() {
+
+            event1 = new Event()
+            .setTitle("The first event")
+            .setDescription("This is the first event ever created")
+            .setLocation("Reynolds 1101")
+            .setStartTime("2019-04-05T19:00:00.000z")
+            .setEndTime("2019-04-05T20:00:00.000z")
+            .setTags(["event", "awesome"]);
+
+            // save the execs to the db
+            event1.save()
+            .then((event) => {
+                event1 = event;
+            })
+            .catch((err) => {
+                    logger.error("Unexpected error", err);
+                });
+        });
+
+        test("delete an invalid id", function() {
+
+            let event = new Event()
+            .setTitle("not in db")
+            .setDescription("this should have a db but not be in the db")
+            .setLocation("Pi lab")
+            .setStartTime("2019-12-01T08:00:00.000z")
+            .setEndTime("2019-12-01T20:00:00.000z")
+            .setTags(["event"]);
+
+            return event.delete()
+            .then(() => {
+                assert.fail("No event should have been found");
+            })
+            .catch((err) => {
+                assert.isTrue(err instanceof errors.event.NotFoundError);
+            });
+        });
+
+        test("delete an valid id", function() {
+
+            return event1.delete()
+            .then((event) => {
+                assert.equal(event.id, event1.id);
+                assert.equal(event.title, event1.title);
+                assert.equal(event.description, event1.description);
+                assert.equal(event.location, event1.location);
+                assert.equal(event.startTime.valueOf(), event1.startTime.valueOf());
+                assert.equal(event.endTime.valueOf(), event1.endTime.valueOf());
+            });
+        });
+
+        suiteTeardown(function() {
+
+            if (!connection.db) {
+                return;
+            }
+
+            return connection.db.collections().then((collections) => {
+                let drops = [];
+                collections.forEach((collection) => {
+                    drops.push(collection.deleteMany({}));
+                });
+
+                return Promise.all(drops);
+            });
+        });
+    });
+
+    suite("toApiV1()", function() {
+        test("check that only the correct fields are present", function() {
+            let event = new Event()
+            .setTitle("The first event")
+            .setDescription("This is the first event ever created")
+            .setLocation("Reynolds 1101")
+            .setStartTime("2019-04-05T19:00:00.000z")
+            .setEndTime("2019-04-05T20:00:00.000z")
+            .setTags(["event", "awesome"]);
+
+            assert.hasAllKeys(event.toApiV1(), [
+                "title",
+                "description",
+                "location",
+                "start_time",
+                "end_time",
+                "tags",
+                "id"
+            ]);
+
+            assert.equal(event.toApiV1().start_time, "2019-04-05T19:00:00.000Z");
+            assert.equal(event.toApiV1().end_time, "2019-04-05T20:00:00.000Z");
         });
     });
 });
