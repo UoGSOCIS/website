@@ -73,8 +73,8 @@ suite("APIv1 event routes", function() {
             .post("/api/v1/events")
             .set("Content-Type", "x-www-form-urlencoded")
             .set("Authorization", `Bearer ${userToken}`)
-            .send("start_time=2019-04-04T19:00:00.000z")
-            .send("end_time=2019-04-04T20:00:00.000z")
+            .send("start_time=2019-04-04T19:00:00.000Z")
+            .send("end_time=2019-04-04T20:00:00.000Z")
             .send("title=The Last SOCIS event of the year")
             .send("description=This is a bit of information about the event that will be *awesome*!")
             .send("location=Reynolds 0101")
@@ -92,8 +92,8 @@ suite("APIv1 event routes", function() {
             .set("Content-Type", "application/json")
             .set("Authorization", `Bearer ${userToken}`)
             .send({
-                start_time: "2019-04-04T19:00:00.000z",
-                end_time: "2019-04-04T20:00:00.000z",
+                start_time: "2019-04-04T19:00:00.000Z",
+                end_time: "2019-04-04T20:00:00.000Z",
                 title: "The Last SOCIS event of the year",
                 description: "This is a bit of information about the event that will be *awesome*!",
                 location: "Reynolds 0101",
@@ -111,8 +111,8 @@ suite("APIv1 event routes", function() {
             .post("/api/v1/events")
             .set("Content-Type", "application/json")
             .send({
-                start_time: "2019-05-04T19:00:00.000z",
-                end_time: "2019-05-04T20:00:00.000z",
+                start_time: "2019-05-04T19:00:00.000Z",
+                end_time: "2019-05-04T20:00:00.000Z",
                 title: "The Last SOCIS event of the year",
                 description: "This is a bit of information about the event that will be *awesome*!",
                 location: "Reynolds 0101",
@@ -132,8 +132,8 @@ suite("APIv1 event routes", function() {
             .set("Authorization", `Bearer ${userToken}`)
             .send({
                 id: "5ce07aba7d20c5c791d35826",
-                start_time: "2019-06-04T19:00:00.000z",
-                end_time: "2019-06-04T20:00:00.000z",
+                start_time: "2019-06-04T19:00:00.000Z",
+                end_time: "2019-06-04T20:00:00.000Z",
                 title: "The Last SOCIS event of the year",
                 description: "This is a bit of information about the event that will be *awesome*!",
                 location: "Reynolds 0101",
@@ -153,7 +153,7 @@ suite("APIv1 event routes", function() {
             .set("Content-Type", "application/json")
             .set("Authorization", `Bearer ${userToken}`)
             .send({
-                end_time: "2019-06-04T20:00:00.000z",
+                end_time: "2019-06-04T20:00:00.000Z",
                 title: "The Last SOCIS event of the year",
                 description: "This is a bit of information about the event that will be *awesome*!",
                 location: "Reynolds 0101",
@@ -165,7 +165,7 @@ suite("APIv1 event routes", function() {
             });
         });
 
-        // clear the execs DB
+        // clear the DB
         suiteTeardown(function() {
             return connection.db.collections().then((collections) => {
                 let drops = [];
@@ -178,91 +178,89 @@ suite("APIv1 event routes", function() {
         });
     });
 
-    /*
-    suite.skip("PATCH /api/v1/execs", function() {
 
-        var pres1;
-        var pres2;
-        var admin1;
-        var admin2;
+    suite("PATCH /api/v1/events", function() {
+
+        var event1;
+        var event2;
+        var event3;
+        var event4;
 
         suiteSetup(function() {
-            pres1 = new Exec()
-            .setEmail("pres@socis.ca")
-            .setRole("president")
-            .setName("Bob Marley")
-            .setOrder(1)
-            .setYear(new Date().getFullYear());
 
-            admin1 = new Exec()
-            .setEmail("admin@socis.ca")
-            .setRole("System Admin")
-            .setName("John Smith")
-            .setOrder(2)
-            .setYear(new Date().getFullYear());
+            event1 = new Event()
+            .setTitle("The first event")
+            .setDescription("This is the first event ever created")
+            .setLocation("Reynolds 1101")
+            .setStartTime("2019-04-05T19:00:00.000Z")
+            .setEndTime("2019-04-05T20:00:00.000Z")
+            .setTags(["event", "awesome"]);
 
-            pres2 = new Exec()
-            .setEmail("pres@socis.ca")
-            .setRole("president")
-            .setName("Jessey Jane")
-            .setOrder(2)
-            .setYear(2008);
+            event2 = new Event()
+            .setTitle("The second event")
+            .setDescription("This is the second event ever created, it is all about the best snacks")
+            .setLocation("Pi lab")
+            .setStartTime("2019-05-05T19:00:00.000Z")
+            .setEndTime("2019-05-05T20:00:00.000Z")
+            .setTags(["event"]);
 
-            admin2 = new Exec()
-            .setEmail("admin@socis.ca")
-            .setRole("System Admin")
-            .setName("John Franklin")
-            .setOrder(1)
-            .setYear(2008);
+            event3 = new Event()
+            .setTitle("Local hack day")
+            .setDescription("Local hackathon where we are going to build cool things")
+            .setLocation("Pi lab")
+            .setStartTime("2019-12-01T08:00:00.000Z")
+            .setEndTime("2019-12-01T20:00:00.000Z")
+            .setTags(["event"]);
+
+            event4 = new Event()
+            .setTitle("coolest event")
+            .setDescription("all these values should change")
+            .setLocation("Pi lab")
+            .setStartTime("2020-12-01T08:00:00.000Z")
+            .setEndTime("2020-12-01T20:00:00.000Z");
 
             // save the execs to the db
-            return pres1.save()
-            .then((exec) => {
-                pres1 = exec.toApiV1();
-                return admin1.save();
+            event1.save()
+            .then((event) => {
+                event1 = event;
+                return event2.save();
             })
-            .then((exec) => {
-                admin1 = exec.toApiV1();
-                return pres2.save();
+            .then((event) => {
+                event2 = event;
+                return event3.save();
             })
-            .then((exec) => {
-                pres2 = exec.toApiV1();
-                return admin2.save();
+            .then((event) => {
+                event3 = event;
+                return event4.save();
             })
-            .then((exec) => {
-                admin2 = exec.toApiV1();
+            .then((event) => {
+                event4 = event;
             })
             .catch((err) => {
                 logger.error("Unexpected error", err);
             });
-
         });
 
-        test("update a single exec that is not in a list", function() {
+        test("Valid event wrong content type", function() {
 
-            let update1 = JSON.parse(JSON.stringify(pres1));
-
-            update1.name = "The greatest president";
             return request(app)
-            .patch("/api/v1/execs")
-            .set("Content-Type", "application/json")
+            .patch(`/api/v1/events/${event1.id}`)
+            .set("Content-Type", "x-www-form-urlencoded")
             .set("Authorization", `Bearer ${userToken}`)
-            .send(update1)
+            .send("title=This title should not be changed")
             .expect(statusCodes.BAD_REQUEST)
             .then((res) => {
                 check.api["v1"].isGenericResponse(statusCodes.BAD_REQUEST, res.body);
             });
         });
 
-        test("update an exec that does not exist in the db", function() {
-            let update1 = JSON.parse(JSON.stringify(pres1));
+        test("update an event that does not exist in the db", function() {
 
-            update1.id = "5ccf449cd0c3a1ac66636b64";
             return request(app)
-            .patch("/api/v1/execs")
+            .patch("/api/v1/events/5ce087e883c678fd2d3d034a")
             .set("Content-Type", "application/json")
             .set("Authorization", `Bearer ${userToken}`)
-            .send([update1])
+            .send({title: "this also wont get updated", })
             .expect(statusCodes.NOT_FOUND)
             .then((res) => {
                 check.api["v1"].isGenericResponse(statusCodes.NOT_FOUND, res.body);
@@ -271,13 +269,10 @@ suite("APIv1 event routes", function() {
 
         test("missing authentication", function() {
 
-            let update1 = JSON.parse(JSON.stringify(pres1));
-
-            update1.name = "The worst president";
             return request(app)
-            .patch("/api/v1/execs")
+            .patch(`/api/v1/events/${event1.id}`)
             .set("Content-Type", "application/json")
-            .send([update1])
+            .send({title: "this also wont get updated because of bad auth", })
             .expect(statusCodes.UNAUTHORIZED)
             .then((res) => {
                 check.api["v1"].isGenericResponse(statusCodes.UNAUTHORIZED, res.body);
@@ -287,104 +282,74 @@ suite("APIv1 event routes", function() {
         test("not all the fields are set", function() {
 
             let update1 = {
-                id: pres1.id,
-                name: "mediocre president",
+                title: "this should be set",
+                tags: [],
             };
 
             return request(app)
-            .patch("/api/v1/execs")
+            .patch(`/api/v1/events/${event2.id}`)
             .set("Authorization", `Bearer ${userToken}`)
             .set("Content-Type", "application/json")
-            .send([update1])
+            .send(update1)
             .expect(statusCodes.OK)
             .then((res) => {
 
-                assert.isArray(res.body);
-                assert.lengthOf(res.body, 1);
-                check.api["v1"].isExecObject(res.body[0]);
-                assert.equal(res.body[0].id, pres1.id);
-                assert.equal(res.body[0].email, pres1.email);
-                assert.equal(res.body[0].name, update1.name);
-                assert.equal(res.body[0].role, pres1.role);
-                assert.equal(res.body[0].order, pres1.order);
-                assert.equal(res.body[0].year, pres1.year);
+                check.api["v1"].isEvent(res.body);
+                assert.equal(res.body.id, event2.id);
+                assert.equal(res.body.start_time, event2.startTime.toISOString());
+                assert.equal(res.body.end_time, event2.endTime.toISOString());
+                assert.equal(res.body.title, update1.title);
+                assert.equal(res.body.location, event2.location);
+                assert.isArray(res.body.tags);
+                assert.lengthOf(res.body.tags, 0);
             });
         });
 
-        test("multiple updates, one set is valid the other is not", function() {
-
-            let update1 = JSON.parse(JSON.stringify(admin1));
-            let update2 = JSON.parse(JSON.stringify(admin2));
-
-            update1.name = "The best system admin ever!";
-            update2.email = "invalid@125.3.2.5";
+        test("update with invalid start time", function() {
 
             return request(app)
-            .patch("/api/v1/execs")
+            .patch(`/api/v1/events/${event3.id}`)
             .set("Authorization", `Bearer ${userToken}`)
             .set("Content-Type", "application/json")
-            .send([update1, update2])
+            .send({start_time: Date.now()})
             .expect(statusCodes.BAD_REQUEST)
             .then((res) => {
                 check.api["v1"].isGenericResponse(statusCodes.BAD_REQUEST, res.body);
-
-                return Exec.getById(admin1.id);
-            })
-            .then((execFromDb) => {
-                assert.equal(execFromDb.id, admin1.id);
-                assert.equal(execFromDb.email, admin1.email);
-                assert.equal(execFromDb.name, admin1.name);
-                assert.equal(execFromDb.role, admin1.role);
-                assert.equal(execFromDb.order, admin1.order);
-                assert.equal(execFromDb.year, admin1.year);
-
-                return Exec.getById(admin2.id);
-            })
-            .then((execFromDb) => {
-
-                assert.equal(execFromDb.id, admin2.id);
-                assert.equal(execFromDb.email, admin2.email);
-                assert.equal(execFromDb.name, admin2.name);
-                assert.equal(execFromDb.role, admin2.role);
-                assert.equal(execFromDb.order, admin2.order);
-                assert.equal(execFromDb.year, admin2.year);
-            })
-            .catch(() => {
-                assert.fail("Something went wrong");
             });
         });
 
         test("valid full set of changes", function() {
 
             let update1 = {
-                id: pres2.id,
-                name: "mediocre president",
-                email: "el-presidente@socis.ca",
-                order: 34,
-                year: 2017,
-                role: "President",
+                start_time: "2012-12-01T08:00:00.000Z",
+                end_time: "2012-12-01T10:00:00.000Z",
+                location: "top secret place",
+                title: "classified event",
+                description: "I guess you will have to show up to find out",
+                tags: ["test", "again", "events"],
             };
 
             return request(app)
-            .patch("/api/v1/execs")
+            .patch(`/api/v1/events/${event4.id}`)
             .set("Authorization", `Bearer ${userToken}`)
             .set("Content-Type", "application/json")
-            .send([update1])
+            .send(update1)
             .expect(statusCodes.OK)
             .then((res) => {
-                assert.isArray(res.body);
-                assert.lengthOf(res.body, 1);
-                check.api["v1"].isExecObject(res.body[0]);
-                assert.equal(res.body[0].id, pres2.id);
-                assert.equal(res.body[0].email, update1.email);
-                assert.equal(res.body[0].name, update1.name);
-                assert.equal(res.body[0].role, update1.role);
-                assert.equal(res.body[0].order, update1.order);
-                assert.equal(res.body[0].year, update1.year);
+
+                check.api["v1"].isEvent(res.body);
+                assert.equal(res.body.id, event4.id);
+                assert.equal(res.body.start_time, update1.start_time);
+                assert.equal(res.body.end_time, update1.end_time);
+                assert.equal(res.body.title, update1.title);
+                assert.equal(res.body.description, update1.description);
+                assert.equal(res.body.location, update1.location);
+                assert.isArray(res.body.tags);
+                assert.lengthOf(res.body.tags, 3);
             });
         });
 
-        // clear the execs DB
+        // clear the DB
         suiteTeardown(function() {
             return connection.db.collections().then((collections) => {
                 let drops = [];
@@ -396,7 +361,7 @@ suite("APIv1 event routes", function() {
             });
         });
     });
-    */
+
 
     suite("DELETE /api/v1/events/:eventId", function() {
 
@@ -426,8 +391,8 @@ suite("APIv1 event routes", function() {
             .setTitle("Local hack day")
             .setDescription("Local hackathon where we are going to build cool things")
             .setLocation("Pi lab")
-            .setStartTime("2019-12-01T08:00:00.000z")
-            .setEndTime("2019-12-01T20:00:00.000z")
+            .setStartTime("2019-12-01T08:00:00.000Z")
+            .setEndTime("2019-12-01T20:00:00.000Z")
             .setTags(["event"]);
 
             // save the execs to the db
@@ -504,7 +469,7 @@ suite("APIv1 event routes", function() {
             .expect(statusCodes.NO_CONTENT);
         });
 
-        // clear the execs DB
+        // clear the DB
         suiteTeardown(function() {
             return connection.db.collections().then((collections) => {
                 let drops = [];
