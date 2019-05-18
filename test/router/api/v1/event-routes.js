@@ -311,7 +311,7 @@ suite("APIv1 event routes", function() {
             .patch(`/api/v1/events/${event3.id}`)
             .set("Authorization", `Bearer ${userToken}`)
             .set("Content-Type", "application/json")
-            .send({start_time: Date.now()})
+            .send({start_time: Date.now(), })
             .expect(statusCodes.BAD_REQUEST)
             .then((res) => {
                 check.api["v1"].isGenericResponse(statusCodes.BAD_REQUEST, res.body);

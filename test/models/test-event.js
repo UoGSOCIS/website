@@ -337,8 +337,8 @@ suite("Event", function() {
                 event1 = event;
             })
             .catch((err) => {
-                    logger.error("Unexpected error", err);
-                });
+                logger.error("Unexpected error", err);
+            });
         });
 
         test("delete an invalid id", function() {

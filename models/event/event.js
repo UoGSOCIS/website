@@ -118,6 +118,10 @@ class Event {
 
     static getById(id) {
 
+        if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+            return Promise.reject(new errors.exec.InvalidFormatError(`id ${id} is not valid.`));
+        }
+
         return EventModel.findById(id).then((found) => {
             if (!found) {
                 const err = new errors.event.NotFoundError(`Event ${id} was not found.`);
