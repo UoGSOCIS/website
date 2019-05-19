@@ -62,8 +62,6 @@ suite("APIv1 exec routes", function() {
         .catch((err) => {
             logger.error("Error creating user test token", err);
         });
-
-
     });
 
     suite("GET /api/v1/execs", function() {
