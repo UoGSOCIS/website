@@ -9,8 +9,8 @@
     "coverage": "nyc --reporter=lcov --reporter=text npm test --branches=0 --functions=0 --lines=0 --statements=0 --clean",
     "lint": "npm run eslint && npm run stylelint",
     "lint-fix": "npm run eslint-fix && npm run stylelint-fix",
-    "eslint": "eslint  config logger models router server.js --max-warnings=0",
-    "eslint-fix": "eslint config logger models router server.js --fix",
+    "eslint": "eslint authentication config logger middleware models router test validator server.js --max-warnings=0",
+    "eslint-fix": "eslint authentication config logger middleware models router test validator server.js --fix",
     "stylelint": "stylelint public/css --max-warnings=0 --rd",
     "stylelint-fix": "stylelint public/css --fix"
   },

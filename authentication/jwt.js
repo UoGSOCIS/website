@@ -67,8 +67,6 @@ function verify(token) {
             }
 
             if (!decoded.hd || decoded.hd !== "socis.ca") {
-                console.log("Not for the correct domain.");
-
                 reject(new Error("Token is not for the correct domain"));
             }
 

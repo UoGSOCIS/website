@@ -8,9 +8,9 @@ This document describes the routes to create, update, delete and list the events
 
 | Implemented | HTTP Method | Endpoint | Description |
 | ----- | ----- | ---- | ---- |
-| ✘ | POST | [`/api/v1/events`](#new-event) | Create a new event |
-| ✘ | PATCH | [`/api/v1/events/:eventId`](#update-event) | This is used to update a single event|
-| ✘ | DELETE | [`/api/v1/events/:eventId`](#delete-event) | This will delete an event |
+| ✓ | POST | [`/api/v1/events`](#new-event) | Create a new event |
+| ✓ | PATCH | [`/api/v1/events/:eventId`](#update-event) | This is used to update a single event|
+| ✓ | DELETE | [`/api/v1/events/:eventId`](#delete-event) | This will delete an event |
 
 
 ### New Event
@@ -52,7 +52,7 @@ This will also update the event in the google calender.
 
 #### Success response
 
-On success a [generic response object](../response_objects.md#generic-response-object) will be returned and 
+On success the updated  [event response object](../response_objects.md#event-object) will be returned and 
  the status will be `200 Okay`.
 
 #### Error responses
