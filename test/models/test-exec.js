@@ -1,9 +1,9 @@
 /**
- * Mocha unit tests for user module. Note that this file does not require mocha.
+ * Mocha unit tests for exec module. Note that this file does not require mocha.
  * Asserts provided via the chai framework. All test should return Promises.
  *
  * @file test-exec.js
- * @see module:models/user
+ * @see module:models/exec
  */
 "use strict";
 

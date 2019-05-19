@@ -16,6 +16,8 @@ const response = source("models/responses");
 const Error = response.Error;
 const PagingObject = response.PagingObject;
 
+const middleware = source("middleware");
+const requireHeaders = middleware.requireHeaders;
 
 const mongoose = require("mongoose");
 const ValidationError = mongoose.Error.ValidationError;
@@ -143,7 +145,10 @@ r.route("/")
  * @route {POST} /api/v1/execs
  * @authentication either a JWT token or an existing session.
  */
-.post(function(req, res, next) {
+.post(requireHeaders([{
+    key: "Content-Type",
+    value: "application/json",
+}]), function(req, res, next) {
 
     // if the body is not an array, send bad request
     if (!Array.isArray(req.body)) {
@@ -207,7 +212,10 @@ r.route("/")
  * @route {PATCH} /api/v1/execs
  * @authentication either a JWT token or an existing session.
  */
-.patch(function(req, res, next) {
+.patch(requireHeaders([{
+    key: "Content-Type",
+    value: "application/json",
+}]), function(req, res, next) {
     // if the body is not an array, send bad request
     if (!Array.isArray(req.body)) {
         return next(Error.BadRequest("The request is not an array"));
@@ -284,7 +292,7 @@ r.route("/")
     });
 });
 
-r.route("/:execId")
+r.route("/:execId([0-9a-fA-F]{24})")
 /**
  * Delete an exec
  * @name delete exec
