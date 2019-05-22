@@ -7,6 +7,7 @@
 
 const express = require("express");
 const source = require("rfr");
+const Rob = source("models/roboticon");
 
 const statusCodes = require("http-status-codes");
 const logger = source("logger");
@@ -59,7 +60,7 @@ r.route("/:year([0-9]{4})/:challengeNum([0-9]+)")
  * @routeparams {number} :challengeNum - the challenge number for that year, must be a number
  */
 .delete(function(req, res) {
-    res.status(501).json({status: 501, message: "Not Implemented", });
+    res.status(501).json({status: 501, message: "to be implemented", });
 });
 
 module.exports = r;

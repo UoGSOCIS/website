@@ -17,6 +17,7 @@ const assert = chai.assert;
 
 const app = source("server");
 const logger = source("logger");
+const Rob = source("models/roboticon");
 
 const statusCodes = require("http-status-codes");
 
