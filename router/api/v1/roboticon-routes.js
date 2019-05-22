@@ -6,6 +6,18 @@
 "use strict";
 
 const express = require("express");
+const source = require("rfr");
+
+const statusCodes = require("http-status-codes");
+const logger = source("logger");
+
+const errors = source("models/error");
+const response = source("models/responses");
+const Error = response.Error;
+const PagingObject = response.PagingObject;
+
+const mongoose = require("mongoose");
+const ValidationError = mongoose.Error.ValidationError;
 
 /**
  * r is the express Router that sets the roboticon-related routes.
@@ -37,6 +49,7 @@ r.route("/:year([0-9]{4})/:challengeNum([0-9]+)")
 .patch(function(req, res) {
     res.status(501).json({status: 501, message: "Not Implemented", });
 })
+
 /**
  * Delete a challenge
  * @name delete a challenge
