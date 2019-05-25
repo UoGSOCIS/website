@@ -30,3 +30,15 @@ const config = source("config");
 
 chai.use(asPromised);
 
+suite("APIv1 roboticon routes", function() {
+
+    let userToken;
+
+    suiteSetup(function() {
+
+    });
+
+    suite("POST api/v1/roboticon", function() {
+        
+    });
+});
