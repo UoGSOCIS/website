@@ -7,7 +7,7 @@
 
 const express = require("express");
 const source = require("rfr");
-const Rob = source("models/roboticon");
+const Challenge = source("models/roboticon");
 
 const statusCodes = require("http-status-codes");
 const logger = source("logger");
@@ -15,7 +15,7 @@ const logger = source("logger");
 const errors = source("models/error");
 const response = source("models/responses");
 const Error = response.Error;
-const PagingObject = response.PagingObject;
+const requireHeaders = middleware.requireHeaders;
 
 const mongoose = require("mongoose");
 const ValidationError = mongoose.Error.ValidationError;
@@ -75,57 +75,30 @@ r.route("/")
  * @route {POST} /api/v1/roboticon
  * @authentication either a JWT token or an existing session.
  */
-.post(function(req, res) {
+.post(requireHeaders([{
+    key: "Content-Type",
+    value: "application/json",
+}]), function(req, res) {
 
-    // if the body is not an array, send bad request
-    if (!Array.isArray(req.body)) {
-        return next(Error.BadRequest("The request is not an array"));
+    if (!String.isString(req.body.challenge)) {
+        return next(Error.BadRequest("challenge is not a valid string"));
     }
 
-    let robToSave = [];
+    let challenge = new Challenge()
+    .setChallenge(req.body.challenge)
 
-    req.body.forEach((reqRob) => {
-
-        const robot = new Rob()
-        .setChallenge(reqRob.challenge)
-
-        robToSave.push(robot);
-
-    });
-
-    // validate the challenge
-    let validations = [];
-    robToSave.forEach((robot) => {
-        validations.push(Rob.isValid(robot));
-    });
-
-    Promise.all(validations)
-    .then((robots) => {
-        // if the challenge passes validation save it
-        let promises = [];
-
-        robots.forEach((robot) => {
-            promises.push(robot.save());
-        });
-
-        return Promise.all(promises);
-    })
-    .then((robots) => {
-
-        let created = [];
-        robots.forEach((robot) => {
-            created.push(robot.toApiV1());
-        });
-
-        res.status(statusCodes.CREATED).json(created);
+    return challenge.save()
+    .then((created) => {
+        res.status(statusCodes.CREATED).json(created.toApiV1());
     })
     .catch((err) => {
 
-        if (err instanceof errors.robot.InvalidFormatError
-        || err instanceof ValidationError) {
+        if (err instanceof errors.challenge.InvalidFormatError
+            || err instanceof ValidationError) {
             return next(Error.BadRequest(err.message));
         }
 
+        logger.error("Fatal error", err);
         next(err);
     });
 });
