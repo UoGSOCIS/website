@@ -16,3 +16,5 @@ out/*
 
 *.rsa
 *.pem
+
+**/.DS_Store
