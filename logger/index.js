@@ -77,8 +77,14 @@ if (mode === "production") {
 }
 
 function shortPath(path) {
-    path.replace("\\", "/");
-    const parts = path.split("/");
+    let parts;
+
+    if (process.platform === "win32") {
+        path.slice(3).split("\\");
+    } else {
+        parts = path.split("/");
+    }
+
     const file = parts.pop();
     let shortPath = parts.reduce((newPath, part) => {
         return newPath + part[0] + "/";
