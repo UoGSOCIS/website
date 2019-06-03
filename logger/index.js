@@ -80,16 +80,16 @@ function shortPath(path) {
     let parts;
 
     if (process.platform === "win32") {
-        path.slice(3).split("\\");
+        parts = path.split("\\");
     } else {
         parts = path.split("/");
     }
 
     const file = parts.pop();
     let shortPath = parts.reduce((newPath, part) => {
-        return newPath + part[0] + "/";
+        return newPath + "/" + part[0] ;
     });
-    return shortPath + file;
+    return shortPath + "/" + file;
 }
 
 function parseStackFrame(err, frameOffset) {
@@ -102,11 +102,25 @@ function parseStackFrame(err, frameOffset) {
         // if error raised from a function
         func = frame.split(" ")[5];
         func = func.includes("anonymous") ? "??" : func;
-        [file, line] = frame.split("(")[1].split(":");
+
+        let path = frame.split("(")[1];
+
+        if (process.platform === "win32") {
+            path = path.slice(3);
+        }
+
+        [file, line] = path.split(":");
     } else {
         // if error not raised from a function
         func = "??";
-        [file, line] = frame.split(" ")[5].split(":");
+
+        let path = frame.split(" ")[5];
+
+        if (process.platform === "win32") {
+            path = path.slice(3);
+        }
+
+        [file, line] = path.split(":");
     }
     return `${new Date().toISOString()} at (${shortPath(file)}:${line}#${func})`;
 }
