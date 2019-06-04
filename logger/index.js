@@ -87,7 +87,7 @@ function shortPath(path) {
 
     const file = parts.pop();
     let shortPath = parts.reduce((newPath, part) => {
-        return newPath + "/" + part[0] ;
+        return newPath + "/" + part[0];
     });
     return shortPath + "/" + file;
 }
