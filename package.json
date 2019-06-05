@@ -5,7 +5,7 @@
   "homepage": "https://socis.ca",
   "scripts": {
     "start": "nodemon start server.js",
-    "test": "NODE_ENV=test mocha --exit",
+    "test": "cross-env NODE_ENV=test mocha --exit --timeout 5000",
     "coverage": "nyc --reporter=lcov --reporter=text npm test --branches=0 --functions=0 --lines=0 --statements=0 --clean",
     "lint": "npm run eslint && npm run stylelint",
     "lint-fix": "npm run eslint-fix && npm run stylelint-fix",
@@ -48,6 +48,7 @@
   "devDependencies": {
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
+    "cross-env": "^5.2.0",
     "eslint": "^5.16.0",
     "mocha": "^6.1.4",
     "nyc": "^14.0.0",
