@@ -14,6 +14,7 @@ const request = require("supertest");
 const chai = require("chai");
 const asPromised = require("chai-as-promised");
 const assert = chai.assert;
+//const fuzzer = require("fuzzer");
 
 const app = source("server");
 const logger = source("logger");
@@ -39,6 +40,6 @@ suite("APIv1 roboticon routes", function() {
     });
 
     suite("POST api/v1/roboticon", function() {
-        
+
     });
 });

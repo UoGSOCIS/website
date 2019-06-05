@@ -8,7 +8,7 @@ This document describes the routes to create, update, delete and list the roboti
 
 | Implemented | HTTP Method | Endpoint | Description |
 | ----- | ----- | ---- | ---- |
-| ✘ | POST | [`/api/v1/roboticon`](#new-challenge) | Create a new Roboticon Challenge |
+| ✓ | POST | [`/api/v1/roboticon`](#new-challenge) | Create a new Roboticon Challenge |
 | ✘ | PATCH | [`/api/v1/roboticon/:year/:challengeNum`](#update-challenge) | This is used to update a single challenge|
 | ✘ | DELETE | [`/api/v1/roboticon/:year/:challengeNum`](#delete-challenge) | This will delete a challenge |
 

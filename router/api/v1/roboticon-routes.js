@@ -80,12 +80,22 @@ r.route("/")
     value: "application/json",
 }]), function(req, res) {
 
-    if (!String.isString(req.body.challenge)) {
-        return next(Error.BadRequest("challenge is not a valid string"));
+    if (!validator.isInteger(req.body.year)) {
+        return next(Error.BadRequest("Year is not an integer"));
+    }
+    if (!validator.isInteger(req.body.challenge_number)) {
+        return next(Error.BadRequest("challenge number is not an integer"));
     }
 
     let challenge = new Challenge()
-    .setChallenge(req.body.challenge)
+    .setYear(req.body.year)
+    .setChallenge_number(req.body.challenge_number)
+    .setDescription(req.body.description)
+    .setGoal(req.body.goal)
+    .setParameters(req.body.parameters)
+    .setPoints(req.body.points)
+    .setImage(req.body.image)
+    .setMap(req.body.map);
 
     return challenge.save()
     .then((created) => {
@@ -113,8 +123,69 @@ r.route("/:year([0-9]{4})/:challengeNum([0-9]+)")
  * @routeparams {number} :year - the year of the roboticon challenge, must be a 4 digit year
  * @routeparams {number} :challengeNum - the challenge number for that year, must be a number
  */
-.patch(function(req, res) {
-    res.status(501).json({status: 501, message: "Not Implemented", });
+.patch(requireHeaders([{
+    key: "Content-Type",
+    value: "application/json",
+}]), function(req, res) {
+
+    const update = req.body;
+
+    // validations
+    if (!validator.isInteger(update.year, true)) {
+        return next(Error.BadRequest(`year ${update.year} is not a valid year`));
+    }
+    if (!validator.isInteger(update.challenge_number, true)) {
+        return next(Error.BadRequest(`challenge_number ${update.challenge_number} is not a valid challenge number`));
+    }
+
+    Challenge.getById(req.params.challengeId)
+    .then((challenge) => {
+        
+        if(update.description) {
+            challenge.setDescription(update.description);
+        }
+
+        if(update.goal) {
+            challenge.setGoal(update.goal);
+        }
+
+        if(update.parameters) {
+            challenge.setParameters(update.parameters);
+        }
+
+        if(update.points) {
+            challenge.setPoints(update.points);
+        }
+
+        if(update.image) {
+            challenge.setImage(update.image);
+        }
+
+        if(update.map) {
+            challenge.setMap(update.map);
+        }
+
+        return challenge.save();
+    })
+    .then((challenge) => {
+
+        res.status(statusCodes.OK).json(event.toApiV1());
+    })
+    .catch((err) => {
+
+        if (err instanceof errors.event.NotFoundError) {
+            return next(Error.NotFound(err.message));
+        }
+
+        if (err instanceof errors.event.InvalidFormatError
+            || err instanceof ValidationError) {
+            return next(Error.BadRequest(err.message));
+        }
+
+        logger.error("fatal error: ", err);
+        next(err);
+    });
+   
 })
 
 /**
