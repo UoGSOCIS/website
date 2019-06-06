@@ -12,7 +12,9 @@
     "eslint": "eslint authentication config logger middleware models router test validator server.js --max-warnings=0",
     "eslint-fix": "eslint authentication config logger middleware models router test validator server.js --fix",
     "stylelint": "stylelint public/css --max-warnings=0 --rd",
-    "stylelint-fix": "stylelint public/css --fix"
+    "stylelint-fix": "stylelint public/css --fix",
+    "build-css": "node-sass --include-path scss scss/main.scss public/css/main.css",
+    "watch-css": "nodemon -e scss -x \"npm run build-css\""
   },
   "contributors": [
     {
@@ -51,6 +53,7 @@
     "cross-env": "^5.2.0",
     "eslint": "^5.16.0",
     "mocha": "^6.1.4",
+    "node-sass": "^4.12.0",
     "nyc": "^14.0.0",
     "stylelint": "^9.10.1",
     "stylelint-config-standard": "^18.3.0",
