@@ -1,6 +1,9 @@
 /**
  * Authentication middleware functions for express routes.
  *
+ * This module Must be called after the deserialize middleware which is responsible for pulling the user out of the
+ * session or out of a Bearer token and adding it to the request object.
+ *
  * @author Marshall Asch <masch@uoguelph.ca>
  * @module middleware/routeauth
  */
@@ -42,7 +45,12 @@ function routeAuth(req, res, next) {
     }
 }
 
-
+/**
+ * This function will make sure that the user has valid permission to access the api or admin route
+ * @param user the user object
+ * @param path the path that the user is trying to request
+ * @returns {boolean|*} true if permission is allowed false otherwise
+ */
 function checkAdminPermissions(user, path) {
 
     if (!user) {
@@ -51,27 +59,26 @@ function checkAdminPermissions(user, path) {
 
     // the admin can do anything
     if (user.hasSuperAdminPermission()) {
-
         return true;
     }
 
     // check if the user has events permissions
-    if (/^\/api\/v1\/events\/.*/.test(path) === true || /^\/admin\/events(\/.*)?/.test(path) === true) {
+    if (/^\/api\/v1\/events(\/.*)?/.test(path) === true || /^\/admin\/events(\/.*)?/.test(path) === true) {
         return user.hasEventPermission();
     }
 
     // check if the user has exec permissions
-    if (/^\/api\/v1\/execs\/.*/.test(path) === true || /^\/admin\/exec(\/.*)?/.test(path) === true) {
+    if (/^\/api\/v1\/execs(\/.*)?/.test(path) === true || /^\/admin\/exec(\/.*)?/.test(path) === true) {
         return user.hasSuperAdminPermission();
     }
 
     // check if the user has newsletter permissions
-    if (/^\/api\/v1\/newsletter\/.*/.test(path) === true || /^\/admin\/newsletter(\/.*)?/.test(path) === true) {
+    if (/^\/api\/v1\/newsletter(\/.*)?/.test(path) === true || /^\/admin\/newsletter(\/.*)?/.test(path) === true) {
         return user.hasNewsletterPermission();
     }
 
     // check if the user has can edit items in the store permissions
-    if (/^\/api\/v1\/products\/.*/.test(path) === true || /^\/admin\/products(\/.*)?/.test(path) === true) {
+    if (/^\/api\/v1\/products(\/.*)?/.test(path) === true || /^\/admin\/products(\/.*)?/.test(path) === true) {
         return user.hasMerchantPermission();
     }
 

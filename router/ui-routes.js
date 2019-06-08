@@ -92,7 +92,7 @@ router.post("/authenticate", function(req, res, next) {
 
 router.get("/admin", function(req, res) {
 
-    res.render("admin", {whiteBackground: true,});
+    res.render("admin", {whiteBackground: true, });
 });
 
 

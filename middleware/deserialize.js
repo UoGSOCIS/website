@@ -1,3 +1,11 @@
+/**
+ * This middleware is responsible for deserializing the user object from the session or from the authentication token
+ * and adding it to the request.
+ *
+ * @author Marshall Asch <masch@uoguelph.ca>
+ * @module middleware/deserialize
+ */
+"use strict";
 
 const source = require("rfr");
 const users = source("models/user");
@@ -27,7 +35,7 @@ const deserialize = function (req, res, next) {
             return next();
         }
 
-        authentication.verify(token)
+        return authentication.verify(token)
         .then((decoded) => {
             return users.User.getByAccountId(decoded.id);
         })

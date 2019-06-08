@@ -9,6 +9,29 @@ const config = source("config");
 const path = require("path");
 
 
+const projectdir = path.resolve(__dirname, "..");
+const jwtPrivateKeyFile = path.join(projectdir, config.jwt.privateKey);
+const jwtPublicKeyFile = path.join(projectdir, config.jwt.publicKey);
+
+
+const jwtPrivate = fs.readFileSync(jwtPrivateKeyFile);
+const jwtPublic = fs.readFileSync(jwtPublicKeyFile);
+
+
+// check to see if a public key path was given for a mock key
+let mockGoogleKey = null;
+if (config.google.publicKey) {
+
+    const mockGoogleKeyFile = path.join(projectdir, config.google.publicKey);
+    try {
+        mockGoogleKey = fs.readFileSync(mockGoogleKeyFile);
+    } catch (err) {
+        if (err.code === "ENOENT") {
+            logger.error("File not found!");
+        }
+    }
+}
+
 /**
  * This will verify that the token has been signed using the correct certificate, that the iss, exp, iat, aud, hd
  * claims are valid.
@@ -19,30 +42,18 @@ const path = require("path");
  */
 function verify(token) {
 
-    // check to see if a public key path was given
-    let pubKey = null;
-    if (config.jwt.publicKey) {
-
-        try {
-            const projectdir = path.resolve(__dirname, "..");
-            const keyFile = path.join(projectdir, config.jwt.publicKey);
-
-            pubKey = fs.readFileSync(keyFile);
-        } catch (err) {
-            if (err.code === "ENOENT") {
-                logger.error("File not found!");
-            }
-        }
-    }
-
-
     return new Promise((resolve, reject) => {
-        jwt.verify(token, pubKey, {
+
+        if (!jwtPublic) {
+            logger.error(`public key "${config.jwt.publicKey}" not found!`);
+            return reject(new Error("No public key file was given"));
+        }
+
+        jwt.verify(token, jwtPublic, {
             algorithms: ["RS256"],
             audience: config.jwt.aud,
             issuer: config.jwt.iss,
             ignoreExpiration: false,
-            maxAge: "1d",
         }, (err, decoded) => {
 
             if (err) {
@@ -78,23 +89,7 @@ function verifyGoogle(token) {
         });
     }
 
-    // check to see if a public key path was given
-    let pubKey = null;
-    if (config.google.publicKey) {
-
-        try {
-            const projectdir = path.resolve(__dirname, "..");
-            const keyFile = path.join(projectdir, config.google.publicKey);
-
-            pubKey = fs.readFileSync(keyFile);
-        } catch (err) {
-            if (err.code === "ENOENT") {
-                logger.error("File not found!");
-            }
-        }
-    }
-
-    const cert = pubKey || getKey;
+    const cert = mockGoogleKey || getKey;
 
 
     return new Promise((resolve, reject) => {
@@ -126,25 +121,13 @@ function sign(payload) {
 
     return new Promise((resolve, reject) => {
 
-        if (!config.jwt.privateKey) {
+        if (!jwtPrivate) {
+            logger.error(`private key "${config.jwt.privateKey}" not found!`);
             return reject(new Error("No private key file was given"));
         }
 
-        let privateKey;
-        try {
-            const projectdir = path.resolve(__dirname, "..");
-            const keyFile = path.join(projectdir, config.jwt.privateKey);
-
-            privateKey = fs.readFileSync(keyFile);
-        } catch (err) {
-            if (err.code === "ENOENT") {
-                logger.log("File not found!");
-            }
-            reject(err);
-        }
-
         // turn it into a promise
-        return jwt.sign(payload, privateKey, {
+        return jwt.sign(payload, jwtPrivate, {
             algorithm: "RS256",
             expiresIn: "1h",
             audience: config.jwt.aud,
@@ -159,7 +142,6 @@ function sign(payload) {
         });
     });
 }
-
 
 module.exports = {
     sign: sign,

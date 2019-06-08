@@ -59,5 +59,5 @@ class InvalidPermissionsError extends Error {
 module.exports = {
     NotFoundError,
     InvalidFormatError,
-    InvalidPermissionsError
+    InvalidPermissionsError,
 };
