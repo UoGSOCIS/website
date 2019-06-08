@@ -19,22 +19,6 @@ const path = require("path");
  */
 function verify(token) {
 
-
-    // Verify using getKey callback
-    // Example uses https://github.com/auth0/node-jwks-rsa as a way to fetch the keys.
-    const client = jwksClient({
-        cache: true,
-        rateLimit: true,
-        jwksUri: config.jwt.keyURL,
-    });
-
-    function getKey(header, callback){
-        client.getSigningKey(header.kid, function(err, key) {
-            var signingKey = key.publicKey || key.rsaPublicKey;
-            callback(null, signingKey);
-        });
-    }
-
     // check to see if a public key path was given
     let pubKey = null;
     if (config.jwt.publicKey) {
@@ -51,23 +35,78 @@ function verify(token) {
         }
     }
 
+
+    return new Promise((resolve, reject) => {
+        jwt.verify(token, pubKey, {
+            algorithms: ["RS256"],
+            audience: config.jwt.aud,
+            issuer: config.jwt.iss,
+            ignoreExpiration: false,
+            maxAge: "1d",
+        }, (err, decoded) => {
+
+            if (err) {
+                return reject(err);
+            }
+            resolve(decoded);
+        });
+    });
+}
+
+/**
+ * This will verify that the token has been signed using the correct certificate, that the iss, exp, iat, aud
+ * claims are valid.
+ *
+ * @param token the JWT token to validate
+ * @returns {Promise} resolves the decoded payload on success
+ *                    rejects with an error if it is not valid
+ */
+function verifyGoogle(token) {
+
+    // Verify using getKey callback
+    // Example uses https://github.com/auth0/node-jwks-rsa as a way to fetch the keys.
+    const client = jwksClient({
+        cache: true,
+        rateLimit: true,
+        jwksUri: config.google.keyURL,
+    });
+
+    function getKey(header, callback){
+        client.getSigningKey(header.kid, function(err, key) {
+            const signingKey = key.publicKey || key.rsaPublicKey;
+            callback(null, signingKey);
+        });
+    }
+
+    // check to see if a public key path was given
+    let pubKey = null;
+    if (config.google.publicKey) {
+
+        try {
+            const projectdir = path.resolve(__dirname, "..");
+            const keyFile = path.join(projectdir, config.google.publicKey);
+
+            pubKey = fs.readFileSync(keyFile);
+        } catch (err) {
+            if (err.code === "ENOENT") {
+                logger.error("File not found!");
+            }
+        }
+    }
+
     const cert = pubKey || getKey;
 
 
     return new Promise((resolve, reject) => {
         jwt.verify(token, cert, {
             algorithms: ["RS256"],
-            audience: config.jwt.aud,
-            issuer: config.jwt.iss,
-            ignoreExpiration: true,
+            audience: config.google.aud,
+            issuer: config.google.iss,
+            ignoreExpiration: false,
         }, (err, decoded) => {
 
             if (err) {
                 return reject(err);
-            }
-
-            if (!decoded.hd || decoded.hd !== "socis.ca") {
-                reject(new Error("Token is not for the correct domain"));
             }
 
             resolve(decoded);
@@ -105,7 +144,13 @@ function sign(payload) {
         }
 
         // turn it into a promise
-        return jwt.sign(payload, privateKey, { algorithm: "RS256", }, (err, token) => {
+        return jwt.sign(payload, privateKey, {
+            algorithm: "RS256",
+            expiresIn: "1h",
+            audience: config.jwt.aud,
+            issuer: config.jwt.iss,
+
+        }, (err, token) => {
             if (token) {
                 return resolve(token);
             }
@@ -119,4 +164,5 @@ function sign(payload) {
 module.exports = {
     sign: sign,
     verify: verify,
+    verifyGoogle: verifyGoogle,
 };

@@ -15,10 +15,9 @@ const Permission = {
     NONE:        0b000000,
     EVENTS:      0b000001,
     SELLER:      0b000010,
-    MERCHANT:    0b000100,
-    ADMIN:       0b001000,
-    SUPER_ADMIN: 0b010000,
-    ADMIN_MASK:  0b001111,      // this is used by the admin when setting permissions
+    NEWSLETTER:  0b000100,
+    MERCHANT:    0b001000,
+    ADMIN:       0b010000,
 };
 Object.freeze(Permission);
 
@@ -69,21 +68,33 @@ class User {
         return this;
     }
 
-    isSuperAdmin() {
-        return (this.permissions & Permission.SUPER_ADMIN) === Permission.SUPER_ADMIN;
+    hasAdminPermission() {
+        return this.permissions !== Permission.NONE;
     }
 
-    isAdmin() {
+    hasSuperAdminPermission() {
         return (this.permissions & Permission.ADMIN) === Permission.ADMIN;
     }
 
-    isMerchant() {
-        return this.isSuperAdmin() || (this.permissions & Permission.ADMIN) === Permission.ADMIN;
+    hasMerchantPermission() {
+        return this.hasSuperAdminPermission() || (this.permissions & Permission.MERCHANT) === Permission.MERCHANT;
+    }
+
+    hasEventPermission() {
+        return this.hasSuperAdminPermission() || (this.permissions & Permission.EVENTS) === Permission.EVENTS;
+    }
+
+    hasNewsletterPermission() {
+        return this.hasSuperAdminPermission() || (this.permissions & Permission.NEWSLETTER) === Permission.NEWSLETTER;
+    }
+
+    hasSellerPermission() {
+        return this.hasSuperAdminPermission() || (this.permissions & Permission.SELLER) === Permission.SELLER;
     }
 
 
     static isValid(user) {
-        let err = new errors.event.InvalidFormatError();
+        let err = new errors.user.InvalidFormatError();
 
 
         if (typeof user.name !== "string") {
@@ -106,7 +117,7 @@ class User {
 
     static getByAccountId(id) {
 
-        return UserModel.find({accountId: id, }).then((found) => {
+        return UserModel.findOne({accountId: id, }).then((found) => {
             if (!found) {
                 const err = new errors.user.NotFoundError(`User ${id} was not found.`);
                 return Promise.reject(err);
@@ -148,15 +159,16 @@ class User {
 
     toApiV1() {
         return {
-            id: this.id,
-            start_time: this.startTime.toISOString(),
-            end_time: this.endTime.toISOString(),
-            location: this.location,
-            title: this.title,
-            description: this.description,
-            tags: this.tags,
+            id: this.accountId,
+            name: this.name,
+            email: this.email,
+            permissions: this.permissions,
+            created_at: this.createdAt,
         };
     }
 }
 
-module.exports = Event;
+module.exports = {
+    User: User,
+    Permission: Permission,
+};

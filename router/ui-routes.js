@@ -15,6 +15,13 @@ const numToWords = require("number-to-words");
 
 const authentication = source("authentication");
 const Exec = source("models/exec");
+const users = source("models/user");
+
+const response = source("models/responses");
+const Error = response.Error;
+
+const errors = source("models/error");
+
 const Challenge = source("models/roboticon");
 const myMarked = require("marked");
 
@@ -40,13 +47,42 @@ router.get("/events", function(req, res) {
 
 router.post("/authenticate", function(req, res, next) {
 
-    authentication.verify(req.body.token)
+    authentication.verifyGoogle(req.body.token)
     .then((decoded) => {
-        // probably going to want to create our own user account data here
-        req.session.token = decoded;
 
         const userId = decoded.sub;
-        res.send(userId);
+        //res.send(userId);
+
+        return users.User.getByAccountId(userId)
+        .catch((err) => {
+
+            // then the user does not yet exist in the db ans should be created
+            if (err instanceof errors.user.NotFoundError) {
+
+                // check if the user is should be an admin
+                let permission = users.Permission.NONE;
+                if (decoded.email === "admin@socis.ca" || decoded.email === "president@socis.ca") {
+                    permission = users.Permission.ADMIN;
+                }
+
+                const user = new users.User()
+                .setAccountId(userId)
+                .setName(decoded.name)
+                .setEmail(decoded.email)
+                .setPermissions(permission);
+
+                return user.save();
+            }
+        });
+    })
+    .then((user) => {
+        // the user is ether the one found on the db or the new one that was just created
+        req.session.user = user.toApiV1();
+
+        return authentication.sign(user.toApiV1());
+    })
+    .then((token) => {
+        res.send(token);
     })
     .catch((err) => {
         next(Error.Unauthorized(err.message));
@@ -56,24 +92,10 @@ router.post("/authenticate", function(req, res, next) {
 
 router.get("/admin", function(req, res) {
 
-    // note this is temporary contents
-    const date = new Date();
-    var curYear = date.getFullYear() - (date.getMonth() < 4 ? 1 : 0);
-
-    Exec.getExecForYear(curYear)
-    .then((exec) => {
-
-        res.render("admin_exec", {
-            whiteBackground: true,
-            currentExec: exec,
-        });
-    })
-    .catch((err) => {
-        return res.render("error", {whiteBackground: true, message: err.message, status: 500, });
-    });
+    res.render("admin", {whiteBackground: true,});
 });
 
-/*
+
 router.get("/admin/exec", function(req, res) {
 
 
@@ -92,7 +114,7 @@ router.get("/admin/exec", function(req, res) {
         return res.render("error", {whiteBackground: true, message: err.message, status: 500, });
     });
 });
-
+/*
 
 router.post("/admin/exec", function(req, res) {
 

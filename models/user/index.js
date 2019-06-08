@@ -2,4 +2,7 @@
 
 const user = require("./user.js");
 
-module.exports = user;
+module.exports = {
+    User: user.User,
+    Permission: user.Permission,
+};
