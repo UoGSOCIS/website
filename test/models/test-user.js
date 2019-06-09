@@ -248,14 +248,7 @@ suite("User", function() {
                 return;
             }
 
-            return connection.db.collections().then((collections) => {
-                let drops = [];
-                collections.forEach((collection) => {
-                    drops.push(collection.deleteMany({}));
-                });
-
-                return Promise.all(drops);
-            });
+            return connection.db.dropCollection("users", () => {});
         });
     });
 
@@ -313,14 +306,7 @@ suite("User", function() {
                 return;
             }
 
-            return connection.db.collections().then((collections) => {
-                let drops = [];
-                collections.forEach((collection) => {
-                    drops.push(collection.deleteMany({}));
-                });
-
-                return Promise.all(drops);
-            });
+            return connection.db.dropCollection("users", () => {});
         });
     });
 
@@ -393,14 +379,7 @@ suite("User", function() {
                 return;
             }
 
-            return connection.db.collections().then((collections) => {
-                let drops = [];
-                collections.forEach((collection) => {
-                    drops.push(collection.deleteMany({}));
-                });
-
-                return Promise.all(drops);
-            });
+            return connection.db.dropCollection("users", () => {});
         });
     });
 

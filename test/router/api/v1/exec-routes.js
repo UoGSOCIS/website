@@ -36,7 +36,7 @@ suite("APIv1 exec routes", function() {
     suiteSetup(function() {
 
         const newUser = new users.User()
-        .setAccountId("896tgu8yfh")
+        .setAccountId("886689043543234t")
         .setName("Test User")
         .setEmail("execUser@example.com")
         .setPermissions(users.Permission.ADMIN);
@@ -235,7 +235,7 @@ suite("APIv1 exec routes", function() {
 
         // clear the execs DB
         suiteTeardown(function() {
-            connection.db.dropCollection("execs", () => {});
+            return connection.db.dropCollection("execs", () => {});
         });
     });
 
@@ -407,7 +407,7 @@ suite("APIv1 exec routes", function() {
 
         // clear the execs DB
         suiteTeardown(function() {
-            connection.db.dropCollection("execs", () => {});
+            return connection.db.dropCollection("execs", () => {});
         });
     });
 
@@ -651,7 +651,7 @@ suite("APIv1 exec routes", function() {
         // clear the execs DB
         suiteTeardown(function() {
 
-            connection.db.dropCollection("execs", () => {});
+            return connection.db.dropCollection("execs", () => {});
         });
     });
 
@@ -748,12 +748,12 @@ suite("APIv1 exec routes", function() {
 
         // clear the execs DB
         suiteTeardown(function() {
-            connection.db.dropCollection("execs", () => {});
+            return connection.db.dropCollection("execs", () => {});
         });
     });
 
     // clear the users DB
     suiteTeardown(function() {
-        connection.db.dropCollection("users", () => {});
+        return connection.db.dropCollection("users", () => {});
     });
 });

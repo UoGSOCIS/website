@@ -162,13 +162,6 @@ suite("middleware/deserialize", function() {
 
     // clear the DB
     suiteTeardown(function() {
-        return connection.db.collections().then((collections) => {
-            let drops = [];
-            collections.forEach((collection) => {
-                drops.push(collection.deleteMany({}));
-            });
-
-            return Promise.all(drops);
-        });
+        return connection.db.dropCollection("users", () => {});
     });
 });

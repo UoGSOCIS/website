@@ -37,9 +37,9 @@ suite("APIv1 event routes", function() {
     suiteSetup(function() {
 
         const newUser = new users.User()
-        .setAccountId("896tgu8yfh")
+        .setAccountId("435678uhgr4567ui")
         .setName("Test User")
-        .setEmail("execUser@example.com")
+        .setEmail("eventUser@example.com")
         .setPermissions(users.Permission.ADMIN);
 
         return newUser.save()
@@ -156,7 +156,7 @@ suite("APIv1 event routes", function() {
 
         // clear the events DB
         suiteTeardown(function() {
-            connection.db.dropCollection("events", () => {});
+            return connection.db.dropCollection("events", () => {});
         });
     });
 
@@ -332,7 +332,7 @@ suite("APIv1 event routes", function() {
 
         // clear the events DB
         suiteTeardown(function() {
-            connection.db.dropCollection("events", () => {});
+            return connection.db.dropCollection("events", () => {});
         });
     });
 
@@ -444,12 +444,12 @@ suite("APIv1 event routes", function() {
 
         // clear the events DB
         suiteTeardown(function() {
-            connection.db.dropCollection("events", () => {});
+            return connection.db.dropCollection("events", () => {});
         });
     });
 
     // clear the users DB
     suiteTeardown(function() {
-        connection.db.dropCollection("users", () => {});
+        return connection.db.dropCollection("users", () => {});
     });
 });
