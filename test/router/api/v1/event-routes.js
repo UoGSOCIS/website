@@ -25,7 +25,6 @@ const connection = source("test/connection");
 const check = source("test/router/api/assert");
 
 const authentication = source("authentication");
-const config = source("config");
 const users = source("models/user");
 
 
@@ -33,7 +32,6 @@ chai.use(asPromised);
 
 suite("APIv1 event routes", function() {
 
-    let validUser;
     let validToken;
 
     suiteSetup(function() {
@@ -46,7 +44,6 @@ suite("APIv1 event routes", function() {
 
         return newUser.save()
         .then((saved) => {
-            validUser = saved;
             return authentication.sign(saved.toApiV1());
         })
         .then((token) => {
@@ -159,7 +156,7 @@ suite("APIv1 event routes", function() {
 
         // clear the events DB
         suiteTeardown(function() {
-            connection.db.dropCollection("events", function (err, result) {});
+            connection.db.dropCollection("events", () => {});
         });
     });
 
@@ -335,7 +332,7 @@ suite("APIv1 event routes", function() {
 
         // clear the events DB
         suiteTeardown(function() {
-            connection.db.dropCollection("events", function (err, result) {});
+            connection.db.dropCollection("events", () => {});
         });
     });
 
@@ -447,12 +444,12 @@ suite("APIv1 event routes", function() {
 
         // clear the events DB
         suiteTeardown(function() {
-            connection.db.dropCollection("events", function (err, result) {});
+            connection.db.dropCollection("events", () => {});
         });
     });
 
     // clear the users DB
     suiteTeardown(function() {
-        connection.db.dropCollection("users", function (err, result) {});
+        connection.db.dropCollection("users", () => {});
     });
 });

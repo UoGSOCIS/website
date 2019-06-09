@@ -26,14 +26,11 @@ const connection = source("test/connection");
 const check = source("test/router/api/assert");
 
 const authentication = source("authentication");
-const config = source("config");
-
 
 chai.use(asPromised);
 
 suite("APIv1 exec routes", function() {
 
-    let validUser;
     let validToken;
 
     suiteSetup(function() {
@@ -46,7 +43,6 @@ suite("APIv1 exec routes", function() {
 
         return newUser.save()
         .then((saved) => {
-            validUser = saved;
             return authentication.sign(saved.toApiV1());
         })
         .then((token) => {
@@ -239,7 +235,7 @@ suite("APIv1 exec routes", function() {
 
         // clear the execs DB
         suiteTeardown(function() {
-            connection.db.dropCollection("execs", function (err, result) {});
+            connection.db.dropCollection("execs", () => {});
         });
     });
 
@@ -411,7 +407,7 @@ suite("APIv1 exec routes", function() {
 
         // clear the execs DB
         suiteTeardown(function() {
-            connection.db.dropCollection("execs", function (err, result) {});
+            connection.db.dropCollection("execs", () => {});
         });
     });
 
@@ -655,7 +651,7 @@ suite("APIv1 exec routes", function() {
         // clear the execs DB
         suiteTeardown(function() {
 
-            connection.db.dropCollection("execs", function (err, result) {});
+            connection.db.dropCollection("execs", () => {});
         });
     });
 
@@ -752,12 +748,12 @@ suite("APIv1 exec routes", function() {
 
         // clear the execs DB
         suiteTeardown(function() {
-            connection.db.dropCollection("execs", function (err, result) {});
+            connection.db.dropCollection("execs", () => {});
         });
     });
 
     // clear the users DB
     suiteTeardown(function() {
-        connection.db.dropCollection("users", function (err, result) {});
+        connection.db.dropCollection("users", () => {});
     });
 });
