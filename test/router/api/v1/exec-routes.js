@@ -235,7 +235,17 @@ suite("APIv1 exec routes", function() {
 
         // clear the execs DB
         suiteTeardown(function() {
-            return connection.db.dropCollection("execs", () => {});
+            return new Promise((resolve, reject) => {
+
+                return connection.db.dropCollection("execs", (err, result) => {
+
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(result);
+                    }
+                });
+            });
         });
     });
 
@@ -407,7 +417,17 @@ suite("APIv1 exec routes", function() {
 
         // clear the execs DB
         suiteTeardown(function() {
-            return connection.db.dropCollection("execs", () => {});
+            return new Promise((resolve, reject) => {
+
+                return connection.db.dropCollection("execs", (err, result) => {
+
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(result);
+                    }
+                });
+            });
         });
     });
 
@@ -651,7 +671,17 @@ suite("APIv1 exec routes", function() {
         // clear the execs DB
         suiteTeardown(function() {
 
-            return connection.db.dropCollection("execs", () => {});
+            return new Promise((resolve, reject) => {
+
+                return connection.db.dropCollection("execs", (err, result) => {
+
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(result);
+                    }
+                });
+            });
         });
     });
 
@@ -748,12 +778,33 @@ suite("APIv1 exec routes", function() {
 
         // clear the execs DB
         suiteTeardown(function() {
-            return connection.db.dropCollection("execs", () => {});
+
+            return new Promise((resolve, reject) => {
+
+                return connection.db.dropCollection("execs", (err, result) => {
+
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(result);
+                    }
+                });
+            });
         });
     });
 
     // clear the users DB
     suiteTeardown(function() {
-        return connection.db.dropCollection("users", () => {});
+        return new Promise((resolve, reject) => {
+
+            return connection.db.dropCollection("users", (err, result) => {
+
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(result);
+                }
+            });
+        });
     });
 });

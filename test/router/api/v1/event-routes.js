@@ -156,7 +156,17 @@ suite("APIv1 event routes", function() {
 
         // clear the events DB
         suiteTeardown(function() {
-            return connection.db.dropCollection("events", () => {});
+            return new Promise((resolve, reject) => {
+
+                return connection.db.dropCollection("events", (err, result) => {
+
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(result);
+                    }
+                });
+            });
         });
     });
 
@@ -332,7 +342,17 @@ suite("APIv1 event routes", function() {
 
         // clear the events DB
         suiteTeardown(function() {
-            return connection.db.dropCollection("events", () => {});
+            return new Promise((resolve, reject) => {
+
+                return connection.db.dropCollection("events", (err, result) => {
+
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(result);
+                    }
+                });
+            });
         });
     });
 
@@ -444,12 +464,32 @@ suite("APIv1 event routes", function() {
 
         // clear the events DB
         suiteTeardown(function() {
-            return connection.db.dropCollection("events", () => {});
+            return new Promise((resolve, reject) => {
+
+                return connection.db.dropCollection("events", (err, result) => {
+
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(result);
+                    }
+                });
+            });
         });
     });
 
     // clear the users DB
     suiteTeardown(function() {
-        return connection.db.dropCollection("users", () => {});
+        return new Promise((resolve, reject) => {
+
+            return connection.db.dropCollection("users", (err, result) => {
+
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(result);
+                }
+            });
+        });
     });
 });

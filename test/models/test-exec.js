@@ -177,12 +177,17 @@ suite("Exec", function() {
         });
 
         suiteTeardown(function() {
+            return new Promise((resolve, reject) => {
 
-            if (!connection.db) {
-                return;
-            }
+                return connection.db.dropCollection("execs", (err, result) => {
 
-            return connection.db.dropCollection("events", () => {});
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(result);
+                    }
+                });
+            });
         });
     });
 
@@ -224,7 +229,7 @@ suite("Exec", function() {
             .setYear(2008);
 
             // save the execs to the db
-            pres1.save()
+            return pres1.save()
             .then((exec) => {
                 pres1 = exec;
                 return admin1.save();
@@ -263,12 +268,17 @@ suite("Exec", function() {
         });
 
         suiteTeardown(function() {
+            return new Promise((resolve, reject) => {
 
-            if (!connection.db) {
-                return;
-            }
+                return connection.db.dropCollection("execs", (err, result) => {
 
-            return connection.db.dropCollection("execs", () => {});
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(result);
+                    }
+                });
+            });
         });
     });
 });

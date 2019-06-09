@@ -210,12 +210,17 @@ suite("Event", function() {
         });
 
         suiteTeardown(function() {
+            return new Promise((resolve, reject) => {
 
-            if (!connection.db) {
-                return;
-            }
+                return connection.db.dropCollection("events", (err, result) => {
 
-            return connection.db.dropCollection("events", () => {});
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(result);
+                    }
+                });
+            });
         });
     });
 
@@ -294,12 +299,17 @@ suite("Event", function() {
         });
 
         suiteTeardown(function() {
+            return new Promise((resolve, reject) => {
 
-            if (!connection.db) {
-                return;
-            }
+                return connection.db.dropCollection("events", (err, result) => {
 
-            return connection.db.dropCollection("events", () => {});
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(result);
+                    }
+                });
+            });
         });
     });
 
@@ -360,12 +370,17 @@ suite("Event", function() {
         });
 
         suiteTeardown(function() {
+            return new Promise((resolve, reject) => {
 
-            if (!connection.db) {
-                return;
-            }
+                return connection.db.dropCollection("events", (err, result) => {
 
-            return connection.db.dropCollection("events", () => {});
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(result);
+                    }
+                });
+            });
         });
     });
 

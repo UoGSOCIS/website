@@ -162,6 +162,16 @@ suite("middleware/deserialize", function() {
 
     // clear the DB
     suiteTeardown(function() {
-        return connection.db.dropCollection("users", () => {});
+        return new Promise((resolve, reject) => {
+
+            return connection.db.dropCollection("users", (err, result) => {
+
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(result);
+                }
+            });
+        });
     });
 });

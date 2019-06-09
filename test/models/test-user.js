@@ -244,11 +244,17 @@ suite("User", function() {
 
         suiteTeardown(function() {
 
-            if (!connection.db) {
-                return;
-            }
+            return new Promise((resolve, reject) => {
 
-            return connection.db.dropCollection("users", () => {});
+                return connection.db.dropCollection("users", (err, result) => {
+
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(result);
+                    }
+                });
+            });
         });
     });
 
@@ -302,11 +308,17 @@ suite("User", function() {
 
         suiteTeardown(function() {
 
-            if (!connection.db) {
-                return;
-            }
+            return new Promise((resolve, reject) => {
 
-            return connection.db.dropCollection("users", () => {});
+                return connection.db.dropCollection("users", (err, result) => {
+
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(result);
+                    }
+                });
+            });
         });
     });
 
@@ -375,11 +387,17 @@ suite("User", function() {
 
         suiteTeardown(function() {
 
-            if (!connection.db) {
-                return;
-            }
+            return new Promise((resolve, reject) => {
 
-            return connection.db.dropCollection("users", () => {});
+                return connection.db.dropCollection("users", (err, result) => {
+
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(result);
+                    }
+                });
+            });
         });
     });
 
