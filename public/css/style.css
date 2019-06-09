@@ -12,9 +12,3 @@ a {
 
 ol > li > ol { list-style-type: lower-alpha; }
 ol > li > ol > li > ol { list-style-type: lower-roman; }
-
-
-
-.exec {
-
-}

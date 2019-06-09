@@ -5,68 +5,69 @@
 
 
 
-<form>
-
-    <div class="form-group form-inline">
+<form class="container exec">
+    <div class="form-group form-inline padding-top-40">
         <label for="email">year:</label>
         <select name="year" id="year" class="form-control">
         </select>
 
         <label name="role" for="email">Role:</label>
         <select  name="role" id="role" onchange="changed(this)" class="form-control">
-            <option value="president">President</option>
-            <option value="vp-internal">VP Internal</option>
-            <option value="vp-external">VP External</option>
-            <option value="secretary">Secretary</option>
-            <option value="treasurer">Treasurer</option>
-            <option value="community">Community Liason</option>
-            <option value="admin">System Admin</option>
-            <option value="senior-rep">Senior Representative</option>
-            <option value="junior-rep">Junior Representative</option>
+            {{#each roles}}
+            <option value="{{this}}">{{this.name}}</option>
+            {{/each}}
         </select>
     </div>
-
-
-    <div class="form-group">
-        <label for="email">Email address:</label>
-        <input type="email" class="form-control" id="email">
-    </div>
-    <div class="form-group">
-        <label for="pwd">Name:</label>
-        <input type="name" class="form-control" id="name">
-    </div>
-    <button type="submit" class="btn btn-default">Submit</button>
 </form>
 
 
 
 
-<div>
+<div class="container">
     <h3>Current Exec Roster</h3>
 
     <table class="table table-striped">
         <thead>
         <tr>
-            <th scope="col">#</th>
-            <th class="col-sm-2" scope="col">Position</th>
-            <th class="col-sm-2" scope="col">Email</th>
-            <th scope="col">Name</th>
+            {{!-- <th scope="col">#</th> --}}
+            <th width="20%" scope="col">Position</th>
+            <th width="25%" scope="col">Email</th>
+            <th width="50%" scope="col">Name</th>
+            <th width="5%" scope="col">Action</th>
         </tr>
         </thead>
         <tbody>
         {{#each currentExec}}
             <tr>
-                <th scope="row">{{rank}}</th>
-                <td>{{role}}</td>
-                <td>{{email}}</td>
-                <td>{{name}}</td>
+                {{!-- <th scope="row">{{rank}}</th> --}}
+                <td class="padding-top-10">{{role}}</td>
+                <td><input type="text" class="form-control" value="{{email}}"></td>
+                <td><input type="text" class="form-control" value="{{name}}"></td>
+                <td>
+                    <div class="action-btn remove padding-top-5">
+                        <span class="fas fa-minus-circle"></span>
+                        <span>Remove</span>
+                    </div>
+                </td>
             </tr>
-        {{else}}
-            <tr><td>NO EXEC</td></tr>
         {{/each}}
-
+            <tr>
+                <td class="padding-top-10">
+                    <span id="newExecRole">{{selectedRole.name}}</span>
+                </td>
+                <td><input class="form-control" type="text"></td>
+                <td><input class="form-control" type="text"></td>
+                <td>
+                    <div class="action-btn add padding-top-5">
+                        <span class="fas fa-plus-circle"></span>
+                        <span>Add</span>
+                    </div>
+                </td>
+            </tr>
         </tbody>
     </table>
+
+    <button type="button" class="btn btn-save">Save</button>
 
 </div>
 

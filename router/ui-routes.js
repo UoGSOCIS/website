@@ -62,10 +62,51 @@ router.get("/admin", function(req, res) {
 
     Exec.getExecForYear(curYear)
     .then((exec) => {
-
         res.render("admin_exec", {
             whiteBackground: true,
-            currentExec: exec,
+            currentExec: [{role:"President", email:"rcalim@uoguelph.ca", name:"Rayshawn Calim"}],
+            roles: [
+                {
+                    name: "President",
+                    value: "president"
+                },
+                {
+                    name: "VP Internal",
+                    value: "vp-internal"
+                },
+                {
+                    name: "VP External",
+                    value: "vp-external"
+                },
+                {
+                    name: "Secretary",
+                    value: "secretary"
+                },
+                {
+                    name: "Treasurer",
+                    value: "treasurer"
+                },
+                {
+                    name: "Community Liason",
+                    value: "community"
+                },
+                {
+                    name: "System Admin",
+                    value: "admin"
+                },
+                {
+                    name: "Senior Representative",
+                    value: "senior-rep"
+                },
+                {
+                    name: "Junior Representative",
+                    value: "junior-rep"
+                }
+            ],
+            selectedRole: {
+                name: "President",
+                value: "president"
+            }
         });
     })
     .catch((err) => {
