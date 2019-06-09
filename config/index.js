@@ -90,5 +90,6 @@ module.exports = {
      * @return {Object} the new configuration loaded from the file
      */
     jwt: config.jwt,
+    google: config.google,
     configure: configure,
 };
