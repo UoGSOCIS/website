@@ -97,6 +97,11 @@ class User {
         let err = new errors.user.InvalidFormatError();
 
 
+        if (typeof user.accountId !== "string") {
+            err.message = `account id (${user.accountId}) is not a String.`;
+            return Promise.reject(err);
+        }
+
         if (typeof user.name !== "string") {
             err.message = `User name (${user.name}) is not a String.`;
             return Promise.reject(err);
