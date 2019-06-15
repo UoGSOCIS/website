@@ -18,6 +18,17 @@ const Exec = source("models/exec");
 const Challenge = source("models/roboticon");
 const myMarked = require("marked");
 
+const execRoles = [
+    {
+        name: "Senior Representative",
+        value: "senior-rep"
+    },
+    {
+        name: "Junior Representative",
+        value: "junior-rep"
+    }
+];
+
 myMarked.setOptions({
     renderer: new myMarked.Renderer(),
     gfm: true,
@@ -64,49 +75,8 @@ router.get("/admin", function(req, res) {
     .then((exec) => {
         res.render("admin_exec", {
             whiteBackground: true,
-            currentExec: [{role:"President", email:"rcalim@uoguelph.ca", name:"Rayshawn Calim"}],
-            roles: [
-                {
-                    name: "President",
-                    value: "president"
-                },
-                {
-                    name: "VP Internal",
-                    value: "vp-internal"
-                },
-                {
-                    name: "VP External",
-                    value: "vp-external"
-                },
-                {
-                    name: "Secretary",
-                    value: "secretary"
-                },
-                {
-                    name: "Treasurer",
-                    value: "treasurer"
-                },
-                {
-                    name: "Community Liason",
-                    value: "community"
-                },
-                {
-                    name: "System Admin",
-                    value: "admin"
-                },
-                {
-                    name: "Senior Representative",
-                    value: "senior-rep"
-                },
-                {
-                    name: "Junior Representative",
-                    value: "junior-rep"
-                }
-            ],
-            selectedRole: {
-                name: "President",
-                value: "president"
-            }
+            currentExec: exec,
+            roles: execRoles,
         });
     })
     .catch((err) => {
