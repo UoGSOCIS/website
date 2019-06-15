@@ -20,48 +20,38 @@ const app = source("server");
 const logger = source("logger");
 const Exec = source("models/exec");
 const statusCodes = require("http-status-codes");
+const users = source("models/user");
 
 const connection = source("test/connection");
 const check = source("test/router/api/assert");
 
 const authentication = source("authentication");
-const config = source("config");
-
 
 chai.use(asPromised);
 
 suite("APIv1 exec routes", function() {
 
-    let userToken;
+    let validToken;
 
     suiteSetup(function() {
 
-        const iat = Date.now();
-        const exp = iat + 5 * 60000;    // 5 min from now
+        const newUser = new users.User()
+        .setAccountId("886689043543234t")
+        .setName("Test User")
+        .setEmail("execUser@example.com")
+        .setPermissions(users.Permission.ADMIN);
 
-        return authentication.sign({
-            iss: config.jwt.iss[0],
-            azp: config.jwt.aud,
-            aud: config.jwt.aud,
-            sub: "1179434225147165448",
-            hd: "socis.ca",
-            email: "test_account@socis.ca",
-            email_verified: true,
-            at_hash: "2EB436643D1F1E733B8224FF2D56CB1F62CF5C55",
-            name: "This is a test run of sign",
-            picture: "https://images.pexels.com/photos/104827/cat-pet-animal-domestic-104827.jpeg",
-            given_name: "Test",
-            family_name: "User",
-            locale: "en",
-            iat: iat,
-            exp: exp,
+        return newUser.save()
+        .then((saved) => {
+            return authentication.sign(saved.toApiV1());
         })
         .then((token) => {
-            userToken = token;
+            validToken = token;
         })
         .catch((err) => {
             logger.error("Error creating user test token", err);
         });
+
     });
 
     suite("GET /api/v1/execs", function() {
@@ -245,13 +235,16 @@ suite("APIv1 exec routes", function() {
 
         // clear the execs DB
         suiteTeardown(function() {
-            return connection.db.collections().then((collections) => {
-                let drops = [];
-                collections.forEach((collection) => {
-                    drops.push(collection.deleteMany({}));
-                });
+            return new Promise((resolve, reject) => {
 
-                return Promise.all(drops);
+                return connection.db.dropCollection("execs", (err, result) => {
+
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(result);
+                    }
+                });
             });
         });
     });
@@ -262,7 +255,7 @@ suite("APIv1 exec routes", function() {
             return request(app)
             .post("/api/v1/execs")
             .set("Content-Type", "application/json")
-            .set("Authorization", `Bearer ${userToken}`)
+            .set("Authorization", `Bearer ${validToken}`)
             .send({
                 name: "test Exec",
                 email: "admin@socis.ca",
@@ -281,7 +274,7 @@ suite("APIv1 exec routes", function() {
             return request(app)
             .post("/api/v1/execs")
             .set("Content-Type", "application/json")
-            .set("Authorization", `Bearer ${userToken}`)
+            .set("Authorization", `Bearer ${validToken}`)
             .send([{
                 name: "test Exec",
                 email: "admin@socis.ca",
@@ -303,7 +296,7 @@ suite("APIv1 exec routes", function() {
             return request(app)
             .post("/api/v1/execs")
             .set("Content-Type", "x-www-form-urlencoded")
-            .set("Authorization", `Bearer ${userToken}`)
+            .set("Authorization", `Bearer ${validToken}`)
             .send("name=test user1")
             .send("email=user1@socis.ca")
             .send("order=2")
@@ -320,7 +313,7 @@ suite("APIv1 exec routes", function() {
             return request(app)
             .post("/api/v1/execs")
             .set("Content-Type", "application/json")
-            .set("Authorization", `Bearer ${userToken}`)
+            .set("Authorization", `Bearer ${validToken}`)
             .send([
                 {
                     name: "test Exec1",
@@ -365,7 +358,7 @@ suite("APIv1 exec routes", function() {
             return request(app)
             .post("/api/v1/execs")
             .set("Content-Type", "application/json")
-            .set("Authorization", `Bearer ${userToken}`)
+            .set("Authorization", `Bearer ${validToken}`)
             .send([
                 {
                     name: "test Exec1",
@@ -385,7 +378,7 @@ suite("APIv1 exec routes", function() {
             return request(app)
             .post("/api/v1/execs")
             .set("Content-Type", "application/json")
-            .set("Authorization", `Bearer ${userToken}`)
+            .set("Authorization", `Bearer ${validToken}`)
             .send([
                 {
                     name: "test Exec1",
@@ -408,7 +401,7 @@ suite("APIv1 exec routes", function() {
             return request(app)
             .post("/api/v1/execs")
             .set("Content-Type", "application/json")
-            .set("Authorization", `Bearer ${userToken}`)
+            .set("Authorization", `Bearer ${validToken}`)
             .send([
                 {
                     name: "test Exec1",
@@ -424,13 +417,16 @@ suite("APIv1 exec routes", function() {
 
         // clear the execs DB
         suiteTeardown(function() {
-            return connection.db.collections().then((collections) => {
-                let drops = [];
-                collections.forEach((collection) => {
-                    drops.push(collection.deleteMany({}));
-                });
+            return new Promise((resolve, reject) => {
 
-                return Promise.all(drops);
+                return connection.db.dropCollection("execs", (err, result) => {
+
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(result);
+                    }
+                });
             });
         });
     });
@@ -502,7 +498,7 @@ suite("APIv1 exec routes", function() {
             return request(app)
             .patch("/api/v1/execs")
             .set("Content-Type", "application/json")
-            .set("Authorization", `Bearer ${userToken}`)
+            .set("Authorization", `Bearer ${validToken}`)
             .send(update1)
             .expect(statusCodes.BAD_REQUEST)
             .then((res) => {
@@ -514,7 +510,7 @@ suite("APIv1 exec routes", function() {
             return request(app)
             .patch("/api/v1/execs")
             .set("Content-Type", "x-www-form-urlencoded")
-            .set("Authorization", `Bearer ${userToken}`)
+            .set("Authorization", `Bearer ${validToken}`)
             .send("id=5ccf449cd0c3a1ac66636b64")
             .send("name=test user1")
             .send("email=user1@socis.ca")
@@ -534,7 +530,7 @@ suite("APIv1 exec routes", function() {
             return request(app)
             .patch("/api/v1/execs")
             .set("Content-Type", "application/json")
-            .set("Authorization", `Bearer ${userToken}`)
+            .set("Authorization", `Bearer ${validToken}`)
             .send([update1])
             .expect(statusCodes.NOT_FOUND)
             .then((res) => {
@@ -549,7 +545,7 @@ suite("APIv1 exec routes", function() {
             return request(app)
             .patch("/api/v1/execs")
             .set("Content-Type", "application/json")
-            .set("Authorization", `Bearer ${userToken}`)
+            .set("Authorization", `Bearer ${validToken}`)
             .send([update1])
             .expect(statusCodes.BAD_REQUEST)
             .then((res) => {
@@ -581,7 +577,7 @@ suite("APIv1 exec routes", function() {
 
             return request(app)
             .patch("/api/v1/execs")
-            .set("Authorization", `Bearer ${userToken}`)
+            .set("Authorization", `Bearer ${validToken}`)
             .set("Content-Type", "application/json")
             .send([update1])
             .expect(statusCodes.OK)
@@ -609,7 +605,7 @@ suite("APIv1 exec routes", function() {
 
             return request(app)
             .patch("/api/v1/execs")
-            .set("Authorization", `Bearer ${userToken}`)
+            .set("Authorization", `Bearer ${validToken}`)
             .set("Content-Type", "application/json")
             .send([update1, update2])
             .expect(statusCodes.BAD_REQUEST)
@@ -655,7 +651,7 @@ suite("APIv1 exec routes", function() {
 
             return request(app)
             .patch("/api/v1/execs")
-            .set("Authorization", `Bearer ${userToken}`)
+            .set("Authorization", `Bearer ${validToken}`)
             .set("Content-Type", "application/json")
             .send([update1])
             .expect(statusCodes.OK)
@@ -674,13 +670,17 @@ suite("APIv1 exec routes", function() {
 
         // clear the execs DB
         suiteTeardown(function() {
-            return connection.db.collections().then((collections) => {
-                let drops = [];
-                collections.forEach((collection) => {
-                    drops.push(collection.deleteMany({}));
-                });
 
-                return Promise.all(drops);
+            return new Promise((resolve, reject) => {
+
+                return connection.db.dropCollection("execs", (err, result) => {
+
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(result);
+                    }
+                });
             });
         });
     });
@@ -733,7 +733,7 @@ suite("APIv1 exec routes", function() {
         test("deleting non existent exec, correct id format", function() {
             return request(app)
             .delete("/api/v1/execs/5ccf7ab78caf96e09f00ab22")
-            .set("Authorization", `Bearer ${userToken}`)
+            .set("Authorization", `Bearer ${validToken}`)
             .expect(statusCodes.NOT_FOUND)
             .then((res) => {
                 check.api["v1"].isGenericResponse(statusCodes.NOT_FOUND, res.body);
@@ -743,7 +743,7 @@ suite("APIv1 exec routes", function() {
         test("deleting non existent exec, bad id format", function() {
             return request(app)
             .delete("/api/v1/execs/execId")
-            .set("Authorization", `Bearer ${userToken}`)
+            .set("Authorization", `Bearer ${validToken}`)
             .expect(statusCodes.NOT_FOUND)
             .then((res) => {
                 check.api["v1"].isGenericResponse(statusCodes.NOT_FOUND, res.body);
@@ -753,14 +753,14 @@ suite("APIv1 exec routes", function() {
         test("deleting an exec that has already been deleted", function () {
             return request(app)
             .delete(`/api/v1/execs/${exec2.id}`)
-            .set("Authorization", `Bearer ${userToken}`)
+            .set("Authorization", `Bearer ${validToken}`)
             .expect(statusCodes.NO_CONTENT)
             .then(() => {
 
                 // try deleting it again
                 return request(app)
                 .delete(`/api/v1/execs/${exec2.id}`)
-                .set("Authorization", `Bearer ${userToken}`)
+                .set("Authorization", `Bearer ${validToken}`)
                 .expect(statusCodes.NOT_FOUND)
                 .then((res) => {
                     check.api["v1"].isGenericResponse(statusCodes.NOT_FOUND, res.body);
@@ -772,19 +772,38 @@ suite("APIv1 exec routes", function() {
 
             return request(app)
             .delete(`/api/v1/execs/${exec1.id}`)
-            .set("Authorization", `Bearer ${userToken}`)
+            .set("Authorization", `Bearer ${validToken}`)
             .expect(statusCodes.NO_CONTENT);
         });
 
         // clear the execs DB
         suiteTeardown(function() {
-            return connection.db.collections().then((collections) => {
-                let drops = [];
-                collections.forEach((collection) => {
-                    drops.push(collection.deleteMany({}));
-                });
 
-                return Promise.all(drops);
+            return new Promise((resolve, reject) => {
+
+                return connection.db.dropCollection("execs", (err, result) => {
+
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(result);
+                    }
+                });
+            });
+        });
+    });
+
+    // clear the users DB
+    suiteTeardown(function() {
+        return new Promise((resolve, reject) => {
+
+            return connection.db.dropCollection("users", (err, result) => {
+
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(result);
+                }
             });
         });
     });

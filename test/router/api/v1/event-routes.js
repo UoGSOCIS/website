@@ -25,44 +25,33 @@ const connection = source("test/connection");
 const check = source("test/router/api/assert");
 
 const authentication = source("authentication");
-const config = source("config");
+const users = source("models/user");
 
 
 chai.use(asPromised);
 
 suite("APIv1 event routes", function() {
 
-    let userToken;
+    let validToken;
 
     suiteSetup(function() {
 
-        const iat = Date.now();
-        const exp = iat + 5 * 60000;    // 5 min from now
+        const newUser = new users.User()
+        .setAccountId("435678uhgr4567ui")
+        .setName("Test User")
+        .setEmail("eventUser@example.com")
+        .setPermissions(users.Permission.ADMIN);
 
-        return authentication.sign({
-            iss: config.jwt.iss[0],
-            azp: config.jwt.aud,
-            aud: config.jwt.aud,
-            sub: "1179434225147165448",
-            hd: "socis.ca",
-            email: "test_account@socis.ca",
-            email_verified: true,
-            at_hash: "2EB436643D1F1E733B8224FF2D56CB1F62CF5C55",
-            name: "This is a test run of sign",
-            picture: "https://images.pexels.com/photos/104827/cat-pet-animal-domestic-104827.jpeg",
-            given_name: "Test",
-            family_name: "User",
-            locale: "en",
-            iat: iat,
-            exp: exp,
+        return newUser.save()
+        .then((saved) => {
+            return authentication.sign(saved.toApiV1());
         })
         .then((token) => {
-            userToken = token;
+            validToken = token;
         })
         .catch((err) => {
             logger.error("Error creating user test token", err);
         });
-
 
     });
 
@@ -72,7 +61,7 @@ suite("APIv1 event routes", function() {
             return request(app)
             .post("/api/v1/events")
             .set("Content-Type", "x-www-form-urlencoded")
-            .set("Authorization", `Bearer ${userToken}`)
+            .set("Authorization", `Bearer ${validToken}`)
             .send("start_time=2019-04-04T19:00:00.000Z")
             .send("end_time=2019-04-04T20:00:00.000Z")
             .send("title=The Last SOCIS event of the year")
@@ -90,7 +79,7 @@ suite("APIv1 event routes", function() {
             return request(app)
             .post("/api/v1/events")
             .set("Content-Type", "application/json")
-            .set("Authorization", `Bearer ${userToken}`)
+            .set("Authorization", `Bearer ${validToken}`)
             .send({
                 start_time: "2019-04-04T19:00:00.000Z",
                 end_time: "2019-04-04T20:00:00.000Z",
@@ -129,7 +118,7 @@ suite("APIv1 event routes", function() {
             return request(app)
             .post("/api/v1/events")
             .set("Content-Type", "application/json")
-            .set("Authorization", `Bearer ${userToken}`)
+            .set("Authorization", `Bearer ${validToken}`)
             .send({
                 id: "5ce07aba7d20c5c791d35826",
                 start_time: "2019-06-04T19:00:00.000Z",
@@ -151,7 +140,7 @@ suite("APIv1 event routes", function() {
             return request(app)
             .post("/api/v1/events")
             .set("Content-Type", "application/json")
-            .set("Authorization", `Bearer ${userToken}`)
+            .set("Authorization", `Bearer ${validToken}`)
             .send({
                 end_time: "2019-06-04T20:00:00.000Z",
                 title: "The Last SOCIS event of the year",
@@ -165,19 +154,21 @@ suite("APIv1 event routes", function() {
             });
         });
 
-        // clear the DB
+        // clear the events DB
         suiteTeardown(function() {
-            return connection.db.collections().then((collections) => {
-                let drops = [];
-                collections.forEach((collection) => {
-                    drops.push(collection.deleteMany({}));
-                });
+            return new Promise((resolve, reject) => {
 
-                return Promise.all(drops);
+                return connection.db.dropCollection("events", (err, result) => {
+
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(result);
+                    }
+                });
             });
         });
     });
-
 
     suite("PATCH /api/v1/events", function() {
 
@@ -246,7 +237,7 @@ suite("APIv1 event routes", function() {
             return request(app)
             .patch(`/api/v1/events/${event1.id}`)
             .set("Content-Type", "x-www-form-urlencoded")
-            .set("Authorization", `Bearer ${userToken}`)
+            .set("Authorization", `Bearer ${validToken}`)
             .send("title=This title should not be changed")
             .expect(statusCodes.BAD_REQUEST)
             .then((res) => {
@@ -259,7 +250,7 @@ suite("APIv1 event routes", function() {
             return request(app)
             .patch("/api/v1/events/5ce087e883c678fd2d3d034a")
             .set("Content-Type", "application/json")
-            .set("Authorization", `Bearer ${userToken}`)
+            .set("Authorization", `Bearer ${validToken}`)
             .send({title: "this also wont get updated", })
             .expect(statusCodes.NOT_FOUND)
             .then((res) => {
@@ -288,7 +279,7 @@ suite("APIv1 event routes", function() {
 
             return request(app)
             .patch(`/api/v1/events/${event2.id}`)
-            .set("Authorization", `Bearer ${userToken}`)
+            .set("Authorization", `Bearer ${validToken}`)
             .set("Content-Type", "application/json")
             .send(update1)
             .expect(statusCodes.OK)
@@ -309,7 +300,7 @@ suite("APIv1 event routes", function() {
 
             return request(app)
             .patch(`/api/v1/events/${event3.id}`)
-            .set("Authorization", `Bearer ${userToken}`)
+            .set("Authorization", `Bearer ${validToken}`)
             .set("Content-Type", "application/json")
             .send({start_time: Date.now(), })
             .expect(statusCodes.BAD_REQUEST)
@@ -331,7 +322,7 @@ suite("APIv1 event routes", function() {
 
             return request(app)
             .patch(`/api/v1/events/${event4.id}`)
-            .set("Authorization", `Bearer ${userToken}`)
+            .set("Authorization", `Bearer ${validToken}`)
             .set("Content-Type", "application/json")
             .send(update1)
             .expect(statusCodes.OK)
@@ -349,19 +340,21 @@ suite("APIv1 event routes", function() {
             });
         });
 
-        // clear the DB
+        // clear the events DB
         suiteTeardown(function() {
-            return connection.db.collections().then((collections) => {
-                let drops = [];
-                collections.forEach((collection) => {
-                    drops.push(collection.deleteMany({}));
-                });
+            return new Promise((resolve, reject) => {
 
-                return Promise.all(drops);
+                return connection.db.dropCollection("events", (err, result) => {
+
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(result);
+                    }
+                });
             });
         });
     });
-
 
     suite("DELETE /api/v1/events/:eventId", function() {
 
@@ -426,7 +419,7 @@ suite("APIv1 event routes", function() {
         test("deleting non existent eventId, valid format id", function() {
             return request(app)
             .delete("/api/v1/events/5ce07f989c3aabe99abf309e")
-            .set("Authorization", `Bearer ${userToken}`)
+            .set("Authorization", `Bearer ${validToken}`)
             .expect(statusCodes.NOT_FOUND)
             .then((res) => {
                 check.api["v1"].isGenericResponse(statusCodes.NOT_FOUND, res.body);
@@ -436,7 +429,7 @@ suite("APIv1 event routes", function() {
         test("deleting non existent eventId, invalid format id", function() {
             return request(app)
             .delete("/api/v1/events/badEventId")
-            .set("Authorization", `Bearer ${userToken}`)
+            .set("Authorization", `Bearer ${validToken}`)
             .expect(statusCodes.NOT_FOUND)
             .then((res) => {
                 check.api["v1"].isGenericResponse(statusCodes.NOT_FOUND, res.body);
@@ -446,14 +439,14 @@ suite("APIv1 event routes", function() {
         test("deleting an event that has already been deleted", function () {
             return request(app)
             .delete(`/api/v1/events/${event2.id}`)
-            .set("Authorization", `Bearer ${userToken}`)
+            .set("Authorization", `Bearer ${validToken}`)
             .expect(statusCodes.NO_CONTENT)
             .then(() => {
 
                 // try deleting it again
                 return request(app)
                 .delete(`/api/v1/events/${event2.id}`)
-                .set("Authorization", `Bearer ${userToken}`)
+                .set("Authorization", `Bearer ${validToken}`)
                 .expect(statusCodes.NOT_FOUND)
                 .then((res) => {
                     check.api["v1"].isGenericResponse(statusCodes.NOT_FOUND, res.body);
@@ -465,22 +458,38 @@ suite("APIv1 event routes", function() {
 
             return request(app)
             .delete(`/api/v1/events/${event3.id}`)
-            .set("Authorization", `Bearer ${userToken}`)
+            .set("Authorization", `Bearer ${validToken}`)
             .expect(statusCodes.NO_CONTENT);
         });
 
-        // clear the DB
+        // clear the events DB
         suiteTeardown(function() {
-            return connection.db.collections().then((collections) => {
-                let drops = [];
-                collections.forEach((collection) => {
-                    drops.push(collection.deleteMany({}));
-                });
+            return new Promise((resolve, reject) => {
 
-                return Promise.all(drops);
+                return connection.db.dropCollection("events", (err, result) => {
+
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(result);
+                    }
+                });
             });
         });
     });
 
+    // clear the users DB
+    suiteTeardown(function() {
+        return new Promise((resolve, reject) => {
 
+            return connection.db.dropCollection("users", (err, result) => {
+
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(result);
+                }
+            });
+        });
+    });
 });

@@ -177,18 +177,16 @@ suite("Exec", function() {
         });
 
         suiteTeardown(function() {
+            return new Promise((resolve, reject) => {
 
-            if (!connection.db) {
-                return;
-            }
+                return connection.db.dropCollection("execs", (err, result) => {
 
-            return connection.db.collections().then((collections) => {
-                let drops = [];
-                collections.forEach((collection) => {
-                    drops.push(collection.deleteMany({}));
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(result);
+                    }
                 });
-
-                return Promise.all(drops);
             });
         });
     });
@@ -231,7 +229,7 @@ suite("Exec", function() {
             .setYear(2008);
 
             // save the execs to the db
-            pres1.save()
+            return pres1.save()
             .then((exec) => {
                 pres1 = exec;
                 return admin1.save();
@@ -270,18 +268,16 @@ suite("Exec", function() {
         });
 
         suiteTeardown(function() {
+            return new Promise((resolve, reject) => {
 
-            if (!connection.db) {
-                return;
-            }
+                return connection.db.dropCollection("execs", (err, result) => {
 
-            return connection.db.collections().then((collections) => {
-                let drops = [];
-                collections.forEach((collection) => {
-                    drops.push(collection.deleteMany({}));
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(result);
+                    }
                 });
-
-                return Promise.all(drops);
             });
         });
     });

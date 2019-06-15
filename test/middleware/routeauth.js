@@ -17,72 +17,37 @@ const assert = chai.assert;
 const middleware = source("middleware");
 const routeAuth = middleware.routeAuth;
 
-const authentication = source("authentication");
-const config = source("config");
-const logger = source("logger");
+const users = source("models/user");
 
 
 chai.use(asPromised);
 
 /* route auth test suite */
-suite ("middleware/routeauth", function() {
+suite("middleware/routeauth", function() {
     function assertIsApiv1ErrorResponse(code, err) {
         assert.isOk(Number.isInteger(code));
         assert.equal(err.status, code);
         assert.isString(err.message);
     }
 
-    let validToken = "";      // this will be set in the setup method
-    const invalidToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+    function generateUser(permission) {
 
-    const getValid = (key) => {
-        if (key === "authorization") {
-            return `bearer: ${validToken}`;
-        }
-        return undefined;
+        return new users.User()
+        .setAccountId("8765yu97865rtcfvgbiu78")
+        .setName("user with perm: " + permission)
+        .setEmail("email@example.com")
+        .setPermissions(permission);
+    }
+
+    const accounts = {
+        none: generateUser(users.Permission.NONE),
+        superAdmin: generateUser(users.Permission.ADMIN),
+        events: generateUser(users.Permission.EVENTS),
+        seller: generateUser(users.Permission.SELLER),
+        newsletter: generateUser(users.Permission.NEWSLETTER),
+        merchant: generateUser(users.Permission.MERCHANT),
+        merchSeller: generateUser(users.Permission.MERCHANT | users.Permission.SELLER),
     };
-
-    const getInvalid = (key) => {
-        if (key === "authorization") {
-            return `bearer: ${invalidToken}`;
-        }
-        return undefined;
-    };
-
-    // eslint-disable-next-line no-unused-vars
-    const getNothing = (key) => {
-        return undefined;
-    };
-
-
-    suiteSetup(function() {
-        const iat = Date.now();
-        const exp = iat + 5 * 60000;    // 5 min from now
-
-        return authentication.sign({
-            iss: config.jwt.iss[0],
-            azp: config.jwt.aud,
-            aud: config.jwt.aud,
-            sub: "1179434225147165448",
-            hd: "socis.ca",
-            email: "test_account@socis.ca",
-            email_verified: true,
-            at_hash: "2EB436643D1F1E733B8224FF2D56CB1F62CF5C55",
-            name: "This is a test run of sign",
-            picture: "https://images.pexels.com/photos/104827/cat-pet-animal-domestic-104827.jpeg",
-            given_name: "Test",
-            family_name: "User",
-            locale: "en",
-            iat: iat,
-            exp: exp,
-        })
-        .then((token) => {
-            validToken = token;
-        })
-        .catch((err) => {
-            logger.error("Error creating user test token", err);
-        });
-    });
 
     suite("can perform anything on non api or admin endpoints without authentication ", function() {
 
@@ -118,7 +83,6 @@ suite ("middleware/routeauth", function() {
                 assert.isUndefined(err);
             });
         });
-
     });
 
     suite("can GET api endpoints without authentication", function() {
@@ -140,8 +104,6 @@ suite ("middleware/routeauth", function() {
             const reqStub = {
                 method: "POST",
                 path: "/api/execs",
-                get: getInvalid,
-
             };
 
             return routeAuth(reqStub, null, (err) => {
@@ -150,16 +112,40 @@ suite ("middleware/routeauth", function() {
         });
     });
 
-    suite("can access protected endpoints with a session", function() {
+    suite("Only users with valid permissions can access event routes", function() {
 
-        test("can GET api endpoints, without authentication", function() {
+        test("no permission should not be able to access admin/events", function() {
             // the session passes authentication
             const reqStub = {
                 method: "POST",
-                path: "/api/execs",
-                session: {
-                    token: "It does not matter when I actualy am",
-                },
+                path: "/admin/events",
+                user: accounts.none,
+            };
+
+            return routeAuth(reqStub, null, (err) => {
+                assertIsApiv1ErrorResponse(403, err);
+            });
+        });
+
+        test("merchant permission should not be able to access admin/events", function() {
+            // the session passes authentication
+            const reqStub = {
+                method: "POST",
+                path: "/admin/events",
+                user: accounts.merchant,
+            };
+
+            return routeAuth(reqStub, null, (err) => {
+                assertIsApiv1ErrorResponse(403, err);
+            });
+        });
+
+        test("admin permission should be able to access admin/events", function() {
+            // the session passes authentication
+            const reqStub = {
+                method: "POST",
+                path: "/admin/events",
+                user: accounts.superAdmin,
             };
 
             return routeAuth(reqStub, null, (err) => {
@@ -167,14 +153,38 @@ suite ("middleware/routeauth", function() {
             });
         });
 
-        test("can not POST api endpoints, without authentication", function() {
+        test("events permission should be able to access admin/events", function() {
             // the session passes authentication
             const reqStub = {
-                method: "GET",
-                path: "/admin/execs",
-                session: {
-                    token: "It does not matter when I actualy am",
-                },
+                method: "POST",
+                path: "/admin/events",
+                user: accounts.events,
+            };
+
+            return routeAuth(reqStub, null, (err) => {
+                assert.isUndefined(err);
+            });
+        });
+
+        test("events permission should be able to access api/v1/events", function() {
+            // the session passes authentication
+            const reqStub = {
+                method: "POST",
+                path: "/api/v1/events",
+                user: accounts.events,
+            };
+
+            return routeAuth(reqStub, null, (err) => {
+                assert.isUndefined(err);
+            });
+        });
+
+        test("admin permission be able to access api/v1/events", function() {
+            // the session passes authentication
+            const reqStub = {
+                method: "POST",
+                path: "/api/v1/events",
+                user: accounts.superAdmin,
             };
 
             return routeAuth(reqStub, null, (err) => {
@@ -183,44 +193,540 @@ suite ("middleware/routeauth", function() {
         });
     });
 
-    suite("can access protected with bearer token", function() {
+    suite("Only users with valid permissions can access exec routes", function() {
 
-        test("missing token should be rejected", function() {
-
+        test("no permission should not be able to access admin/exec", function() {
+            // the session passes authentication
             const reqStub = {
                 method: "POST",
-                path: "/api/execs",
-                get: getNothing,
+                path: "/admin/exec",
+                user: accounts.none,
             };
 
             return routeAuth(reqStub, null, (err) => {
-                assertIsApiv1ErrorResponse(401, err);
+                assertIsApiv1ErrorResponse(403, err);
             });
         });
 
-        test("invalid token should be rejected", function() {
-
+        test("merchant permission should not be able to access admin/exec", function() {
+            // the session passes authentication
             const reqStub = {
                 method: "POST",
-                path: "/api/execs",
-                get: getInvalid,
+                path: "/admin/exec",
+                user: accounts.merchant,
             };
 
             return routeAuth(reqStub, null, (err) => {
-                assertIsApiv1ErrorResponse(401, err);
+                assertIsApiv1ErrorResponse(403, err);
             });
         });
 
-        test("valid token should be accepted", function() {
-
+        test("admin permission should be able to access admin/exec", function() {
+            // the session passes authentication
             const reqStub = {
                 method: "POST",
-                path: "/api/execs",
-                get: getValid,
+                path: "/admin/exec",
+                user: accounts.superAdmin,
             };
 
             return routeAuth(reqStub, null, (err) => {
                 assert.isUndefined(err);
+            });
+        });
+
+        test("events permission should not be able to access admin/exec", function() {
+            // the session passes authentication
+            const reqStub = {
+                method: "POST",
+                path: "/admin/exec",
+                user: accounts.events,
+            };
+
+            return routeAuth(reqStub, null, (err) => {
+                assertIsApiv1ErrorResponse(403, err);
+            });
+        });
+
+        test("events permission should not be able to access api/v1/execs", function() {
+            // the session passes authentication
+            const reqStub = {
+                method: "POST",
+                path: "/api/v1/execs",
+                user: accounts.events,
+            };
+
+            return routeAuth(reqStub, null, (err) => {
+                assertIsApiv1ErrorResponse(403, err);
+            });
+        });
+
+        test("admin permission should be able to access api/v1/execs", function() {
+            // the session passes authentication
+            const reqStub = {
+                method: "POST",
+                path: "/api/v1/execs",
+                user: accounts.superAdmin,
+            };
+
+            return routeAuth(reqStub, null, (err) => {
+                assert.isUndefined(err);
+            });
+        });
+    });
+
+    suite("Only users with valid permissions can access newsletter routes", function() {
+
+        test("no permission should not be able to access admin/newsletter", function() {
+            // the session passes authentication
+            const reqStub = {
+                method: "POST",
+                path: "/admin/newsletter",
+                user: accounts.none,
+            };
+
+            return routeAuth(reqStub, null, (err) => {
+                assertIsApiv1ErrorResponse(403, err);
+            });
+        });
+
+        test("merchant permission should not be able to access admin/newsletter", function() {
+            // the session passes authentication
+            const reqStub = {
+                method: "POST",
+                path: "/admin/newsletter",
+                user: accounts.merchant,
+            };
+
+            return routeAuth(reqStub, null, (err) => {
+                assertIsApiv1ErrorResponse(403, err);
+            });
+        });
+
+        test("admin permission should be able to access admin/newsletter", function() {
+            // the session passes authentication
+            const reqStub = {
+                method: "POST",
+                path: "/admin/newsletter",
+                user: accounts.superAdmin,
+            };
+
+            return routeAuth(reqStub, null, (err) => {
+                assert.isUndefined(err);
+            });
+        });
+
+        test("newsletter permission should be able to access admin/newsletter", function() {
+            // the session passes authentication
+            const reqStub = {
+                method: "POST",
+                path: "/admin/newsletter",
+                user: accounts.newsletter,
+            };
+
+            return routeAuth(reqStub, null, (err) => {
+                assert.isUndefined(err);
+            });
+        });
+
+        test("newsletter permission should be able to access  api/v1/newsletter", function() {
+            // the session passes authentication
+            const reqStub = {
+                method: "POST",
+                path: "/api/v1/newsletter",
+                user: accounts.newsletter,
+            };
+
+            return routeAuth(reqStub, null, (err) => {
+                assert.isUndefined(err);
+            });
+        });
+
+        test("events permission should not be able to access api/v1/newsletter", function() {
+            // the session passes authentication
+            const reqStub = {
+                method: "POST",
+                path: "/api/v1/newsletter",
+                user: accounts.events,
+            };
+
+            return routeAuth(reqStub, null, (err) => {
+                assertIsApiv1ErrorResponse(403, err);
+            });
+        });
+
+        test("admin permission should be able to access api/v1/newsletter", function() {
+            // the session passes authentication
+            const reqStub = {
+                method: "POST",
+                path: "/api/v1/newsletter",
+                user: accounts.superAdmin,
+            };
+
+            return routeAuth(reqStub, null, (err) => {
+                assert.isUndefined(err);
+            });
+        });
+    });
+
+    suite("Only users with valid permissions can access store routes", function() {
+
+        test("no permission should not be able to access admin/products", function() {
+            // the session passes authentication
+            const reqStub = {
+                method: "POST",
+                path: "/admin/products",
+                user: accounts.none,
+            };
+
+            return routeAuth(reqStub, null, (err) => {
+                assertIsApiv1ErrorResponse(403, err);
+            });
+        });
+
+        test("seller permission should not be able to access admin/products", function() {
+            // the session passes authentication
+            const reqStub = {
+                method: "POST",
+                path: "/admin/products",
+                user: accounts.seller,
+            };
+
+            return routeAuth(reqStub, null, (err) => {
+                assertIsApiv1ErrorResponse(403, err);
+            });
+        });
+
+        test("admin permission should be able to access admin/products", function() {
+            // the session passes authentication
+            const reqStub = {
+                method: "POST",
+                path: "/admin/products",
+                user: accounts.superAdmin,
+            };
+
+            return routeAuth(reqStub, null, (err) => {
+                assert.isUndefined(err);
+            });
+        });
+
+        test("merchant permission should be able to access admin/products", function() {
+            // the session passes authentication
+            const reqStub = {
+                method: "POST",
+                path: "/admin/products",
+                user: accounts.merchant,
+            };
+
+            return routeAuth(reqStub, null, (err) => {
+                assert.isUndefined(err);
+            });
+        });
+
+        test("merchant and seller permission should be able to access admin/products", function() {
+            // the session passes authentication
+            const reqStub = {
+                method: "POST",
+                path: "/admin/products",
+                user: accounts.merchSeller,
+            };
+
+            return routeAuth(reqStub, null, (err) => {
+                assert.isUndefined(err);
+            });
+        });
+
+        test("merchant permission should be able to access api/v1/products", function() {
+            // the session passes authentication
+            const reqStub = {
+                method: "POST",
+                path: "/api/v1/products",
+                user: accounts.merchant,
+            };
+
+            return routeAuth(reqStub, null, (err) => {
+                assert.isUndefined(err);
+            });
+        });
+
+        test("seller permission should not be able to access api/v1/products", function() {
+            // the session passes authentication
+            const reqStub = {
+                method: "POST",
+                path: "/api/v1/products",
+                user: accounts.seller,
+            };
+
+            return routeAuth(reqStub, null, (err) => {
+                assertIsApiv1ErrorResponse(403, err);
+            });
+        });
+
+        test("admin permission should be able to access api/v1/products", function() {
+            // the session passes authentication
+            const reqStub = {
+                method: "POST",
+                path: "/api/v1/products",
+                user: accounts.superAdmin,
+            };
+
+            return routeAuth(reqStub, null, (err) => {
+                assert.isUndefined(err);
+            });
+        });
+    });
+
+    suite("Only users with valid permissions can access sales info", function() {
+
+        test("no permission should not be able to access admin/store", function() {
+            // the session passes authentication
+            const reqStub = {
+                method: "POST",
+                path: "/admin/store",
+                user: accounts.none,
+            };
+
+            return routeAuth(reqStub, null, (err) => {
+                assertIsApiv1ErrorResponse(403, err);
+            });
+        });
+
+        test("seller permission should be able to access admin/store", function() {
+            // the session passes authentication
+            const reqStub = {
+                method: "POST",
+                path: "/admin/store",
+                user: accounts.seller,
+            };
+
+            return routeAuth(reqStub, null, (err) => {
+                assert.isUndefined(err);
+            });
+        });
+
+        test("admin permission should be able to access admin/store", function() {
+            // the session passes authentication
+            const reqStub = {
+                method: "POST",
+                path: "/admin/store",
+                user: accounts.superAdmin,
+            };
+
+            return routeAuth(reqStub, null, (err) => {
+                assert.isUndefined(err);
+            });
+        });
+
+        test("merchant permission should not be able to access admin/store", function() {
+            // the session passes authentication
+            const reqStub = {
+                method: "POST",
+                path: "/admin/store",
+                user: accounts.merchant,
+            };
+
+            return routeAuth(reqStub, null, (err) => {
+                assertIsApiv1ErrorResponse(403, err);
+            });
+        });
+
+        test("merchant and seller permission should be able to access admin/store", function() {
+            // the session passes authentication
+            const reqStub = {
+                method: "POST",
+                path: "/admin/store",
+                user: accounts.merchSeller,
+            };
+
+            return routeAuth(reqStub, null, (err) => {
+                assert.isUndefined(err);
+            });
+        });
+    });
+
+    suite("all the admin permissions should be able to access the admin page", function() {
+
+        test("no permission should not be able to access admin", function() {
+            // the session passes authentication
+            const reqStub = {
+                method: "POST",
+                path: "/admin",
+                user: accounts.none,
+            };
+
+            return routeAuth(reqStub, null, (err) => {
+                assertIsApiv1ErrorResponse(403, err);
+            });
+        });
+
+        test("seller permission should be able to access admin", function() {
+            // the session passes authentication
+            const reqStub = {
+                method: "POST",
+                path: "/admin",
+                user: accounts.seller,
+            };
+
+            return routeAuth(reqStub, null, (err) => {
+                assert.isUndefined(err);
+            });
+        });
+
+        test("merchant permission should be able to access admin", function() {
+            // the session passes authentication
+            const reqStub = {
+                method: "POST",
+                path: "/admin",
+                user: accounts.merchant,
+            };
+
+            return routeAuth(reqStub, null, (err) => {
+                assert.isUndefined(err);
+            });
+        });
+
+        test("merchSeller permission should be able to access admin", function() {
+            // the session passes authentication
+            const reqStub = {
+                method: "POST",
+                path: "/admin",
+                user: accounts.merchSeller,
+            };
+
+            return routeAuth(reqStub, null, (err) => {
+                assert.isUndefined(err);
+            });
+        });
+
+        test("Admin permission should be able to access admin", function() {
+            // the session passes authentication
+            const reqStub = {
+                method: "POST",
+                path: "/admin",
+                user: accounts.superAdmin,
+            };
+
+            return routeAuth(reqStub, null, (err) => {
+                assert.isUndefined(err);
+            });
+        });
+
+        test("newsletter permission should be able to access admin", function() {
+            // the session passes authentication
+            const reqStub = {
+                method: "POST",
+                path: "/admin",
+                user: accounts.newsletter,
+            };
+
+            return routeAuth(reqStub, null, (err) => {
+                assert.isUndefined(err);
+            });
+        });
+
+        test("events permission should be able to access admin", function() {
+            // the session passes authentication
+            const reqStub = {
+                method: "POST",
+                path: "/admin",
+                user: accounts.events,
+            };
+
+            return routeAuth(reqStub, null, (err) => {
+                assert.isUndefined(err);
+            });
+        });
+    });
+
+    suite("none should be able to access pages they dont have permission for", function() {
+
+        test("no permission should not be able to access admin/test", function() {
+            // the session passes authentication
+            const reqStub = {
+                method: "POST",
+                path: "/admin/test",
+                user: accounts.none,
+            };
+
+            return routeAuth(reqStub, null, (err) => {
+                assertIsApiv1ErrorResponse(403, err);
+            });
+        });
+
+        test("seller permission should not be able to access admin/test", function() {
+            // the session passes authentication
+            const reqStub = {
+                method: "POST",
+                path: "/admin/test",
+                user: accounts.seller,
+            };
+
+            return routeAuth(reqStub, null, (err) => {
+                assertIsApiv1ErrorResponse(403, err);
+            });
+        });
+
+        test("merchant permission should not be able to access admin/test", function() {
+            // the session passes authentication
+            const reqStub = {
+                method: "POST",
+                path: "/admin/test",
+                user: accounts.merchant,
+            };
+
+            return routeAuth(reqStub, null, (err) => {
+                assertIsApiv1ErrorResponse(403, err);
+            });
+        });
+
+        test("merchSeller permission should not be able to access admin/test", function() {
+            // the session passes authentication
+            const reqStub = {
+                method: "POST",
+                path: "/admin/test",
+                user: accounts.merchSeller,
+            };
+
+            return routeAuth(reqStub, null, (err) => {
+                assertIsApiv1ErrorResponse(403, err);
+            });
+        });
+
+        test("Admin permission should be able to access admin/test", function() {
+            // the session passes authentication
+            const reqStub = {
+                method: "POST",
+                path: "/admin/test",
+                user: accounts.superAdmin,
+            };
+
+            return routeAuth(reqStub, null, (err) => {
+                assert.isUndefined(err);
+            });
+        });
+
+        test("newsletter permission should not be able to access admin/test", function() {
+            // the session passes authentication
+            const reqStub = {
+                method: "POST",
+                path: "/admin/test",
+                user: accounts.newsletter,
+            };
+
+            return routeAuth(reqStub, null, (err) => {
+                assertIsApiv1ErrorResponse(403, err);
+            });
+        });
+
+        test("events permission should not be able to access admin/test", function() {
+            // the session passes authentication
+            const reqStub = {
+                method: "POST",
+                path: "/admin/test",
+                user: accounts.events,
+            };
+
+            return routeAuth(reqStub, null, (err) => {
+                assertIsApiv1ErrorResponse(403, err);
             });
         });
     });

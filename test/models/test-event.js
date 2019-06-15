@@ -210,18 +210,16 @@ suite("Event", function() {
         });
 
         suiteTeardown(function() {
+            return new Promise((resolve, reject) => {
 
-            if (!connection.db) {
-                return;
-            }
+                return connection.db.dropCollection("events", (err, result) => {
 
-            return connection.db.collections().then((collections) => {
-                let drops = [];
-                collections.forEach((collection) => {
-                    drops.push(collection.deleteMany({}));
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(result);
+                    }
                 });
-
-                return Promise.all(drops);
             });
         });
     });
@@ -301,18 +299,16 @@ suite("Event", function() {
         });
 
         suiteTeardown(function() {
+            return new Promise((resolve, reject) => {
 
-            if (!connection.db) {
-                return;
-            }
+                return connection.db.dropCollection("events", (err, result) => {
 
-            return connection.db.collections().then((collections) => {
-                let drops = [];
-                collections.forEach((collection) => {
-                    drops.push(collection.deleteMany({}));
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(result);
+                    }
                 });
-
-                return Promise.all(drops);
             });
         });
     });
@@ -374,18 +370,16 @@ suite("Event", function() {
         });
 
         suiteTeardown(function() {
+            return new Promise((resolve, reject) => {
 
-            if (!connection.db) {
-                return;
-            }
+                return connection.db.dropCollection("events", (err, result) => {
 
-            return connection.db.collections().then((collections) => {
-                let drops = [];
-                collections.forEach((collection) => {
-                    drops.push(collection.deleteMany({}));
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(result);
+                    }
                 });
-
-                return Promise.all(drops);
             });
         });
     });
