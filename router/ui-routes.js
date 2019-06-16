@@ -119,6 +119,15 @@ router.get("/admin/exec", function(req, res) {
         res.render("admin_exec", {
             whiteBackground: true,
             currentExec: exec,
+            roles: execRoles,
+            initialRole: execRoles[0],
+        }, function(err, html) {
+            if (err) {
+                console.log(err);
+                return res.render("error", {whiteBackground: true, message: err.message, status: 500, err:err, });
+            } else {
+                res.send(html);
+            }
         });
     })
     .catch((err) => {
