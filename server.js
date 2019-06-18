@@ -54,6 +54,7 @@ const sessionSettings = { // set the session
 app.use(session(sessionSettings));
 
 // require that the api and the /admin routes the user has a session
+app.use(middleware.deserialize);
 app.use(middleware.routeAuth);
 
 app.use(router);

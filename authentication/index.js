@@ -12,4 +12,5 @@ const jwt = require("./jwt.js");
 module.exports = {
     sign: jwt.sign,
     verify: jwt.verify,
+    verifyGoogle: jwt.verifyGoogle,
 };

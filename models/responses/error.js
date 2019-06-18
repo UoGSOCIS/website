@@ -53,6 +53,10 @@ class Error {
         return new Error(statusCodes.UNAUTHORIZED, message);
     }
 
+    static Forbidden(message) {
+        return new Error(statusCodes.FORBIDDEN, message);
+    }
+
     static InternalServerError(message) {
         return new Error(statusCodes.INTERNAL_SERVER_ERROR, message);
     }

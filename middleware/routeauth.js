@@ -1,6 +1,9 @@
 /**
  * Authentication middleware functions for express routes.
  *
+ * This module Must be called after the deserialize middleware which is responsible for pulling the user out of the
+ * session or out of a Bearer token and adding it to the request object.
+ *
  * @author Marshall Asch <masch@uoguelph.ca>
  * @module middleware/routeauth
  */
@@ -9,8 +12,6 @@
 
 const source = require("rfr");
 const Error = source("models/responses").Error;
-
-const authentication = source("authentication");
 
 /**
  * routeAuth is an express middleware that checks a user is logged into the
@@ -32,28 +33,65 @@ function routeAuth(req, res, next) {
     }
 
     // pass through if the user has a session
-    if (req.session && req.session.token) {
-        next();
-        return;
-    }
+    if (req.user) {
 
-    // try checking for a bearer token
-    var token = req.get("authorization");
-    if (token) {
-        token = token.substring(7);
+        if (checkAdminPermissions(req.user, req.path)) {
+            next();
+        } else {
+            next(Error.Forbidden(`User ${req.user.name} is not authorized to access ${req.path}`));
+        }
     } else {
-        return next(Error.Unauthorized("You need to be authenticated"));
+        next(Error.Unauthorized("You need to be authenticated"));
+    }
+}
+
+/**
+ * This function will make sure that the user has valid permission to access the api or admin route
+ * @param user the user object
+ * @param path the path that the user is trying to request
+ * @returns {boolean|*} true if permission is allowed false otherwise
+ */
+function checkAdminPermissions(user, path) {
+
+    if (!user) {
+        return false;
     }
 
-    authentication.verify(token)
-    .then((decoded) => {
-        req.session.token = decoded;
+    // the admin can do anything
+    if (user.hasSuperAdminPermission()) {
+        return true;
+    }
 
-        next();
-    })
-    .catch((err) => {
-        next(Error.Unauthorized(err.message));
-    });
+    // check if the user has events permissions
+    if (/^\/api\/v1\/events(\/.*)?/.test(path) === true || /^\/admin\/events(\/.*)?/.test(path) === true) {
+        return user.hasEventPermission();
+    }
+
+    // check if the user has exec permissions
+    if (/^\/api\/v1\/execs(\/.*)?/.test(path) === true || /^\/admin\/exec(\/.*)?/.test(path) === true) {
+        return user.hasSuperAdminPermission();
+    }
+
+    // check if the user has newsletter permissions
+    if (/^\/api\/v1\/newsletter(\/.*)?/.test(path) === true || /^\/admin\/newsletter(\/.*)?/.test(path) === true) {
+        return user.hasNewsletterPermission();
+    }
+
+    // check if the user has can edit items in the store permissions
+    if (/^\/api\/v1\/products(\/.*)?/.test(path) === true || /^\/admin\/products(\/.*)?/.test(path) === true) {
+        return user.hasMerchantPermission();
+    }
+
+    // check if the user can see who has bought things and make sales
+    if (/^\/admin\/store(\/.*)?/.test(path) === true) {
+        return user.hasSellerPermission();
+    }
+
+    if (path === "/admin") {
+        return user.hasAdminPermission();
+    }
+
+    return false;
 }
 
 module.exports = routeAuth;
