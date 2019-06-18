@@ -7,7 +7,7 @@
 
 const express = require("express");
 const source = require("rfr");
-const Challenge = source("models/challenge");
+const Challenge = source("models/roboticon");
 
 const statusCodes = require("http-status-codes");
 const logger = source("logger");
@@ -15,6 +15,7 @@ const logger = source("logger");
 const errors = source("models/error");
 const response = source("models/responses");
 const Error = response.Error;
+const middleware = source("middleware");
 const requireHeaders = middleware.requireHeaders;
 
 const mongoose = require("mongoose");
