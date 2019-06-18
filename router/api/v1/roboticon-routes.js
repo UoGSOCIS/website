@@ -7,7 +7,7 @@
 
 const express = require("express");
 const source = require("rfr");
-const Challenge = source("models/roboticon");
+const Challenge = source("models/challenge");
 
 const statusCodes = require("http-status-codes");
 const logger = source("logger");
@@ -86,7 +86,9 @@ r.route("/")
     if (!validator.isInteger(req.body.challenge_number)) {
         return next(Error.BadRequest("challenge number is not an integer"));
     }
-
+    if(!validator.isBoolean(req.body.hidden)) {
+        return next(Error.BadRequest("Field is not a boolean"));
+    }
     let challenge = new Challenge()
     .setYear(req.body.year)
     .setChallenge_number(req.body.challenge_number)
@@ -169,7 +171,7 @@ r.route("/:year([0-9]{4})/:challengeNum([0-9]+)")
     })
     .then((challenge) => {
 
-        res.status(statusCodes.OK).json(event.toApiV1());
+        res.status(statusCodes.OK).json(challenge.toApiV1());
     })
     .catch((err) => {
 
