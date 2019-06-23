@@ -121,6 +121,7 @@ router.get("/admin/exec", function(req, res) {
             currentExec: exec,
             roles: execRoles,
             initialRole: execRoles[0],
+            emailDomain: '@socis.ca',
         }, function(err, html) {
             if (err) {
                 console.log(err);
