@@ -31,9 +31,9 @@
 </form>
 
 <div class="container">
-    <h3>Current Exec Roster</h3>
+    <h3>Current Execs</h3>
     <div class="padding-left-20 padding-right-20">
-        <table class="table table-striped">
+        <table class="table table-striped margin-bottom-0">
             <thead>
                 <tr>
                     <th width="20%" scope="col">Position</th>
@@ -42,41 +42,42 @@
                     <th width="15%" scope="col">Action</th>
                 </tr>
             </thead>
-            <tbody id="mainTable">
+            <tbody id="mainTable" >
                 {{#each currentExec}}
-                <tr id="currentExecRoster"> 
+                <tr id="currentExecRoster" >
                     <td class="padding-top-10">{{this.role}}</td>
-                    <td><input id="currentExecEmail" type="text" class="form-control" value="{{this.email}}"></td>
-                    <td><input type="text" class="form-control" value="{{this.name}}"></td>
-                    <td>
-                        <div class="action-btn remove padding-top-5" onclick="removeExec('{{this.email}}')">
-                            <span class="fas fa-minus-circle"></span>
-                            <span>Remove</span>
+                    <td id="currentExecEmail"><span>{{this.email}}</span></td>
+                    <td id="currentExecName"><span>{{this.name}}</span></td>
+                    <td class="centered">
+                        <div id="edit" class="action-btn padding-top-0" onclick="editRow(this.parentElement.parentElement)">
+                            <span>Edit</span>
                         </div>
+                        <div id="buttons" class="button-group" style="display:none">
+                            <button class="cancel" onclick="cancelEdit(this.parentElement.parentElement.parentElement)">Cancel</button>
+                            <button class="save">Save</button>
+                        </div>
+                        <div id="remove" class="action-btn remove padding-top-15"
+                            onclick="removeExec(this.parentNode.parentNode)" 
+                            style="display:none">
+                        <span class="fas fa-minus-circle"></span>
+                        <span>Remove</span>
+                    </div>
                     </td>
                 </tr>
                 {{/each}}
-                <tr>
-                    <td class="padding-top-10">
-                        <span id="newExecRole">{{initialRole.name}}</span>
-                    </td>
-                    <td><input id="newExecEmail" class="form-control" type="text" value="{{emailDomain}}"></td>
-                    <td><input id="newExecName" class="form-control" type="text"></td>
-                    <td>
-                        <div class="action-btn add padding-top-5" onclick="createExec()">
-                            <span class="fas fa-plus-circle"></span>
-                            <span>Add</span>
-                        </div>
-                    </td>
-                </tr>
             </tbody>
         </table>
+        <div class="action-btn add padding-10" onclick="openCreateExecModal()">
+            <span class="fas fa-plus-circle"></span>
+            <span>Add New Exec</span>
+        </div>
     </div>
-    {{!-- <button type="button" class="btn btn-save">Save</button> --}}
 
 </div>
 <script type="text/javascript">
     window.onload = load;
+    var execForm;
+    var execList;
 
     function load() {
         var spinner = document.getElementById("year");
@@ -99,6 +100,37 @@
         document.getElementById("newExecRole").innerHTML = spinner.innerText;
     }
 
+    function closeCreateExecModal() {
+        var lastRow = $("table > tbody > tr:last");
+        lastRow.remove();
+        var addBtn = $(".action-btn.cancel");
+        addBtn[0].innerHTML = "<span class=\"fas fa-plus-circle\"></span><span>Add New Exec</span>"
+        addBtn[0].classList.replace("cancel", "add");
+        addBtn[0].onclick = openCreateExecModal;
+    }
+
+    function openCreateExecModal() {
+        var lastRow = $("table > tbody > tr:last");
+        lastRow.after(
+            "<tr>" + 
+                "<td class=\"padding-top-10\">" + 
+                    "<span id=\"newExecRole\">{{initialRole.name}}</span>" + 
+                "</td>" + 
+                "<td><input id=\"newExecEmail\" class=\"form-control\" type=\"text\" value=\"{{emailDomain}}\"></td>" + 
+                "<td><input id=\"newExecName\" class=\"form-control\" type=\"text\"></td>" + 
+                "<td>" + 
+                    "<div class=\"button-group\">" + 
+                    "</div>" + 
+                "</td>" + 
+            "</tr>"
+        );
+        var addBtn = $(".action-btn.add");
+        console.log(addBtn[0]);
+        addBtn[0].innerHTML = "<span>Cancel</span>";
+        addBtn[0].classList.replace("add", "cancel");
+        addBtn[0].onclick = closeCreateExecModal;
+    }
+
     function createExec() {
         var exec = {
             name: document.getElementById("newExecName").value,
@@ -107,20 +139,19 @@
             role: $("#role option:selected")[0].value
         };
 
-        var currExecRostEmails = document.querySelectorAll("tr#currentExecRoster > td > input#currentExecEmail");
+        var currExecRostEmails = document.querySelectorAll("tr#currentExecRoster > td#currentExecEmail > input");
         var duplicateExec = false;
 
-
-        currExecRostEmails.forEach((value, key, parent) => {
-            var emailValue = value.getAttribute("value");
+        for (var i = 0; i < currExecRostEmails.length; i++) {
+            var emailValue = currExecRostEmails[i].getAttribute("value");
             if (emailValue === exec.email) {
-                duplicateExec = true;
+                console.error("Duplicate Email!");
                 return;
             }
-        });
+        }
 
         // upload the post and the attachments here
-        
+
         if (!duplicateExec) {
             $.ajax({
                 url: "/admin/exec",
@@ -130,10 +161,12 @@
                 complete: function (xhr, status) {
 
                     var responseCode = xhr.status;
-                    var response = JSON.parse(xhr.responseText);
 
                     if (responseCode === 201) {
+                        var response = JSON.parse(xhr.responseText);
                         uploadFilesForPost(response);
+                        return;
+                    } else if (responseCode === 200) {
                         return;
                     }
 
@@ -143,11 +176,36 @@
         }
     }
 
-    function removeExec(exec) {
-       var execRow = document.getElementById(exec);
-       console.log(execRow);
-       execRow.remove();
+    function editRow(row) {
+        var name = row.querySelector("td#currentExecName");
+        var email = row.querySelector("td#currentExecEmail");
+        name.innerHTML = "<input type=\"text\" class=\"form-control\" value=\"" + name.querySelector("span").innerText + "\">";
+        email.innerHTML = "<input type=\"text\" class=\"form-control\" value=\"" + email.querySelector("span").innerText + "\">";
+        // row.querySelector("td > div#remove").style.display = "inline-block";
+        row.querySelector("td > div#buttons").style.display = "inline-table";
+        row.querySelector("td > div#edit").style.display = "none";
 
+
+    }
+
+    function cancelEdit(row) {
+        var name = row.querySelector("td#currentExecName");
+        var email = row.querySelector("td#currentExecEmail");
+        name.innerHTML = "<span>" + name.querySelector("input").value + "<span>";
+        email.innerHTML = "<span>" + email.querySelector("input").value + "<span>";   
+        row.querySelector("td > div#edit").style.display = "initial";
+        row.querySelector("td > div#buttons").style.display = "none";
+        row.querySelector("td > div#remove").style.display = "none";
+    }
+
+    function removeExec(exec) {
+        exec.parentNode.removeChild(exec);
+        /* $.ajax({
+            url: "/admin/exec/execId:",
+            type: "DELETE",
+            data:
+
+        }); */
     }
 
 </script>

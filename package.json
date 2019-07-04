@@ -13,7 +13,7 @@
     "eslint-fix": "eslint authentication config logger middleware models router test validator server.js --fix",
     "stylelint": "stylelint public/css --max-warnings=0 --rd",
     "stylelint-fix": "stylelint public/css --fix",
-    "build-css": "node-sass --include-path scss scss/main.scss public/css/main.css",
+    "build-css": "node-sass public/scss/main-scss.scss public/css/main-scss.css",
     "watch-css": "nodemon -e scss -x \"npm run build-css\""
   },
   "contributors": [

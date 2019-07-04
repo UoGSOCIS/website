@@ -1,2 +1,49 @@
 @import "./mixins/margin.scss";
 @import "./mixins/padding.scss";
+@import "variables";
+
+.button-group {
+    button {
+        margin:0;
+        border-radius:4px;
+        padding:7px;
+    }
+    button:first-child {
+        margin:0;
+        border-radius:4px;
+        padding:7px;
+    }
+    button:last-child{
+        margin:0;
+        border-radius:4px;
+        padding:7px;
+    }
+    .save {
+        background: $guelph-red;
+        color: white;
+    }
+    .cancel {
+        background: $lightest-gray;
+    }
+}
+
+.action-btn {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.action-btn.remove {
+    color: red;
+}
+
+.action-btn.add {
+    color: green;
+}
+
+.action-btn:hover {
+    text-decoration: underline;
+}
+
+.action-btn.add:hover {
+    background-color: rgba(0,0,0,0.17);
+}

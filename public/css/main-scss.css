@@ -3027,3 +3027,41 @@
 
 .padding-top-100 {
   padding-top: 100px !important; }
+
+.button-group button {
+  margin: 0;
+  border-radius: 4px;
+  padding: 7px; }
+
+.button-group button:first-child {
+  margin: 0;
+  border-radius: 4px;
+  padding: 7px; }
+
+.button-group button:last-child {
+  margin: 0;
+  border-radius: 4px;
+  padding: 7px; }
+
+.button-group .save {
+  background: #990100;
+  color: white; }
+
+.button-group .cancel {
+  background: #fdfdfd; }
+
+.action-btn {
+  text-align: center;
+  vertical-align: middle; }
+
+.action-btn.remove {
+  color: red; }
+
+.action-btn.add {
+  color: green; }
+
+.action-btn:hover {
+  text-decoration: underline; }
+
+.action-btn.add:hover {
+  background-color: rgba(0, 0, 0, 0.17); }
