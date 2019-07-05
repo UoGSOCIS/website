@@ -95,6 +95,13 @@ router.get("/admin", function(req, res) {
     res.render("admin", {whiteBackground: true, });
 });
 
+router.get("/admin/events", function(req, res) {
+    res.render("admin_events", {whiteBackground: true, });
+});
+
+router.get("/admin/events/create", function(req, res) {
+    res.render("admin_create_event" , {whiteBackground: true, });
+});
 
 router.get("/admin/exec", function(req, res) {
 

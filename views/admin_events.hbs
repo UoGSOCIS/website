@@ -1,0 +1,34 @@
+
+
+
+
+<a class="btn btn-primary" href="/admin/events/create">Create new Event</a>
+
+<div>
+
+    <table class="table table-striped table-hover">
+        <thead>
+        <tr>
+            <th scope="col">Date and Time</th>
+            <th scope="col">Titile</th>
+            <th scope="col">Edit</th>
+        </tr>
+        </thead>
+        <tbody>
+
+            {{#each events}}
+                <tr>
+                    <td>{{date}} {{event_time}}</td>
+                    <td>{{title}}</td>
+                    <td>
+                        <button type="button" class="btn btn-default btn-lg">
+                            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                        </button>
+                    </td>
+                </tr>
+            {{/each}}
+
+        </tbody>
+    </table>
+
+</div>

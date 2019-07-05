@@ -1,0 +1,128 @@
+
+
+
+<div class="container">
+<form>
+    <div class="form-group">
+        <label for="event_title">Title</label>
+        <input type="txt" class="form-control" id="event_title" placeholder="Enter title">
+    </div>
+
+    <div class="form-group">
+        <label for="event_location">Location</label>
+        <input type="txt" class="form-control" id="event_location" placeholder="Enter location">
+    </div>
+    <div class="form-group">
+        <label for="datepicker">Date</label>
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <div class="input-group date" id="datetimepicker4" data-target-input="nearest">
+                        <input type="text" class="form-control datetimepicker-input" data-target="#datetimepicker4"/>
+                        <div class="input-group-append" data-target="#datetimepicker4" data-toggle="datetimepicker">
+                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <div class="input-group date" id="datetimepicker3" data-target-input="nearest">
+                        <input type="text" class="form-control datetimepicker-input" data-target="#datetimepicker3"/>
+                        <div class="input-group-append" data-target="#datetimepicker3" data-toggle="datetimepicker">
+                            <div class="input-group-text"><i class="fa fa-clock-o"></i></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <div class="input-group date" id="datetimepicker2" data-target-input="nearest">
+                        <input type="text" class="form-control datetimepicker-input" data-target="#datetimepicker2"/>
+                        <div class="input-group-append" data-target="#datetimepicker2" data-toggle="datetimepicker">
+                            <div class="input-group-text"><i class="fa fa-clock-o"></i></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script type="text/javascript">
+                $(function () {
+                    $('#datetimepicker4').datetimepicker({
+                        format: 'L'
+                    });
+
+                    $('#datetimepicker3').datetimepicker({
+                        format: 'LT'
+                    });
+
+                    $('#datetimepicker2').datetimepicker({
+                        format: 'LT'
+                    });
+                });
+            </script>
+        </div>
+    </div>
+    <div class="form-group">
+
+        <div class="card bg-light mb-3">
+
+            <div class="card-header">
+                <ul class="nav nav-tabs card-header-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="edit_btn" href="#">Edit </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="preview_btn" href="#">Preview</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="card-body">
+                <label for="text_area">Event Description: </label>
+
+            <div id="text_area">
+                <textarea class="form-control" rows="10" id="text_input"></textarea>
+            </div>
+
+
+            <div id="preview_area" style="display:none" >
+
+            </div>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+</div>
+
+
+<script src="/js/moment.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/js/tempusdominus-bootstrap-4.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+
+
+<script>
+    $('#preview_btn').on('click',function(){
+        $("#text_area").hide();
+
+        $("#edit_btn").removeClass("active");
+        $("#preview_btn").addClass("active");
+
+
+        $("#preview_area").html(marked($("#text_input").val()));
+        $("#preview_area").show();
+    });
+
+    $('#edit_btn').on('click',function(){
+
+        $("#edit_btn").addClass("active");
+        $("#preview_btn").removeClass("active");
+
+        $("#preview_area").hide();
+        $("#text_area").show();
+    });
+</script>
