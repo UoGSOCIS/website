@@ -199,8 +199,24 @@ r.route("/:year([0-9]{4})/:challengeNum([0-9]+)")
  * @routeparams {number} :year - the year of the roboticon challenge, must be a 4 digit year
  * @routeparams {number} :challengeNum - the challenge number for that year, must be a number
  */
-.delete(function(req, res) {
-    res.status(501).json({status: 501, message: "Not implemented", });
+.delete(function(req, res, next) {
+    Challenge.getById(req.params.challengeId)
+    .then((challenge) => {
+        return challenge.delete();
+    })
+    .then(() => {
+
+        res.status(statusCodes.NO_CONTENT).send();
+    })
+    .catch((err) => {
+
+        if (err instanceof errors.challenge.NotFoundError) {
+            return next(Error.NotFound(err.message));
+        }
+
+        logger.error("fatal error: ", err);
+        next(err);
+    });
 });
 
 module.exports = r;

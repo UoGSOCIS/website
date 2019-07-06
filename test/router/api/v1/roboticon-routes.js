@@ -92,7 +92,7 @@ suite("APIv1 roboticon routes", function() {
                 goal: "- To drive the robot to the other side\n- To win it all!!",
                 parameters: "- Arena will be 3', by 12'\n- If the robot crosses the black border line then the run will end",
                 points: "- 2 points for making it to the end zone.\n- Every checkpoint line the robot passes will gain 1 point.",
-                image: "https://socis.ca/files/15EA71AB4F5D6308A3F810DDB5B50D75513E6857",
+                image: "public/img/roboticon_robot.jpg",
                 map: "https://socis.ca/files/CB0848CBC4426AA79D71709D62E0EDAB554B4E21"
             })
             .expect(statusCodes.CREATED)
@@ -114,7 +114,7 @@ suite("APIv1 roboticon routes", function() {
                 goal: "- To drive the robot to the other side\n- To win it all!!",
                 parameters: "- Arena will be 3', by 12'\n- If the robot crosses the black border line then the run will end",
                 points: "- 2 points for making it to the end zone.\n- Every checkpoint line the robot passes will gain 1 point.",
-                image: "https://socis.ca/files/15EA71AB4F5D6308A3F810DDB5B50D75513E6857",
+                image: "public/img/roboticon_robot.jpg",
                 map: "https://socis.ca/files/CB0848CBC4426AA79D71709D62E0EDAB554B4E21"
             })
             .expect(statusCodes.UNAUTHORIZED)
@@ -137,7 +137,7 @@ suite("APIv1 roboticon routes", function() {
                 goal: "- To drive the robot to the other side\n- To win it all!!",
                 parameters: "- Arena will be 3', by 12'\n- If the robot crosses the black border line then the run will end",
                 points: "- 2 points for making it to the end zone.\n- Every checkpoint line the robot passes will gain 1 point.",
-                image: "https://socis.ca/files/15EA71AB4F5D6308A3F810DDB5B50D75513E6857",
+                image: "public/img/roboticon_robot.jpg",
                 map: "https://socis.ca/files/CB0848CBC4426AA79D71709D62E0EDAB554B4E21"
             })
             .expect(statusCodes.CREATED)
@@ -161,7 +161,7 @@ suite("APIv1 roboticon routes", function() {
                 goal: "- To drive the robot to the other side\n- To win it all!!",
                 parameters: "- Arena will be 3', by 12'\n- If the robot crosses the black border line then the run will end",
                 points: "- 2 points for making it to the end zone.\n- Every checkpoint line the robot passes will gain 1 point.",
-                image: "https://socis.ca/files/15EA71AB4F5D6308A3F810DDB5B50D75513E6857",
+                image: "public/img/roboticon_robot.jpg",
                 map: "https://socis.ca/files/CB0848CBC4426AA79D71709D62E0EDAB554B4E21"
             })
             .expect(statusCodes.BAD_REQUEST)
