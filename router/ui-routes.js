@@ -160,7 +160,27 @@ router.get("/admin", function(req, res) {
 });
 
 router.get("/admin/events", function(req, res) {
-    res.render("admin_events", {whiteBackground: true, });
+
+    let eventList = [];
+    Event.getAll("event")
+    .then((events) => {
+
+        events.forEach((event) => {
+            let e =  {
+                title: event.title,
+                date: event.startTime.toLocaleDateString("default", {year: "numeric", month: "long", day: "numeric", }),
+                event_time: event.startTime.toLocaleTimeString("default", {hour12: true, }),
+            };
+            eventList.push(e);
+        });
+
+        res.render("admin_events", {whiteBackground: true, events: eventList, });
+
+    })
+    .catch((err) => {
+        return res.render("error", {whiteBackground: true, message: err.message, status: 500, });
+    });
+
 });
 
 router.get("/admin/events/create", function(req, res) {

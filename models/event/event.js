@@ -135,6 +135,26 @@ class Event {
         });
     }
 
+
+    static getAll(tag) {
+
+        return EventModel.find({
+            tags: tag,
+        })
+        .sort({start_time: "desc", })
+        .then((results) => {
+
+            let events = [];
+            results.forEach((result) => {
+                let event = new Event();
+                event._model = result;
+                events.push(event);
+            });
+
+            return events;
+        });
+    }
+
     static getUpcoming(tag) {
 
         const now = new Date();
