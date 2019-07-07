@@ -140,28 +140,57 @@
     function uploadEvent() {
 
 
-        var title = document.getElementById("event_title").value;
-        var description = document.getElementById("text_input").value;
-        var location = document.getElementById("event_location").value;
-        var tag = document.getElementById("event_tag").value;
+        const title = document.getElementById("event_title").value.trim();
+        const description = document.getElementById("text_input").value.trim();
+        const location = document.getElementById("event_location").value.trim();
+        const tag = document.getElementById("event_tag").value.trim();
 
-        var date = document.getElementById("date_input").value;
-        var start_time = document.getElementById("start_time_input").value;
-        var end_time = document.getElementById("end_time_input").value;
-
-
-        var str = new Date().toString().match(/([-\+][0-9]+)\s/)[1];
-        var timeZone = str.slice(0, 3) + ":" + str.slice(3);
-
-        var startTime = date + "T" + start_time + ":00.000" + timeZone;
-        var endTime = date + "T" + end_time + ":00.000"  + timeZone;
-
-        console.log("date: " + date);
-        console.log("start: " + startTime);
-        console.log("end: " + endTime);
+        const date = document.getElementById("date_input").value.trim();
+        const start_time = document.getElementById("start_time_input").value.trim();
+        const end_time = document.getElementById("end_time_input").value.trim();
 
 
-        var event = {
+        const str = new Date().toString().match(/([-\+][0-9]+)\s/)[1];
+        const timeZone = str.slice(0, 3) + ":" + str.slice(3);
+
+        const startTime = date + "T" + start_time + ":00.000" + timeZone;
+        const endTime = date + "T" + end_time + ":00.000"  + timeZone;
+
+
+
+        // check to make sure that the at input has been set
+        if (title === "") {
+            alert("title must be set");
+            return;
+        }
+
+        if (location === "") {
+            alert("location must be set");
+            return;
+        }
+
+        if (description === "") {
+            alert("description must be set");
+            return;
+        }
+
+        if (date === "") {
+            alert("date must be set");
+            return;
+        }
+
+        if (start_time === "") {
+            alert("start_time must be set");
+            return;
+        }
+
+        if (end_time === "") {
+            alert("end_time must be set");
+            return;
+        }
+
+
+        const event = {
             start_time:  startTime,
             end_time: endTime,
             title:  title,
