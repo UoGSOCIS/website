@@ -15,6 +15,8 @@ const numToWords = require("number-to-words");
 
 const authentication = source("authentication");
 const Exec = source("models/exec");
+const Event = source("models/event");
+
 const users = source("models/user");
 
 const response = source("models/responses");
@@ -41,9 +43,71 @@ router.get("/", function(req, res) {
 });
 
 router.get("/events", function(req, res) {
-    res.render("events", {});
+
+    let upcoming = [];
+    let past = [];
+
+    const baseUrl = req.protocol + "://" + req.headers.host + "/events/";
+    Event.getUpcoming("event")
+    .then((events) => {
+
+        events.forEach((event) => {
+            let e =  {
+                url: baseUrl + event.id,
+                title: event.title,
+                date: event.startTime.toLocaleDateString("default", {year: "numeric", month: "long", day: "numeric", }),
+                event_time: event.startTime.toLocaleTimeString("default", {hour12: true, }),
+            };
+            upcoming.push(e);
+        });
+
+        return Event.getPast("event");
+    })
+    .then((events) => {
+
+        events.forEach((event) => {
+            let e =  {
+                url: baseUrl + event.id,
+                title: event.title,
+                date: event.startTime.toLocaleDateString("default", {year: "numeric", month: "long", day: "numeric", }),
+                event_time: event.startTime.toLocaleTimeString("default", {hour12: true, }),
+            };
+            past.push(e);
+        });
+
+        res.render("events", {upComingEvents: upcoming, pastEvents: past, });
+
+    })
+    .catch((err) => {
+        return res.render("error", {whiteBackground: true, message: err.message, status: 500, });
+    });
+
+
 });
 
+
+router.get("/events/:id([0-9a-fA-F]{24})", function(req, res) {
+
+    Event.getById(req.params.id)
+    .then((event) => {
+
+        const content = {
+            title: event.title,
+            location: event.location,
+            date:  event.startTime.toLocaleDateString("default", {year: "numeric", month: "long", day: "numeric", }),
+            start_time: event.startTime.toLocaleTimeString("default", {hour12: true, }),
+            end_time: event.endTime.toLocaleTimeString("default", {hour12: true, }),
+            description: myMarked(event.description),
+        };
+
+
+        res.render("event", content);
+
+    })
+    .catch( (err) => {
+        return res.render("error", {whiteBackground: true, message: err.message, status: 500, });
+    });
+});
 
 router.post("/authenticate", function(req, res, next) {
 
@@ -100,7 +164,7 @@ router.get("/admin/events", function(req, res) {
 });
 
 router.get("/admin/events/create", function(req, res) {
-    res.render("admin_create_event" , {whiteBackground: true, });
+    res.render("admin_create_event", {whiteBackground: true, });
 });
 
 router.get("/admin/exec", function(req, res) {

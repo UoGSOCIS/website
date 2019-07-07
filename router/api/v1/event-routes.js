@@ -53,7 +53,7 @@ r.route("/")
     .setStartTime(req.body.start_time)
     .setEndTime(req.body.end_time)
     .setLocation(req.body.location)
-    .setTitle(req.body.location)
+    .setTitle(req.body.title)
     .setDescription(req.body.description)
     .setTags(req.body.tags);
 

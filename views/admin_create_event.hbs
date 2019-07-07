@@ -2,7 +2,7 @@
 
 
 <div class="container">
-<form>
+<form id="event_form">
     <div class="form-group">
         <label for="event_title">Title</label>
         <input type="txt" class="form-control" id="event_title" placeholder="Enter title">
@@ -11,6 +11,15 @@
     <div class="form-group">
         <label for="event_location">Location</label>
         <input type="txt" class="form-control" id="event_location" placeholder="Enter location">
+    </div>
+
+    <div class="form-group">
+        <label for="event_tag">Tag</label>
+
+        <select name="event_tag" form="event_form" class="form-control" id="event_tag">
+            <option value="event" selected>Event</option>
+            <option value="gcc">GCC</option>
+        </select>
     </div>
     <div class="form-group">
         <label for="datepicker">Date</label>
@@ -74,7 +83,6 @@
 
 
             <div id="preview_area" style="display:none" >
-
             </div>
         </div>
     </div>
@@ -132,48 +140,55 @@
     function uploadEvent() {
 
 
+        var title = document.getElementById("event_title").value;
+        var description = document.getElementById("text_input").value;
+        var location = document.getElementById("event_location").value;
+        var tag = document.getElementById("event_tag").value;
+
         var date = document.getElementById("date_input").value;
         var start_time = document.getElementById("start_time_input").value;
         var end_time = document.getElementById("end_time_input").value;
 
 
-        var startTime = date + "T" + start_time + 
+        var str = new Date().toString().match(/([-\+][0-9]+)\s/)[1];
+        var timeZone = str.slice(0, 3) + ":" + str.slice(3);
+
+        var startTime = date + "T" + start_time + ":00.000" + timeZone;
+        var endTime = date + "T" + end_time + ":00.000"  + timeZone;
 
         console.log("date: " + date);
-        console.log("start: " + start);
-        console.log("end: " + end);
+        console.log("start: " + startTime);
+        console.log("end: " + endTime);
 
-        /*
+
         var event = {
-            name:  document.getElementById("name").value ,
-            email:  document.getElementById("email").value ,
-            year:  document.getElementById("year").value ,
-            role:  document.getElementById("role").value
+            start_time:  startTime,
+            end_time: endTime,
+            title:  title,
+            description:  description,
+            location: location,
+            tags: [tag]
         };
 
-*/
 
-        // upload the post and the attachments here
-        /*
-        $.ajax({url: "/admin/exec",
+        // upload the event and the attachments here
+        $.ajax({url: "/api/v1/events",
             type: "POST",
             contentType: "application/json",
-            data: JSON.stringify(exec),
+            data: JSON.stringify(event),
             complete: function(xhr, status){
 
                 var responseCode = xhr.status;
                 var response = JSON.parse(xhr.responseText);
 
                 if (responseCode === 201) {
-                    uploadFilesForPost(response);
+                    //uploadFilesForPost(response);
+                    alert("event created successfully");
                     return;
                 }
 
                 alert("error! " + response.message);
             },
         });
-
-
-         */
     }
 </script>

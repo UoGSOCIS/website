@@ -135,6 +135,49 @@ class Event {
         });
     }
 
+    static getUpcoming(tag) {
+
+        const now = new Date();
+
+        return EventModel.find({
+            tags: tag,
+            start_time: {$gt: now, },
+        })
+        .sort({start_time: "asc", })
+        .then((results) => {
+
+            let events = [];
+            results.forEach((result) => {
+                let event = new Event();
+                event._model = result;
+                events.push(event);
+            });
+
+            return events;
+        });
+    }
+
+    static getPast(tag) {
+
+        const now = new Date();
+
+        return EventModel.find({
+            tags: tag,
+            start_time: {$lt: now, },
+        })
+        .sort({start_time: "desc", })
+        .then((results) => {
+
+            let events = [];
+            results.forEach((result) => {
+                let event = new Event();
+                event._model = result;
+                events.push(event);
+            });
+
+            return events;
+        });
+    }
 
     save() {
         return Event.isValid(this).then(() => {

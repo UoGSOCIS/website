@@ -11,7 +11,7 @@
             <hr>
 
             {{#if upComingEvents }}
-                {{> eventListLinks upComingEvents }}
+                {{> eventListLinks posts=upComingEvents }}
             {{else}}
                 <p>
                     There are not currently any upcoming events. Check out the <a target="_blank" href="https://www.facebook.com/groups/UoGSOCIS/">Facebook</a> feed to keep yourself up to date about all SOCIS news!
@@ -23,7 +23,7 @@
             <h2>Past Events</h2>
             <hr>
 
-            {{> eventListLinks pastEvents }}
+            {{> eventListLinks posts=pastEvents }}
 
         </article>
     </div>
