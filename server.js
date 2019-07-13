@@ -19,6 +19,11 @@ const helmet = require("helmet");
 
 const server = http.Server(app);
 
+const less = require('less-middleware');
+
+
+
+
 app.set("title", "SOCIS - University of Guelph");
 app.set("case sensitive routing", true);
 app.use(favicon(path.join(config.__projectdir, "/public/img/favicon.ico")));
@@ -27,6 +32,7 @@ app.use(favicon(path.join(config.__projectdir, "/public/img/favicon.ico")));
 app.engine("hbs", views.engine);
 app.set("view engine", "hbs");
 
+app.use(less(path.join(__dirname, 'public')));
 
 /* Configure app middleware */
 // security
@@ -42,6 +48,7 @@ app.use(express.urlencoded({
 }));
 
 app.use(cookieParser());
+
 
 /* Configure session management */
 const sessionSettings = { // set the session
@@ -61,6 +68,7 @@ app.use(router);
 
 // add error handeling middle ware, this will send the error messages
 app.use(middleware.errorHandler);
+
 
 /* set up the database and start the server */
 const database = config.database;

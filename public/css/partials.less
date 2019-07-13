@@ -1,0 +1,38 @@
+/* ======================= partials =======================*/
+
+.flexbox() {
+	display: -webkit-box;
+	display: -moz-box;
+	display: -ms-flexbox;
+	display: -webkit-flex;
+	display: flex;
+}
+
+.background-gradient(@from, @to) {
+	background: -webkit-linear-gradient(@from, @to);
+	background: -o-linear-gradient(@from, @to);
+	background: -moz-linear-gradient(@from, @to);
+	background: linear-gradient(@from, @to);
+}
+
+.transition() {
+	.transition-manual(all, 0.2s, ease);
+}
+
+.transition-manual(@which, @duration, @how) {
+	-moz-transition: @which @duration @how;
+	-o-transition: @which @duration @how;
+	-webkit-transition: @which @duration @how;
+	transition: @which @duration @how;
+}
+
+.link(@from, @to) {
+	color: @from;
+	text-decoration: none;
+	.transition();
+
+	&:hover, &:focus, &:active {
+		color: @to;
+		text-decoration: none;
+	}
+}
