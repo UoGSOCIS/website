@@ -3061,7 +3061,12 @@
   color: green; }
 
 .action-btn:hover {
-  text-decoration: underline; }
+  text-decoration: underline;
+  cursor: pointer; }
 
 .action-btn.add:hover {
-  background-color: rgba(0, 0, 0, 0.17); }
+  border-radius: 4px;
+  z-index: 1; }
+  .action-btn.add:hover span {
+    position: block;
+    z-index: 2; }

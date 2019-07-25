@@ -91,6 +91,7 @@
             }
             option.value = i;
             option.innerText = i;
+            option.onclick = 
 
             spinner.add(option);
         }
@@ -98,6 +99,15 @@
 
     function changeRole(spinner) {
         document.getElementById("newExecRole").innerHTML = spinner.innerText;
+    }
+
+    function clearCreateExecModal() {
+        var newExecEmail = $("table > tbody > tr:last > td > input#newExecEmail");
+        var newExecName = $("table > tbody > tr:last > td > input#newExecName");
+        console.log(newExecEmail);
+        console.log(newExecName);
+        newExecEmail.get(0).value = "";
+        newExecName.get(0).value = "";
     }
 
     function closeCreateExecModal() {
@@ -116,10 +126,16 @@
                 "<td class=\"padding-top-10\">" + 
                     "<span id=\"newExecRole\">{{initialRole.name}}</span>" + 
                 "</td>" + 
-                "<td><input id=\"newExecEmail\" class=\"form-control\" type=\"text\" value=\"{{emailDomain}}\"></td>" + 
-                "<td><input id=\"newExecName\" class=\"form-control\" type=\"text\"></td>" + 
-                "<td>" + 
+                "<td><input id=\"newExecEmail\" class=\"form-control\" type=\"text\" value=\"\" placeholder=\"Enter Email...\"></td>" + 
+                "<td><input id=\"newExecName\" class=\"form-control\" type=\"text\" value=\"\" placeholder=\"Enter Name...\"></td>" + 
+                "<td class=\"centered\">" + 
                     "<div class=\"button-group\">" + 
+                        "<button class=\"cancel\" onclick=\"clearCreateExecModal()\">" +
+                            "Clear" + 
+                        "</button>" +
+                        "<button class=\"save\" onclick=\"createExec()\">" + 
+                            "Save" + 
+                        "</button>" +
                     "</div>" + 
                 "</td>" + 
             "</tr>"
@@ -139,11 +155,15 @@
             role: $("#role option:selected")[0].value
         };
 
-        var currExecRostEmails = document.querySelectorAll("tr#currentExecRoster > td#currentExecEmail > input");
+        var currExecRostEmails = document.querySelectorAll("tr#currentExecRoster > td#currentExecEmail");
+        console.log(currExecRostEmails);
         var duplicateExec = false;
 
         for (var i = 0; i < currExecRostEmails.length; i++) {
-            var emailValue = currExecRostEmails[i].getAttribute("value");
+            var emailValue = (currExecRostEmails[i].firstChild.getAttribute("value")) != null && (currExecRostEmails[i].firstChild.innerText∂) ? currExecRostEmails[i].firstChild.getAttribute("value") : currExecRostEmails[i].firstChild.getAttribute.innerText;
+            console.log(currExecRostEmails[i].firstChild.innerText);
+            console.log(emailValue);
+            console.log(exec.email);
             if (emailValue === exec.email) {
                 console.error("Duplicate Email!");
                 return;

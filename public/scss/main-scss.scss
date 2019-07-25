@@ -42,8 +42,12 @@
 
 .action-btn:hover {
     text-decoration: underline;
+    cursor: pointer;
 }
 
 .action-btn.add:hover {
-    background-color: rgba(0,0,0,0.17);
+    border-radius: 4px;
+    span {
+        position: block;
+    }
 }
