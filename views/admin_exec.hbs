@@ -176,8 +176,10 @@
                 if (responseCode === 201) {
                     var response = JSON.parse(xhr.responseText);
                     uploadFilesForPost(response);
+                    location.reload();
                     return;
                 } else if (responseCode === 200) {
+                    location.reload();
                     return;
                 }
 
