@@ -134,6 +134,37 @@ router.get("/admin/exec", function(req, res) {
         return res.render("error", {whiteBackground: true, message: err.message, status: 500, });
     });
 });
+
+/**
+ * Get admin roster page for executives of a certain year
+ * 
+ * @param exec Executive Role to be queried
+ * @param year Year which is to be looked up
+ */
+router.get("/admin/:exec/:year", function (req, res) {
+    const currentYear = req.params.year;
+    const execRole = req.params.exec;
+
+    Exec.getExecForYear(currentYear, { role : execRole})
+    .then((exec) => {
+        res.render("admin_exec", {
+            whiteBackground: true,
+            currentExec: exec,
+            roles: execRoles,
+            initialRole: roles[0],
+        }, function (err, html) {
+            if (err) {
+                console.log(err);
+                return res.render("error", {whiteBackground: true, message: err.message, status: 500, err:err, });
+            } else {
+                res.send(html);
+            }
+        });
+    })
+    .catch((err) => {
+        return res.render("error", {whiteBackground: true, message: err.message, status: 500, });
+    });
+});
 /*
 
 router.post("/admin/exec", function(req, res) {
