@@ -8,7 +8,7 @@
                 <label for="email">Year:</label>
             </div>
             <div class="col-12 col-sm-6 col-md-3">
-                <select name="year" id="year" class="form-control">
+                <select name="year" id="year" class="form-control" onchange="getExec()">
                 </select>
             </div>
         </div>
@@ -18,7 +18,7 @@
                 <label name="role" for="email">Role:</label>
             </div>
             <div class="col-12 col-sm-6 col-md-3">
-                <select name="role" id="role" onchange="changeRole(this.options[this.selectedIndex])"
+                <select name="role" id="role" onchange="getExec()"
                     class="form-control">
                     {{#each roles}}
                     <option value="{{this.value}}">{{this.name}}</option>
@@ -82,9 +82,11 @@
     function load() {
         var spinner = document.getElementById("year");
         var currentYear = new Date().getFullYear();
+        var role = $("#role");
 
         for (var i = currentYear - 3; i < currentYear + 3; i++) {
             var option = document.createElement("option");
+            var optionValue = role.get(0).options[role.get(0).selectedIndex].value;
 
             if (i === currentYear) {
                 option.selected = true;
@@ -96,8 +98,10 @@
         }
     }
 
-    function changeRole(spinner) {
-        document.getElementById("newExecRole").innerHTML = spinner.innerText;
+    function getExec() {
+        var role = $("#role").get(0);
+        var year = $("#year").get(0);
+        window.location = "/admin/" + role.options[role.selectedIndex].value + "/" + year.options[year.selectedIndex].value
     }
 
     function clearCreateExecModal() {
