@@ -168,7 +168,7 @@ class Exec {
             results.forEach((result) => {
                 let exec = new Exec();
                 exec._model = result;
-                exec.push(exec);
+                execs.push(exec);
             })
 
             return execs;
