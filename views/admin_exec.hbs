@@ -30,7 +30,7 @@
     </div>
 </form>
 
-<div class="container">
+<div id="execTable" class="container">
     <h3>Current Execs</h3>
     <div class="padding-left-20 padding-right-20">
         <table class="table table-striped margin-bottom-0">
@@ -79,23 +79,27 @@
     var execForm;
     var execList;
 
-    function load() {
-        var spinner = document.getElementById("year");
-        var currentYear = new Date().getFullYear();
-        var role = $("#role");
-
-        for (var i = currentYear - 3; i < currentYear + 3; i++) {
-            var option = document.createElement("option");
-            var optionValue = role.get(0).options[role.get(0).selectedIndex].value;
-
-            if (i === currentYear) {
-                option.selected = true;
-            }
-            option.value = i;
-            option.innerText = i;
-
-            spinner.add(option);
+    function getDefaultYear() {
+        var route = window.location.pathname.split("/");
+        if (route.length === 4) {
+            return route[3];
+        } else {
+            return new Date().getFullYear();
         }
+    }
+
+    function load() {
+        var spinner = $("select#year");
+        var currentYear = new Date().getFullYear();
+        var defaultYear = getDefaultYear();
+        var option;
+
+        for (var i = currentYear + 1; i > currentYear - 5; i--) {
+            option = new Option(i, i, i === parseInt(defaultYear),);
+            $(option).html(i);
+            spinner.append(option);
+        }
+        spinner.get(0).selectedIndex = (currentYear - defaultYear);
     }
 
     function getExec() {
@@ -107,8 +111,6 @@
     function clearCreateExecModal() {
         var newExecEmail = $("table > tbody > tr:last > td > input#newExecEmail");
         var newExecName = $("table > tbody > tr:last > td > input#newExecName");
-        console.log(newExecEmail);
-        console.log(newExecName);
         newExecEmail.get(0).value = "";
         newExecName.get(0).value = "";
     }
@@ -144,7 +146,6 @@
             "</tr>"
         );
         var addBtn = $(".action-btn.add");
-        console.log(addBtn[0]);
         addBtn[0].innerHTML = "<span>Cancel</span>";
         addBtn[0].classList.replace("add", "cancel");
         addBtn[0].onclick = closeCreateExecModal;
@@ -159,7 +160,6 @@
         };
 
         var currExecRostEmails = document.querySelectorAll("tr#currentExecRoster > td#currentExecEmail");
-        console.log(currExecRostEmails);
         var duplicateExec = false;
 
         // upload the post and the attachments here
@@ -170,7 +170,6 @@
             contentType: "application/json",
             data: JSON.stringify(exec),
             complete: function (xhr, status) {
-
                 var responseCode = xhr.status;
 
                 if (responseCode === 201) {
