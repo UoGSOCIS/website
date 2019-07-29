@@ -3055,18 +3055,27 @@
   vertical-align: middle; }
 
 .action-btn.remove {
-  color: red; }
+  color: #bb0f0f; }
 
 .action-btn.add {
-  color: green; }
+  color: #2d792d; }
 
 .action-btn:hover {
   text-decoration: underline;
   cursor: pointer; }
 
 .action-btn.add:hover {
-  border-radius: 4px;
-  z-index: 1; }
+  border-radius: 4px; }
   .action-btn.add:hover span {
-    position: block;
-    z-index: 2; }
+    position: block; }
+
+modal.error {
+  background-color: #e29999;
+  color: #bb0f0f; }
+
+modal.success {
+  background-color: #a7f1a7;
+  color: #2d792d; }
+
+.hidden {
+  display: none; }

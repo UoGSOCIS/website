@@ -33,11 +33,11 @@
 }
 
 .action-btn.remove {
-    color: red;
+    color: $red;
 }
 
 .action-btn.add {
-    color: green;
+    color: $green;
 }
 
 .action-btn:hover {
@@ -50,4 +50,20 @@
     span {
         position: block;
     }
+}
+
+modal {
+    &.error {
+        background-color: $lightest-red;
+        color: $red;
+    }
+
+    &.success {
+        background-color: $lightest-green;
+        color: $green;
+    }
+}
+
+.hidden {
+    display: none;
 }
