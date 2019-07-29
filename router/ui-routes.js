@@ -11,6 +11,8 @@ const express = require("express");
 const router = express.Router();
 const source = require("rfr");
 
+const logger = source("logger");
+
 const numToWords = require("number-to-words");
 
 const authentication = source("authentication");
@@ -28,11 +30,11 @@ const myMarked = require("marked");
 const execRoles = [
     {
         name: "Senior Representative",
-        value: "senior-rep"
+        value: "senior-rep",
     },
     {
         name: "Junior Representative",
-        value: "junior-rep"
+        value: "junior-rep",
     }
 ];
 
@@ -123,8 +125,9 @@ router.get("/admin/exec", function(req, res) {
             initialRole: execRoles[0],
         }, function(err, html) {
             if (err) {
-                console.log(err);
+                logger.error(err);
                 return res.render("error", {whiteBackground: true, message: err.message, status: 500, err:err, });
+            // eslint-disable-next-line no-else-return
             } else {
                 res.send(html);
             }
@@ -145,17 +148,21 @@ router.get("/admin/:exec/:year", function (req, res) {
     const currentYear = req.params.year;
     const execRole = req.params.exec;
 
-    Exec.getExecForYear(currentYear, { role : execRole})
+    Exec.find({ 
+        role : execRole, 
+        year : currentYear, 
+    })
     .then((exec) => {
         res.render("admin_exec", {
             whiteBackground: true,
             currentExec: exec,
             roles: execRoles,
-            initialRole: roles[0],
+            initialRole: execRole,
         }, function (err, html) {
             if (err) {
-                console.log(err);
+                logger.error(err);
                 return res.render("error", {whiteBackground: true, message: err.message, status: 500, err:err, });
+            // eslint-disable-next-line no-else-return
             } else {
                 res.send(html);
             }
