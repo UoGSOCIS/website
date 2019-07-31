@@ -47,7 +47,7 @@
                 <tr id="currentExecRoster" >
                     <td class="padding-top-10">{{this.role}}</td>
                     <td id="currentExecEmail">
-                        <span>{{this.email}}</span>
+                        <span id="execEmail">{{this.email}}</span>
                         <span id="execId" class="hidden">{{this.id}}</span>
                     </td>
                     <td id="currentExecName"><span>{{this.name}}</span></td>
@@ -64,7 +64,7 @@
                         </div>
                         <div id="cancel-save" class="button-group hidden">
                             <button class="cancel" onclick="cancelEdit(this.parentElement.parentElement.parentElement)">Cancel</button>
-                            <button class="save">Save</button>
+                            <button class="save" onclick="saveEdit(this.parentElement.parentElement.parentElement)">Save</button>
                         </div>
                     </td>
                 </tr>
@@ -146,8 +146,8 @@
     }
 
     function openCreateExecModal() {
-        var lastRow = $("table > tbody > tr:last");
-        lastRow.after(
+        var table = $("table > tbody");
+        table.append(
             "<tr>" + 
                 "<td class=\"padding-top-10\">" + 
                     "<span id=\"newExecRole\">{{initialRole.name}}</span>" + 
@@ -210,7 +210,7 @@
         var name = row.querySelector("td#currentExecName");
         var email = row.querySelector("td#currentExecEmail");
         name.innerHTML = "<input type=\"text\" class=\"form-control\" value=\"" + name.querySelector("span").innerText + "\">";
-        email.innerHTML = "<input type=\"text\" class=\"form-control\" value=\"" + email.querySelector("span").innerText + "\">";
+        email.innerHTML = "<input type=\"text\" class=\"form-control\" value=\"" + email.querySelector("span#execEmail").innerText + "\">" + email.querySelector("span#execId").outerHTML;
         row.querySelector("td > div#cancel-save").classList.remove("hidden");
         row.querySelector("td > div#edit-remove").classList.add("hidden");
     }
@@ -225,10 +225,30 @@
     }
 
     function saveEdit(row) {
-        var execId;
-        var execName;
-        var execEmail;
-        var execRole;
+        var exec = {
+            id: row.querySelector("td#currentExecEmail > span#execId").innerText,
+            name: row.querySelector("td#currentExecName > input").value,
+            email: row.querySelector("td#currentExecEmail > input").value,
+            role: getDefaultRole(),
+            year: getDefaultYear(),
+        }
+
+        $.ajax({
+            url: "/api/v1/execs",
+            type: "PATCH",
+            contentType: "application/json",
+            data: JSON.stringify([exec]),
+            complete: (xhr, status) => {
+                var responseCode = xhr.status;
+
+                if (responseCode === 200 || responseCode === 204) {
+                    createSuccessModal();
+                    cancelEdit(row);
+                } else {
+                    createErrorModal();
+                }
+            }
+        });
     }
 
     function removeExec(exec) {
