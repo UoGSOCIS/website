@@ -3028,6 +3028,9 @@
 .padding-top-100 {
   padding-top: 100px !important; }
 
+body .button-group * {
+  display: inline; }
+
 body .button-group button {
   margin: 0;
   border-radius: 4px;

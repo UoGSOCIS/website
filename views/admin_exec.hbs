@@ -52,18 +52,20 @@
                     </td>
                     <td id="currentExecName"><span>{{this.name}}</span></td>
                     <td class="centered">
-                        <div id="edit" class="action-btn padding-top-0" onclick="editRow(this.parentElement.parentElement)">
-                            <span>Edit</span>
+                        <div id="edit-remove" class="button-group">
+                            <div id="edit" class="action-btn" onclick="editRow(this.parentElement.parentElement.parentElement)">
+                                <span>Edit</span>
+                            </div>
+                            <div id="remove" class="action-btn remove padding-top-15"
+                                onclick="removeExec(this.parentNode.parentNode.parentNode)">
+                                <span class="fas fa-minus-circle"></span>
+                                <span>Remove</span>
+                            </div>
                         </div>
-                        <div id="buttons" class="button-group hidden">
+                        <div id="cancel-save" class="button-group hidden">
                             <button class="cancel" onclick="cancelEdit(this.parentElement.parentElement.parentElement)">Cancel</button>
                             <button class="save">Save</button>
                         </div>
-                        <div id="remove" class="action-btn remove padding-top-15 hidden"
-                            onclick="removeExec(this.parentNode.parentNode)">
-                        <span class="fas fa-minus-circle"></span>
-                        <span>Remove</span>
-                    </div>
                     </td>
                 </tr>
                 {{/each}}
@@ -103,7 +105,6 @@
         var spinner = $("select#year");
         var roleSpinner = $("select#role");
         var roleSpinnerOptions = roleSpinner.get(0).options;
-        console.log(roleSpinnerOptions);
         var currentYear = new Date().getFullYear();
         var defaultYear = getDefaultYear();
         var option;
@@ -210,9 +211,8 @@
         var email = row.querySelector("td#currentExecEmail");
         name.innerHTML = "<input type=\"text\" class=\"form-control\" value=\"" + name.querySelector("span").innerText + "\">";
         email.innerHTML = "<input type=\"text\" class=\"form-control\" value=\"" + email.querySelector("span").innerText + "\">";
-        // row.querySelector("td > div#remove").classList.remove("hidden");
-        row.querySelector("td > div#buttons").classList.remove("hidden");
-        row.querySelector("td > div#edit").classList.add("hidden");
+        row.querySelector("td > div#cancel-save").classList.remove("hidden");
+        row.querySelector("td > div#edit-remove").classList.add("hidden");
     }
 
     function cancelEdit(row) {
@@ -220,21 +220,28 @@
         var email = row.querySelector("td#currentExecEmail");
         name.innerHTML = "<span>" + name.querySelector("input").value + "<span>";
         email.innerHTML = "<span>" + email.querySelector("input").value + "<span>";   
-        row.querySelector("td > div#edit").classList.remove("hidden");
-        row.querySelector("td > div#buttons").classList.add("hidden");
-        row.querySelector("td > div#remove").classList.add("hidden");
+        row.querySelector("td > div#edit-remove").classList.remove("hidden");
+        row.querySelector("td > div#cancel-save").classList.add("hidden");
+    }
+
+    function saveEdit(row) {
+        var execId;
+        var execName;
+        var execEmail;
+        var execRole;
     }
 
     function removeExec(exec) {
+        var execId = exec.querySelector("td#currentExecEmail > span#execId");
         $.ajax({
-            url: "/api/v1/" + exec.querySelector("td#currentExecEmail > span#execId").innerText,
+            url: "/api/v1/execs/" + exec.querySelector("td#currentExecEmail > span#execId").innerText,
             type: "DELETE",
             complete: (xhr, status) => {
                 var responseCode = xhr.status;
 
-                if (responseCode === 200) {
-                    exec.parentNode.removeChild(exec);
+                if (responseCode === 200 || responseCode === 204) {
                     createSuccessModal();
+                    exec.parentNode.removeChild(exec);
                 } else {
                     createErrorModal();
                 }
@@ -244,7 +251,6 @@
 
     function createSuccessModal() {
         closeModal();
-        console.log("Create Modal");
         var successModal = $("modal");
         successModal.removeClass("hidden");
         successModal.addClass("success");

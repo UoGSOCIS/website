@@ -4,6 +4,10 @@
 
 body {
     .button-group {
+        * {
+            display: inline;
+        }
+        
         button {
             margin:0;
             border-radius:4px;
