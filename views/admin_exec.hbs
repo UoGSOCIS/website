@@ -46,19 +46,21 @@
                 {{#each currentExec}}
                 <tr id="currentExecRoster" >
                     <td class="padding-top-10">{{this.role}}</td>
-                    <td id="currentExecEmail"><span>{{this.email}}</span></td>
+                    <td id="currentExecEmail">
+                        <span>{{this.email}}</span>
+                        <span id="execId" class="hidden">{{this.id}}</span>
+                    </td>
                     <td id="currentExecName"><span>{{this.name}}</span></td>
                     <td class="centered">
                         <div id="edit" class="action-btn padding-top-0" onclick="editRow(this.parentElement.parentElement)">
                             <span>Edit</span>
                         </div>
-                        <div id="buttons" class="button-group" style="display:none">
+                        <div id="buttons" class="button-group hidden">
                             <button class="cancel" onclick="cancelEdit(this.parentElement.parentElement.parentElement)">Cancel</button>
                             <button class="save">Save</button>
                         </div>
-                        <div id="remove" class="action-btn remove padding-top-15"
-                            onclick="removeExec(this.parentNode.parentNode)" 
-                            style="display:none">
+                        <div id="remove" class="action-btn remove padding-top-15 hidden"
+                            onclick="removeExec(this.parentNode.parentNode)">
                         <span class="fas fa-minus-circle"></span>
                         <span>Remove</span>
                     </div>
@@ -72,12 +74,12 @@
             <span>Add New Exec</span>
         </div>
     </div>
-
 </div>
+
+<modal class="hidden"></modal>
 <script type="text/javascript">
     window.onload = load;
-    var execForm;
-    var execList;
+    var modalTimer;
 
     function getDefaultYear() {
         var route = window.location.pathname.split("/");
@@ -88,8 +90,20 @@
         }
     }
 
+    function getDefaultRole() {
+        var route = window.location.pathname.split("/");
+        if (route.length === 4) {
+            return route[2];
+        } else {
+            return "senior-rep";
+        }
+    }
+
     function load() {
         var spinner = $("select#year");
+        var roleSpinner = $("select#role");
+        var roleSpinnerOptions = roleSpinner.get(0).options;
+        console.log(roleSpinnerOptions);
         var currentYear = new Date().getFullYear();
         var defaultYear = getDefaultYear();
         var option;
@@ -99,7 +113,13 @@
             $(option).html(i);
             spinner.append(option);
         }
-        spinner.get(0).selectedIndex = (currentYear - defaultYear);
+        spinner.get(0).selectedIndex = (currentYear + 1 - defaultYear);
+
+        for (var i = 0; i < roleSpinnerOptions.length; i++) {
+            if (roleSpinnerOptions[i].value === getDefaultRole()) {
+                roleSpinner.get(0).selectedIndex = i;
+            }
+        }
     }
 
     function getExec() {
@@ -156,33 +176,31 @@
             name: document.getElementById("newExecName").value,
             email: document.getElementById("newExecEmail").value,
             year: document.getElementById("year").value,
-            role: $("#role option:selected")[0].value
+            role: $("#role option:selected")[0].value,
+            order: 0,
         };
-
-        var currExecRostEmails = document.querySelectorAll("tr#currentExecRoster > td#currentExecEmail");
-        var duplicateExec = false;
-
         // upload the post and the attachments here
 
         $.ajax({
-            url: "/admin/exec",
+            url: "/api/v1/execs",
             type: "POST",
             contentType: "application/json",
-            data: JSON.stringify(exec),
-            complete: function (xhr, status) {
+            data: JSON.stringify([exec]),
+            complete: (xhr, status) => {
                 var responseCode = xhr.status;
 
                 if (responseCode === 201) {
                     var response = JSON.parse(xhr.responseText);
-                    uploadFilesForPost(response);
+                    createSuccessModal();
                     location.reload();
                     return;
                 } else if (responseCode === 200) {
+                    createSuccessModal();
                     location.reload();
                     return;
                 }
 
-                alert("error! " + response.message);
+                createErrorModal();
                 },
         });
     }
@@ -192,11 +210,9 @@
         var email = row.querySelector("td#currentExecEmail");
         name.innerHTML = "<input type=\"text\" class=\"form-control\" value=\"" + name.querySelector("span").innerText + "\">";
         email.innerHTML = "<input type=\"text\" class=\"form-control\" value=\"" + email.querySelector("span").innerText + "\">";
-        // row.querySelector("td > div#remove").style.display = "inline-block";
-        row.querySelector("td > div#buttons").style.display = "inline-table";
-        row.querySelector("td > div#edit").style.display = "none";
-
-
+        // row.querySelector("td > div#remove").classList.remove("hidden");
+        row.querySelector("td > div#buttons").classList.remove("hidden");
+        row.querySelector("td > div#edit").classList.add("hidden");
     }
 
     function cancelEdit(row) {
@@ -204,19 +220,55 @@
         var email = row.querySelector("td#currentExecEmail");
         name.innerHTML = "<span>" + name.querySelector("input").value + "<span>";
         email.innerHTML = "<span>" + email.querySelector("input").value + "<span>";   
-        row.querySelector("td > div#edit").style.display = "initial";
-        row.querySelector("td > div#buttons").style.display = "none";
-        row.querySelector("td > div#remove").style.display = "none";
+        row.querySelector("td > div#edit").classList.remove("hidden");
+        row.querySelector("td > div#buttons").classList.add("hidden");
+        row.querySelector("td > div#remove").classList.add("hidden");
     }
 
     function removeExec(exec) {
-        exec.parentNode.removeChild(exec);
-        /* $.ajax({
-            url: "/admin/exec/execId:",
+        $.ajax({
+            url: "/api/v1/" + exec.querySelector("td#currentExecEmail > span#execId").innerText,
             type: "DELETE",
-            data:
+            complete: (xhr, status) => {
+                var responseCode = xhr.status;
 
-        }); */
+                if (responseCode === 200) {
+                    exec.parentNode.removeChild(exec);
+                    createSuccessModal();
+                } else {
+                    createErrorModal();
+                }
+            },
+        });
+    }
+
+    function createSuccessModal() {
+        closeModal();
+        console.log("Create Modal");
+        var successModal = $("modal");
+        successModal.removeClass("hidden");
+        successModal.addClass("success");
+        successModal.get(0).innerHTML = "<i class=\"fas fa-times close pointer\" onclick=\"closeModal()\"></i>" + 
+        " Success!";
+        modalTimer = setTimeout(closeModal, 10000);
+    }
+
+    function createErrorModal(message) {
+        closeModal();
+        var errorModal = $("modal");
+        errorModal.removeClass("hidden");
+        errorModal.addClass("error");
+        errorModal.get(0).innerHTML = "<i class=\"fas fa-times close pointer\" onclick=\"closeModal()\"></i>" + 
+        ((message && message.length > 0) ? message : " Oops something went wrong.");
+        modalTimer = setTimeout(closeModal, 10000);
+    }
+
+    function closeModal() {
+        clearTimeout(modalTimer);
+        var modal = $("modal");
+        modal.get(0).innerHTML = "";
+        modal.removeClass();
+        modal.addClass("hidden");
     }
 
 </script>

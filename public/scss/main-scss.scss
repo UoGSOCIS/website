@@ -2,68 +2,95 @@
 @import "./mixins/padding.scss";
 @import "variables";
 
-.button-group {
-    button {
-        margin:0;
-        border-radius:4px;
-        padding:7px;
+body {
+    .button-group {
+        button {
+            margin:0;
+            border-radius:4px;
+            padding:7px;
+        }
+        button:first-child {
+            margin:0;
+            border-radius:4px;
+            padding:7px;
+        }
+        button:last-child{
+            margin:0;
+            border-radius:4px;
+            padding:7px;
+        }
+        .save {
+            background: $guelph-red;
+            color: white;
+        }
+        .cancel {
+            background: $lightest-gray;
+        }
     }
-    button:first-child {
-        margin:0;
-        border-radius:4px;
-        padding:7px;
+    
+    .action-btn {
+        text-align: center;
+        vertical-align: middle;
     }
-    button:last-child{
-        margin:0;
-        border-radius:4px;
-        padding:7px;
-    }
-    .save {
-        background: $guelph-red;
-        color: white;
-    }
-    .cancel {
-        background: $lightest-gray;
-    }
-}
-
-.action-btn {
-    text-align: center;
-    vertical-align: middle;
-}
-
-.action-btn.remove {
-    color: $red;
-}
-
-.action-btn.add {
-    color: $green;
-}
-
-.action-btn:hover {
-    text-decoration: underline;
-    cursor: pointer;
-}
-
-.action-btn.add:hover {
-    border-radius: 4px;
-    span {
-        position: block;
-    }
-}
-
-modal {
-    &.error {
-        background-color: $lightest-red;
+    
+    .action-btn.remove {
         color: $red;
     }
-
-    &.success {
-        background-color: $lightest-green;
+    
+    .action-btn.add {
         color: $green;
     }
-}
+    
+    .action-btn:hover {
+        text-decoration: underline;
+        cursor: pointer;
+    }
+    
+    .action-btn.add:hover {
+        border-radius: 4px;
+        span {
+            position: block;
+        }
+    }
+    
+    modal {
+        border: solid 1px;
+        border-radius: 7px;
+        padding: 18px 12px;
+        position: absolute;
+        z-index: 999;
+    
+        &.error {
+            background-color: $lightest-red;
+            color: $red;
+            border-color: $medium-red;
+            text-align: center;
+            bottom: 50px;
+            right: 41%;
+        }
+    
+        &.success {
+            background-color: $lightest-green;
+            color: $green;
+            border-color: $medium-green;
+            text-align: center;
+            bottom: 50px;
+            right: 45%;
+        }
 
-.hidden {
-    display: none;
+        .close {
+            position: absolute;
+            display: inline-block;
+            top: 2px;
+            right: 5px;
+        }
+    }
+    
+    .hidden {
+        display: none;
+    }
+
+    .pointer {
+        cursor: pointer;
+    }
 }
