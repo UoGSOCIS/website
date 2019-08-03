@@ -18,6 +18,9 @@ const Error = response.Error;
 const middleware = source("middleware");
 const requireHeaders = middleware.requireHeaders;
 
+const multer = require('multer');
+var upload = multer({ dest: 'public/img/' });
+
 const mongoose = require("mongoose");
 const ValidationError = mongoose.Error.ValidationError;
 
