@@ -19,6 +19,7 @@ const renderer = expresshbs.create({
     // see http://handlebarsjs.com/expressions.html#helpers
     defaultLayout: "main",
     extname: ".hbs",
+    helpers: require("./helpers/handlebars.js")().helpers,
 });
 
 

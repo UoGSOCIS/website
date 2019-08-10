@@ -45,7 +45,7 @@
             <tbody id="mainTable" >
                 {{#each currentExec}}
                 <tr id="currentExecRoster" >
-                    <td class="padding-top-10">{{this.role}}</td>
+                    <td class="padding-top-10">{{#translate this.role}}{{/translate}}</td>
                     <td id="currentExecEmail">
                         <span id="execEmail">{{this.email}}</span>
                         <span id="execId" class="hidden">{{this.id}}</span>
@@ -157,7 +157,7 @@
         table.append(
             "<tr>" + 
                 "<td class=\"padding-top-10\">" + 
-                    "<span id=\"newExecRole\">{{initialRole}}</span>" + 
+                    "<span id=\"newExecRole\">{{#translate initialRole}}{{/translate}}</span>" + 
                 "</td>" + 
                 "<td><input id=\"newExecEmail\" class=\"form-control\" type=\"text\" value=\"\" placeholder=\"Enter Email...\"></td>" + 
                 "<td><input id=\"newExecName\" class=\"form-control\" type=\"text\" value=\"\" placeholder=\"Enter Name...\"></td>" + 
