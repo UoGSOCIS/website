@@ -52,14 +52,17 @@
                     </td>
                     <td id="currentExecName"><span>{{this.name}}</span></td>
                     <td class="centered">
-                        <div id="edit-remove" class="button-group">
-                            <div id="edit" class="action-btn" onclick="editRow(this.parentElement.parentElement.parentElement)">
-                                <span>Edit</span>
+                        <div id="edit-remove">
+                            <div id="edit" class="action-btn edit">
+                                <button onclick="editRow(this.parentElement.parentElement.parentElement.parentElement)">
+                                    <span>Edit</span>
+                                </button>
                             </div>
-                            <div id="remove" class="action-btn remove padding-top-15"
-                                onclick="removeExec(this.parentNode.parentNode.parentNode)">
-                                <span class="fas fa-minus-circle"></span>
-                                <span>Remove</span>
+                            <div id="remove" class="action-btn remove padding-top-15">
+                                <button onclick="removeExec(this.parentElement.parentElement.parentElement.parentElement)">
+                                    <span class="fas fa-minus-circle"></span>
+                                    <span>Remove</span>
+                                </button>
                             </div>
                         </div>
                         <div id="cancel-save" class="button-group hidden">
@@ -71,14 +74,18 @@
                 {{/each}}
             </tbody>
         </table>
-        <div class="action-btn add padding-10" onclick="openCreateExecModal()">
-            <span class="fas fa-plus-circle"></span>
-            <span>Add New Exec</span>
+        <div class="container-fluid centered">
+            <div class="action-btn add padding-10" onclick="openCreateExecModal()">
+                <span class="fas fa-plus-circle"></span>
+                <span>Add New Exec</span>
+            </div>
         </div>
     </div>
 </div>
 
-<modal class="hidden"></modal>
+<div class="modal-wrapper">
+    <modal class="hidden"></modal>
+</div>
 <script type="text/javascript">
     window.onload = load;
     var modalTimer;
@@ -150,7 +157,7 @@
         table.append(
             "<tr>" + 
                 "<td class=\"padding-top-10\">" + 
-                    "<span id=\"newExecRole\">{{initialRole.name}}</span>" + 
+                    "<span id=\"newExecRole\">{{initialRole}}</span>" + 
                 "</td>" + 
                 "<td><input id=\"newExecEmail\" class=\"form-control\" type=\"text\" value=\"\" placeholder=\"Enter Email...\"></td>" + 
                 "<td><input id=\"newExecName\" class=\"form-control\" type=\"text\" value=\"\" placeholder=\"Enter Name...\"></td>" + 
@@ -218,8 +225,8 @@
     function cancelEdit(row) {
         var name = row.querySelector("td#currentExecName");
         var email = row.querySelector("td#currentExecEmail");
-        name.innerHTML = "<span>" + name.querySelector("input").value + "<span>";
-        email.innerHTML = "<span>" + email.querySelector("input").value + "<span>";   
+        name.innerHTML = "<span>" + name.querySelector("input").value + "</span>";
+        email.innerHTML = "<span id=\"execEmail\">" + email.querySelector("input").value + "</span>" + email.querySelector("span#execId").outerHTML;   
         row.querySelector("td > div#edit-remove").classList.remove("hidden");
         row.querySelector("td > div#cancel-save").classList.add("hidden");
     }
@@ -274,8 +281,8 @@
         var successModal = $("modal");
         successModal.removeClass("hidden");
         successModal.addClass("success");
-        successModal.get(0).innerHTML = "<i class=\"fas fa-times close pointer\" onclick=\"closeModal()\"></i>" + 
-        " Success!";
+        successModal.get(0).innerHTML = "<div>Success!" + 
+        "<i class=\"fas fa-sm fa-times close-icon pointer\" onclick=\"closeModal()\"></i> </div>";
         modalTimer = setTimeout(closeModal, 10000);
     }
 
@@ -284,7 +291,7 @@
         var errorModal = $("modal");
         errorModal.removeClass("hidden");
         errorModal.addClass("error");
-        errorModal.get(0).innerHTML = "<i class=\"fas fa-times close pointer\" onclick=\"closeModal()\"></i>" + 
+        errorModal.get(0).innerHTML = "<i class=\"fas fa-sm fa-times close-icon pointer\" onclick=\"closeModal()\"></i>" + 
         ((message && message.length > 0) ? message : " Oops something went wrong.");
         modalTimer = setTimeout(closeModal, 10000);
     }

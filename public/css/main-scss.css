@@ -3055,7 +3055,12 @@ body .button-group .cancel {
 
 body .action-btn {
   text-align: center;
-  vertical-align: middle; }
+  vertical-align: middle;
+  display: inline; }
+  body .action-btn button {
+    border-radius: 4px;
+    background-color: #fdfdfd;
+    padding: 7px; }
 
 body .action-btn.remove {
   color: #bb0f0f; }
@@ -3064,7 +3069,6 @@ body .action-btn.add {
   color: #2d792d; }
 
 body .action-btn:hover {
-  text-decoration: underline;
   cursor: pointer; }
 
 body .action-btn.add:hover {
@@ -3072,31 +3076,39 @@ body .action-btn.add:hover {
   body .action-btn.add:hover span {
     position: block; }
 
+body .modal-wrapper {
+  width: 100%;
+  position: absolute;
+  bottom: 50px; }
+
 body modal {
   border: solid 1px;
   border-radius: 7px;
-  padding: 18px 12px;
-  position: absolute;
-  z-index: 999; }
+  padding: 20px 12px;
+  width: 360px;
+  margin: auto;
+  display: block;
+  z-index: 990; }
   body modal.error {
     background-color: #e29999;
     color: #bb0f0f;
     border-color: #a72c2c;
-    text-align: center;
-    bottom: 50px;
-    right: 41%; }
+    text-align: center; }
   body modal.success {
     background-color: #a7f1a7;
     color: #2d792d;
     border-color: #2ea52e;
-    text-align: center;
-    bottom: 50px;
-    right: 45%; }
-  body modal .close {
-    position: absolute;
-    display: inline-block;
-    top: 2px;
-    right: 5px; }
+    text-align: center; }
+  body modal div {
+    position: relative; }
+    body modal div .close-icon {
+      position: absolute;
+      display: inline-block;
+      top: -12px;
+      right: 0px;
+      padding: 2px 4px; }
+      body modal div .close-icon:hover {
+        background: rgba(0, 0, 0, 0.2); }
 
 body .hidden {
   display: none; }

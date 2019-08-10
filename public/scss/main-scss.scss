@@ -35,6 +35,12 @@ body {
     .action-btn {
         text-align: center;
         vertical-align: middle;
+        display: inline;
+        button {
+            border-radius: 4px;
+            background-color: $lightest-gray;
+            padding: 7px;
+        }
     }
     
     .action-btn.remove {
@@ -46,7 +52,6 @@ body {
     }
     
     .action-btn:hover {
-        text-decoration: underline;
         cursor: pointer;
     }
     
@@ -56,21 +61,27 @@ body {
             position: block;
         }
     }
+
+    .modal-wrapper {
+        width: 100%;
+        position: absolute;
+        bottom: 50px;
+    }
     
     modal {
         border: solid 1px;
         border-radius: 7px;
-        padding: 18px 12px;
-        position: absolute;
-        z-index: 999;
+        padding: 20px 12px;
+        width: 360px;
+        margin: auto;
+        display: block;
+        z-index: 990;
     
         &.error {
             background-color: $lightest-red;
             color: $red;
             border-color: $medium-red;
             text-align: center;
-            bottom: 50px;
-            right: 41%;
         }
     
         &.success {
@@ -78,15 +89,21 @@ body {
             color: $green;
             border-color: $medium-green;
             text-align: center;
-            bottom: 50px;
-            right: 45%;
         }
 
-        .close {
-            position: absolute;
-            display: inline-block;
-            top: 2px;
-            right: 5px;
+        div {
+            position: relative;
+            .close-icon {
+                position: absolute;
+                display: inline-block;
+                top: -12px;
+                right: 0px;
+                padding: 2px 4px;
+
+                &:hover {
+                    background: rgba(0, 0, 0, 0.2);
+                }
+            }
         }
     }
     

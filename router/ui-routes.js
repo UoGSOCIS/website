@@ -122,7 +122,7 @@ router.get("/admin/exec", function(req, res) {
             whiteBackground: true,
             currentExec: exec,
             roles: execRoles,
-            initialRole: execRoles[0],
+            initialRole: execRoles[0].name,
         }, function(err, html) {
             if (err) {
                 logger.error(err);
