@@ -158,9 +158,10 @@ class Exec {
     static find(query, searchParams) {
         const limit = searchParams && searchParams.limit ? searchParams.limit : 20;
         const offset = searchParams && searchParams.offset ? searchParams.offset : 0;
+        const params = Object.assign({}, query);
 
-        return ExecModel.find({ ...query })
-        .sort({order: "asc"})
+        return ExecModel.find(params)
+        .sort({order: "asc", })
         .skip(offset)
         .limit(limit)
         .then((results) => {
@@ -169,7 +170,7 @@ class Exec {
                 let exec = new Exec();
                 exec._model = result;
                 execs.push(exec);
-            })
+            });
 
             return execs;
         });
