@@ -18,3 +18,9 @@ out/*
 *.pem
 
 **/.DS_Store
+
+
+public/scss/.sass-cache/
+public/scss/main-scss.css.map
+public/scss/main-scss.css
+public/css/main-scss.css

@@ -1,56 +1,61 @@
 @mixin padding-size {
-    @for $i from 1 through 100 {
-        .padding-#{$i} {
-            padding: #{$i}px !important;
-        }
+  @for $i from 1 through 100 {
+    .padding-#{$i} {
+      padding: #{$i}px !important;
     }
+  }
 }
+
 .padding-0 {
-    padding: 0 !important;
+  padding: 0 !important;
 }
 
 @mixin padding-left-size {
-    @for $i from 1 through 100 {
-        .padding-left-#{$i} {
-            padding-left: #{$i}px !important;
-        }
+  @for $i from 1 through 100 {
+    .padding-left-#{$i} {
+      padding-left: #{$i}px !important;
     }
+  }
 }
+
 .padding-left-0 {
-    padding-left: 0 !important;
+  padding-left: 0 !important;
 }
 
 @mixin padding-top-size {
-    @for $i from 1 through 100 {
-        .padding-top-#{$i} {
-            padding-top: #{$i}px !important;
-        }
+  @for $i from 1 through 100 {
+    .padding-top-#{$i} {
+      padding-top: #{$i}px !important;
     }
+  }
 }
+
 .padding-top-0 {
-    padding-top: 0 !important;
+  padding-top: 0 !important;
 }
 
 @mixin padding-right-size {
-    @for $i from 1 through 100 {
-        .padding-right-#{$i} {
-            padding-right: #{$i}px !important;
-        }
+  @for $i from 1 through 100 {
+    .padding-right-#{$i} {
+      padding-right: #{$i}px !important;
     }
+  }
 }
+
 .padding-right-0 {
-    padding-right: 0 !important;
+  padding-right: 0 !important;
 }
 
 @mixin padding-bottom-size {
-    @for $i from 1 through 100 {
-        .padding-bottom-#{$i} {
-            padding-bottom: #{$i}px !important;
-        }
+  @for $i from 1 through 100 {
+    .padding-bottom-#{$i} {
+      padding-bottom: #{$i}px !important;
     }
+  }
 }
+
 .padding-bottom-0 {
-    padding-bottom: 0 !important;
+  padding-bottom: 0 !important;
 }
 
 @include padding-size;

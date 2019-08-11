@@ -3,115 +3,122 @@
 @import "variables";
 
 body {
-    .button-group {
-        * {
-            display: inline;
-        }
-        
-        button {
-            margin:0;
-            border-radius:4px;
-            padding:7px;
-        }
-        button:first-child {
-            margin:0;
-            border-radius:4px;
-            padding:7px;
-        }
-        button:last-child{
-            margin:0;
-            border-radius:4px;
-            padding:7px;
-        }
-        .save {
-            background: $guelph-red;
-            color: white;
-        }
-        .cancel {
-            background: $lightest-gray;
-        }
+  .action-btn {
+    text-align: center;
+    vertical-align: middle;
+    display: inline;
+
+    button {
+      border-radius: 4px;
+      background-color: $lightest-gray;
+      padding: 7px;
     }
-    
-    .action-btn {
-        text-align: center;
-        vertical-align: middle;
-        display: inline;
-        button {
-            border-radius: 4px;
-            background-color: $lightest-gray;
-            padding: 7px;
-        }
-    }
-    
-    .action-btn.remove {
-        color: $red;
-    }
-    
-    .action-btn.add {
-        color: $green;
-    }
-    
-    .action-btn:hover {
-        cursor: pointer;
-    }
-    
-    .action-btn.add:hover {
-        border-radius: 4px;
-        span {
-            position: block;
-        }
+  }
+
+  .button-group {
+    * {
+      display: inline;
     }
 
-    .modal-wrapper {
-        width: 100%;
+    button {
+      margin: 0;
+      border-radius: 4px;
+      padding: 7px;
+    }
+
+    button:first-child {
+      margin: 0;
+      border-radius: 4px;
+      padding: 7px;
+    }
+
+    button:last-child {
+      margin: 0;
+      border-radius: 4px;
+      padding: 7px;
+    }
+
+    .save {
+      background: $guelph-red;
+      color: white;
+    }
+
+    .cancel {
+      background: $lightest-gray;
+    }
+  }
+
+  .action-btn.remove {
+    color: $red;
+  }
+
+  .action-btn.add {
+    color: $green;
+  }
+
+  .action-btn:hover {
+    cursor: pointer;
+  }
+
+  .action-btn.add:hover {
+    border-radius: 4px;
+
+    span {
+      position: block;
+    }
+  }
+
+  .modal-wrapper {
+    width: 100%;
+    position: absolute;
+    bottom: 50px;
+  }
+
+  modal {
+    border: solid 1px;
+    border-radius: 7px;
+    padding: 20px 12px;
+    width: 360px;
+    margin: auto;
+    display: block;
+    z-index: 990;
+
+    &.error {
+      background-color: $lightest-red;
+      color: $red;
+      border-color: $medium-red;
+      text-align: center;
+    }
+
+    &.success {
+      background-color: $lightest-green;
+      color: $green;
+      border-color: $medium-green;
+      text-align: center;
+    }
+
+    div {
+      position: relative;
+
+      .close-icon {
         position: absolute;
-        bottom: 50px;
-    }
-    
-    modal {
-        border: solid 1px;
-        border-radius: 7px;
-        padding: 20px 12px;
-        width: 360px;
-        margin: auto;
-        display: block;
-        z-index: 990;
-    
-        &.error {
-            background-color: $lightest-red;
-            color: $red;
-            border-color: $medium-red;
-            text-align: center;
-        }
-    
-        &.success {
-            background-color: $lightest-green;
-            color: $green;
-            border-color: $medium-green;
-            text-align: center;
-        }
+        display: inline-block;
+        top: -12px;
+        right: 0;
+        padding: 2px 4px;
 
-        div {
-            position: relative;
-            .close-icon {
-                position: absolute;
-                display: inline-block;
-                top: -12px;
-                right: 0px;
-                padding: 2px 4px;
-
-                &:hover {
-                    background: rgba(0, 0, 0, 0.2);
-                }
-            }
+        &:hover {
+          background: rgba(0, 0, 0, 0.2);
         }
+      }
     }
-    
-    .hidden {
-        display: none;
-    }
+  }
 
-    .pointer {
-        cursor: pointer;
-    }
+  .hidden {
+    display: none;
+  }
+
+  .pointer {
+    cursor: pointer;
+  }
 }
