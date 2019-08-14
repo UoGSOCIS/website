@@ -21,7 +21,7 @@
                 <select name="role" id="role" onchange="getExec()"
                     class="form-control">
                     {{#each roles}}
-                    <option value="{{this.value}}">{{this.name}}</option>
+                    <option value="{{this}}">{{#translate this}}{{/translate}}</option>
                     {{/each}}
                 </select>
             </div>
