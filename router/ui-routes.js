@@ -27,16 +27,7 @@ const errors = source("models/error");
 const Challenge = source("models/roboticon");
 const myMarked = require("marked");
 
-const execRoles = [
-    {
-        name: "Senior Representative",
-        value: "senior-rep",
-    },
-    {
-        name: "Junior Representative",
-        value: "junior-rep",
-    }
-];
+const execRoles = ["president", "vp-internal", "vp-external", "secretary", "treasurer", "community", "admin", "senior-rep", "junior-rep"];
 
 myMarked.setOptions({
     renderer: new myMarked.Renderer(),
@@ -122,7 +113,7 @@ router.get("/admin/exec", function(req, res) {
             whiteBackground: true,
             currentExec: exec,
             roles: execRoles,
-            initialRole: execRoles[0].name,
+            initialRole: execRoles[0],
         }, function(err, html) {
             if (err) {
                 logger.error(err);
