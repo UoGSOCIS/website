@@ -10,30 +10,33 @@ body {
 
     button {
       border-radius: 4px;
-      background-color: $lightest-gray;
       padding: 7px;
     }
-  }
 
+    &.remove {
+      color: $red;
+    }
+
+    &.add {
+      color: $green;
+
+      &:hover {
+        border-radius: 4px;
+      
+        span {
+          position: block;
+        }
+      }
+    }
+  }
+  
   .button-group {
     * {
       display: inline;
+      margin: 0;
     }
 
     button {
-      margin: 0;
-      border-radius: 4px;
-      padding: 7px;
-    }
-
-    button:first-child {
-      margin: 0;
-      border-radius: 4px;
-      padding: 7px;
-    }
-
-    button:last-child {
-      margin: 0;
       border-radius: 4px;
       padding: 7px;
     }
@@ -45,26 +48,6 @@ body {
 
     .cancel {
       background: $lightest-gray;
-    }
-  }
-
-  .action-btn.remove {
-    color: $red;
-  }
-
-  .action-btn.add {
-    color: $green;
-  }
-
-  .action-btn:hover {
-    cursor: pointer;
-  }
-
-  .action-btn.add:hover {
-    border-radius: 4px;
-
-    span {
-      position: block;
     }
   }
 
