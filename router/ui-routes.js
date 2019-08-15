@@ -27,7 +27,66 @@ const errors = source("models/error");
 const Challenge = source("models/roboticon");
 const myMarked = require("marked");
 
-const execRoles = ["president", "vp-internal", "vp-external", "secretary", "treasurer", "community", "admin", "senior-rep", "junior-rep"];
+const execRoles = [
+    {
+        name: "President",
+        value: "president",
+        email: "president@socis.ca",
+    },
+    {
+        name: "VP Internal",
+        value: "vp-internal",
+        email: "vp-internal@socis.ca",
+    },
+    {
+        name: "VP External",
+        value: "vp-external",
+        email: "vp-external@socis.ca",
+    },
+    {
+        name: "VP Finance",
+        value: "vp-finance",
+        email: "vp-finance@socis.ca",
+    },
+    {
+        name: "VP Communications",
+        value: "vp-communications",
+        email: "vp-communications@socis.ca",
+    },
+    {
+        name: "Secretary",
+        value: "secretary",
+        email: "secretary@socis.ca",
+    },
+    {
+        name: "Treasurer",
+        value: "treasurer",
+        email: "treasurer@socis.ca",
+    },
+    {
+        name: "Community Liason",
+        value: "community",
+        email: "community@socis.ca",
+    },
+    {
+        name: "System Admin",
+        value: "admin",
+        email: "admin@socis.ca",
+    },
+    {
+        name: "Student Representative",
+        value: "student-rep",
+        email: "student-rep@socis.ca",
+    },
+    {
+        name: "First Year Representative",
+        value: "first-year-rep",
+        email: "first-year-rep@socis.ca",
+    },
+];
+
+
+// ["president", "vp-internal", "vp-external", "secretary", "treasurer", "community", "admin", "senior-rep", "junior-rep"];
 
 myMarked.setOptions({
     renderer: new myMarked.Renderer(),
@@ -108,12 +167,10 @@ router.get("/admin/exec", function(req, res) {
 
     Exec.getExecForYear(curYear)
     .then((exec) => {
-
         res.render("admin_exec", {
             whiteBackground: true,
             currentExec: exec,
             roles: execRoles,
-            initialRole: execRoles[0],
         }, function(err, html) {
             if (err) {
                 logger.error(err);
@@ -135,34 +192,34 @@ router.get("/admin/exec", function(req, res) {
  * @param exec Executive Role to be queried
  * @param year Year which is to be looked up
  */
-router.get("/admin/:exec/:year", function (req, res) {
-    const currentYear = req.params.year;
-    const execRole = req.params.exec;
+// router.get("/admin/:exec/:year", function (req, res) {
+//     const currentYear = req.params.year;
+//     const execRole = req.params.exec;
 
-    Exec.find({ 
-        role : execRole, 
-        year : currentYear, 
-    })
-    .then((exec) => {
-        res.render("admin_exec", {
-            whiteBackground: true,
-            currentExec: exec,
-            roles: execRoles,
-            initialRole: execRole,
-        }, function (err, html) {
-            if (err) {
-                logger.error(err);
-                return res.render("error", {whiteBackground: true, message: err.message, status: 500, err:err, });
-            // eslint-disable-next-line no-else-return
-            } else {
-                res.send(html);
-            }
-        });
-    })
-    .catch((err) => {
-        return res.render("error", {whiteBackground: true, message: err.message, status: 500, });
-    });
-});
+//     Exec.find({ 
+//         role : execRole, 
+//         year : currentYear, 
+//     })
+//     .then((exec) => {
+//         res.render("admin_exec", {
+//             whiteBackground: true,
+//             currentExec: exec,
+//             roles: execRoles,
+//             initialRole: execRole,
+//         }, function (err, html) {
+//             if (err) {
+//                 logger.error(err);
+//                 return res.render("error", {whiteBackground: true, message: err.message, status: 500, err:err, });
+//             // eslint-disable-next-line no-else-return
+//             } else {
+//                 res.send(html);
+//             }
+//         });
+//     })
+//     .catch((err) => {
+//         return res.render("error", {whiteBackground: true, message: err.message, status: 500, });
+//     });
+// });
 /*
 
 router.post("/admin/exec", function(req, res) {
