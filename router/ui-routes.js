@@ -171,6 +171,7 @@ router.get("/admin/exec", function(req, res) {
             whiteBackground: true,
             currentExec: exec,
             roles: execRoles,
+            year: curYear,
         }, function(err, html) {
             if (err) {
                 logger.error(err);
@@ -189,37 +190,34 @@ router.get("/admin/exec", function(req, res) {
 /**
  * Get admin roster page for executives of a certain year
  * 
- * @param exec Executive Role to be queried
  * @param year Year which is to be looked up
  */
-// router.get("/admin/:exec/:year", function (req, res) {
-//     const currentYear = req.params.year;
-//     const execRole = req.params.exec;
+router.get("/admin/exec/:year", function (req, res) {
+    const currentYear = req.params.year;
 
-//     Exec.find({ 
-//         role : execRole, 
-//         year : currentYear, 
-//     })
-//     .then((exec) => {
-//         res.render("admin_exec", {
-//             whiteBackground: true,
-//             currentExec: exec,
-//             roles: execRoles,
-//             initialRole: execRole,
-//         }, function (err, html) {
-//             if (err) {
-//                 logger.error(err);
-//                 return res.render("error", {whiteBackground: true, message: err.message, status: 500, err:err, });
-//             // eslint-disable-next-line no-else-return
-//             } else {
-//                 res.send(html);
-//             }
-//         });
-//     })
-//     .catch((err) => {
-//         return res.render("error", {whiteBackground: true, message: err.message, status: 500, });
-//     });
-// });
+    Exec.find({ 
+        year : currentYear, 
+    })
+    .then((exec) => {
+        res.render("admin_exec", {
+            whiteBackground: true,
+            currentExec: exec,
+            roles: execRoles,
+            year: currentYear,
+        }, function (err, html) {
+            if (err) {
+                logger.error(err);
+                return res.render("error", {whiteBackground: true, message: err.message, status: 500, err:err, });
+            // eslint-disable-next-line no-else-return
+            } else {
+                res.send(html);
+            }
+        });
+    })
+    .catch((err) => {
+        return res.render("error", {whiteBackground: true, message: err.message, status: 500, });
+    });
+});
 /*
 
 router.post("/admin/exec", function(req, res) {

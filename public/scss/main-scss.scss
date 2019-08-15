@@ -3,6 +3,11 @@
 @import "variables";
 
 body {
+  h5 {
+    color: $gray;
+    font-weight: 300;
+  }
+
   .action-btn {
     text-align: center;
     vertical-align: middle;
@@ -43,7 +48,7 @@ body {
 
     .save {
       background: $guelph-red;
-      color: white;
+      color: $white;
     }
 
     .cancel {
@@ -103,5 +108,11 @@ body {
 
   .pointer {
     cursor: pointer;
+  }
+
+  .inline {
+    * {
+      display: inline;
+    }
   }
 }

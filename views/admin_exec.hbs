@@ -12,26 +12,14 @@
                 </select>
             </div>
         </div>
-
-        <div class="row padding-top-20">
-            <div class="col-12 padding-left-15">
-                <label name="role" for="email">Role:</label>
-            </div>
-            <div class="col-12 col-sm-6 col-md-3">
-                <select name="role" id="role" onchange="getExec()"
-                    class="form-control">
-                    {{#each roles}}
-                    <option value="{{this}}">{{#translate this}}{{/translate}}</option>
-                    {{/each}}
-                </select>
-            </div>
-        </div>
-
     </div>
 </form>
 
 <div id="execTable" class="container">
-    <h3>Current Execs</h3>
+    <div class="inline">
+        <h3>Execs</h3>
+        <h5>as of {{year}}</h5>
+    </div>
     <div class="padding-left-20 padding-right-20">
         <table class="table table-striped margin-bottom-0">
             <thead>
@@ -45,7 +33,7 @@
             <tbody id="mainTable" >
                 {{#each currentExec}}
                 <tr id="currentExecRoster" >
-                    <td class="padding-top-10">{{#translate this.role}}{{/translate}}</td>
+                    <td id="currentExecRole" class="padding-top-10">{{#translate this.role}}{{/translate}}</td>
                     <td id="currentExecEmail">
                         <span id="execEmail">{{this.email}}</span>
                         <span id="execId" class="hidden">{{this.id}}</span>
@@ -99,19 +87,8 @@
         }
     }
 
-    function getDefaultRole() {
-        var route = window.location.pathname.split("/");
-        if (route.length === 4) {
-            return route[2];
-        } else {
-            return "senior-rep";
-        }
-    }
-
     function load() {
         var spinner = $("select#year");
-        var roleSpinner = $("select#role");
-        var roleSpinnerOptions = roleSpinner.get(0).options;
         var currentYear = new Date().getFullYear();
         var defaultYear = getDefaultYear();
         var option;
@@ -122,18 +99,16 @@
             spinner.append(option);
         }
         spinner.get(0).selectedIndex = (currentYear + 1 - defaultYear);
-
-        for (var i = 0; i < roleSpinnerOptions.length; i++) {
-            if (roleSpinnerOptions[i].value === getDefaultRole()) {
-                roleSpinner.get(0).selectedIndex = i;
-            }
-        }
     }
 
     function getExec() {
-        var role = $("#role").get(0);
         var year = $("#year").get(0);
-        window.location = "/admin/" + role.options[role.selectedIndex].value + "/" + year.options[year.selectedIndex].value
+        window.location = "/admin/exec/" + year.options[year.selectedIndex].value
+    }
+
+    function changeRole() {
+        var roles = $("#role")[0];
+        $("#newExecEmail")[0].innerText =  roles.options[roles.selectedIndex].value + "@socis.ca";
     }
 
     function clearCreateExecModal() {
@@ -157,9 +132,13 @@
         table.append(
             "<tr>" + 
                 "<td class=\"padding-top-10\">" + 
-                    "<span id=\"newExecRole\">{{#translate initialRole}}{{/translate}}</span>" + 
+                    "<select name=\"role\" id=\"role\" onchange=\"changeRole()\" class=\"form-control\">" + 
+                        "{{#each roles}}" +
+                            "<option value=\"{{this.value}}\">{{this.name}}</option>" +
+                        "{{/each}}" +
+                    "</select>" + 
                 "</td>" + 
-                "<td><input id=\"newExecEmail\" class=\"form-control\" type=\"text\" value=\"\" placeholder=\"Enter Email...\"></td>" + 
+                "<td id=\"newExecEmail\">{{roles.0.email}}</td>" + 
                 "<td><input id=\"newExecName\" class=\"form-control\" type=\"text\" value=\"\" placeholder=\"Enter Name...\"></td>" + 
                 "<td class=\"centered\">" + 
                     "<div class=\"button-group\">" + 
@@ -215,18 +194,14 @@
 
     function editRow(row) {
         var name = row.querySelector("td#currentExecName");
-        var email = row.querySelector("td#currentExecEmail");
         name.innerHTML = "<input type=\"text\" class=\"form-control\" value=\"" + name.querySelector("span").innerText + "\">";
-        email.innerHTML = "<input type=\"text\" class=\"form-control\" value=\"" + email.querySelector("span#execEmail").innerText + "\">" + email.querySelector("span#execId").outerHTML;
         row.querySelector("td > div#cancel-save").classList.remove("hidden");
         row.querySelector("td > div#edit-remove").classList.add("hidden");
     }
 
     function cancelEdit(row) {
         var name = row.querySelector("td#currentExecName");
-        var email = row.querySelector("td#currentExecEmail");
-        name.innerHTML = "<span>" + name.querySelector("input").value + "</span>";
-        email.innerHTML = "<span id=\"execEmail\">" + email.querySelector("input").value + "</span>" + email.querySelector("span#execId").outerHTML;   
+        name.innerHTML = "<span>" + name.querySelector("input").value + "</span>";  
         row.querySelector("td > div#edit-remove").classList.remove("hidden");
         row.querySelector("td > div#cancel-save").classList.add("hidden");
     }
@@ -236,7 +211,7 @@
             id: row.querySelector("td#currentExecEmail > span#execId").innerText,
             name: row.querySelector("td#currentExecName > input").value,
             email: row.querySelector("td#currentExecEmail > input").value,
-            role: getDefaultRole(),
+            role: row.querySelector("td#currentExecRole").innerText,
             year: getDefaultYear(),
         }
 

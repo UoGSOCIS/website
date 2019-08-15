@@ -3028,6 +3028,10 @@
 .padding-top-100 {
   padding-top: 100px !important; }
 
+body h5 {
+  color: #777;
+  font-weight: 300; }
+
 body .action-btn {
   text-align: center;
   vertical-align: middle;
@@ -3054,7 +3058,7 @@ body .button-group button {
 
 body .button-group .save {
   background: #990100;
-  color: white; }
+  color: #f4fbfc; }
 
 body .button-group .cancel {
   background: #fdfdfd; }
@@ -3098,3 +3102,6 @@ body .hidden {
 
 body .pointer {
   cursor: pointer; }
+
+body .inline * {
+  display: inline; }
