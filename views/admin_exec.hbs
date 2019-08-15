@@ -161,7 +161,7 @@
     function createExec() {
         var exec = {
             name: document.getElementById("newExecName").value,
-            email: document.getElementById("newExecEmail").value,
+            email: document.getElementById("newExecEmail").innerText,
             year: document.getElementById("year").value,
             role: $("#role option:selected")[0].value,
             order: 0,
@@ -210,7 +210,7 @@
         var exec = {
             id: row.querySelector("td#currentExecEmail > span#execId").innerText,
             name: row.querySelector("td#currentExecName > input").value,
-            email: row.querySelector("td#currentExecEmail > input").value,
+            email: row.querySelector("td#currentExecEmail").innerText,
             role: row.querySelector("td#currentExecRole").innerText,
             year: getDefaultYear(),
         }
