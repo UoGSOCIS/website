@@ -3036,6 +3036,8 @@ body .action-btn {
   text-align: center;
   vertical-align: middle;
   display: inline; }
+  body .action-btn:hover {
+    cursor: pointer; }
   body .action-btn button {
     border-radius: 4px;
     padding: 7px; }
@@ -3047,6 +3049,12 @@ body .action-btn {
       border-radius: 4px; }
       body .action-btn.add:hover span {
         position: block; }
+  body .action-btn.cancel:hover {
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.2); }
+  body .action-btn.cancel:focus {
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.2); }
 
 body .button-group * {
   display: inline;

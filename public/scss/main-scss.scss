@@ -13,6 +13,10 @@ body {
     vertical-align: middle;
     display: inline;
 
+    &:hover {
+      cursor: pointer;
+    }
+
     button {
       border-radius: 4px;
       padding: 7px;
@@ -32,6 +36,16 @@ body {
           position: block;
         }
       }
+    }
+
+    &.cancel:hover {
+      border-radius: 4px;
+      background: rgba(0, 0, 0, 0.2);
+    }
+    
+    &.cancel:focus {
+      border-radius: 4px;
+      background: rgba(0, 0, 0, 0.2);
     }
   }
   
