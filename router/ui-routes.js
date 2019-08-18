@@ -64,7 +64,7 @@ const execRoles = [
         email: "treasurer@socis.ca",
     },
     {
-        name: "Community Liason",
+        name: "Community Liaison",
         value: "community",
         email: "community@socis.ca",
     },
