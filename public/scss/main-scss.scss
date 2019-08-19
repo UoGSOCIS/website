@@ -1,0 +1,132 @@
+@import "./mixins/margin.scss";
+@import "./mixins/padding.scss";
+@import "variables";
+
+body {
+  h5 {
+    color: $gray;
+    font-weight: 300;
+  }
+
+  .action-btn {
+    text-align: center;
+    vertical-align: middle;
+    display: inline;
+
+    &:hover {
+      cursor: pointer;
+    }
+
+    button {
+      border-radius: 4px;
+      padding: 7px;
+    }
+
+    &.remove {
+      color: $red;
+    }
+
+    &.add {
+      color: $green;
+
+      &:hover {
+        border-radius: 4px;
+      
+        span {
+          position: block;
+        }
+      }
+    }
+
+    &.cancel:hover {
+      border-radius: 4px;
+      background: rgba(0, 0, 0, 0.2);
+    }
+    
+    &.cancel:focus {
+      border-radius: 4px;
+      background: rgba(0, 0, 0, 0.2);
+    }
+  }
+  
+  .button-group {
+    * {
+      display: inline;
+      margin: 0;
+    }
+
+    button {
+      border-radius: 4px;
+      padding: 7px;
+    }
+
+    .save {
+      background: $guelph-red;
+      color: $white;
+    }
+
+    .cancel {
+      background: $lightest-gray;
+    }
+  }
+
+  .modal-wrapper {
+    width: 100%;
+    position: absolute;
+    bottom: 50px;
+  }
+
+  modal {
+    border: solid 1px;
+    border-radius: 7px;
+    padding: 20px 12px;
+    width: 360px;
+    margin: auto;
+    display: block;
+    z-index: 990;
+
+    &.error {
+      background-color: $lightest-red;
+      color: $red;
+      border-color: $medium-red;
+      text-align: center;
+    }
+
+    &.success {
+      background-color: $lightest-green;
+      color: $green;
+      border-color: $medium-green;
+      text-align: center;
+    }
+
+    div {
+      position: relative;
+
+      .close-icon {
+        position: absolute;
+        display: inline-block;
+        top: -12px;
+        right: 0;
+        padding: 2px 4px;
+
+        &:hover {
+          background: rgba(0, 0, 0, 0.2);
+        }
+      }
+    }
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  .pointer {
+    cursor: pointer;
+  }
+
+  .inline {
+    * {
+      display: inline;
+    }
+  }
+}

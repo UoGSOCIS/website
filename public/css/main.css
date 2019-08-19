@@ -261,6 +261,20 @@ hr.hide-last:last-of-type {
   margin-right: 10px;
 }
 
+.btn-save {
+  border: #ddd solid 1px;
+  color: #000;
+}
+
+.btn-save:hover {
+  color: #ddd;
+  background-color: #7e7e7e;
+}
+
+.centered {
+  text-align: center;
+}
+
 /* =================================================== */
 
 /* Responsive styles */

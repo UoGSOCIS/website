@@ -18,3 +18,9 @@ out/*
 *.pem
 
 **/.DS_Store
+
+
+# generated sass files
+public/scss/.sass-cache/
+public/scss/main-scss.css.map
+public/scss/main-scss.css

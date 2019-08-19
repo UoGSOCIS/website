@@ -15,10 +15,13 @@ const handlebars = require("handlebars");
 const source = require("rfr");
 const config = source("config");
 
+const helpers = require("./helpers/handlebars.js");
+
 const renderer = expresshbs.create({
     // see http://handlebarsjs.com/expressions.html#helpers
     defaultLayout: "main",
     extname: ".hbs",
+    helpers: helpers().helpers,
 });
 
 

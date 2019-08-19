@@ -1,131 +1,280 @@
-
-
 {{!< layouts/default}}
 {{! The tag above means - insert everything in this file into the {content} of the main.hbs template }}
 
-
-
-<form>
-
-    <div class="form-group form-inline">
-        <label for="email">year:</label>
-        <select name="year" id="year" class="form-control">
-        </select>
-
-        <label name="role" for="email">Role:</label>
-        <select  name="role" id="role" onchange="changed(this)" class="form-control">
-            <option value="president">President</option>
-            <option value="vp-internal">VP Internal</option>
-            <option value="vp-external">VP External</option>
-            <option value="secretary">Secretary</option>
-            <option value="treasurer">Treasurer</option>
-            <option value="community">Community Liason</option>
-            <option value="admin">System Admin</option>
-            <option value="senior-rep">Senior Representative</option>
-            <option value="junior-rep">Junior Representative</option>
-        </select>
+<form class="container exec">
+    <div class="form-group form-box padding-top-40">
+        <div class="row">
+            <div class="col-12 padding-left-15">
+                <label for="email">Year:</label>
+            </div>
+            <div class="col-12 col-sm-6 col-md-3">
+                <select name="year" id="year" class="form-control" onchange="getExec()">
+                </select>
+            </div>
+        </div>
     </div>
-
-
-    <div class="form-group">
-        <label for="email">Email address:</label>
-        <input type="email" class="form-control" id="email">
-    </div>
-    <div class="form-group">
-        <label for="pwd">Name:</label>
-        <input type="name" class="form-control" id="name">
-    </div>
-    <button type="submit" class="btn btn-default">Submit</button>
 </form>
 
-
-
-
-<div>
-    <h3>Current Exec Roster</h3>
-
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th scope="col">#</th>
-            <th class="col-sm-2" scope="col">Position</th>
-            <th class="col-sm-2" scope="col">Email</th>
-            <th scope="col">Name</th>
-        </tr>
-        </thead>
-        <tbody>
-        {{#each currentExec}}
-            <tr>
-                <th scope="row">{{rank}}</th>
-                <td>{{role}}</td>
-                <td>{{email}}</td>
-                <td>{{name}}</td>
-            </tr>
-        {{else}}
-            <tr><td>NO EXEC</td></tr>
-        {{/each}}
-
-        </tbody>
-    </table>
-
+<div id="execTable" class="container">
+    <div class="inline">
+        <h3>Execs</h3>
+        <h5>as of {{year}}</h5>
+    </div>
+    <div class="padding-left-20 padding-right-20">
+        <table class="table table-striped margin-bottom-0">
+            <thead>
+                <tr>
+                    <th width="20%" scope="col">Position</th>
+                    <th width="20%" scope="col">Email</th>
+                    <th width="30%" scope="col">Name</th>
+                    <th width="15%" scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody id="mainTable" >
+                {{#each currentExec}}
+                <tr id="currentExecRoster" >
+                    <td id="currentExecRole" class="padding-top-10">{{#translate this.role}}{{/translate}}</td>
+                    <td id="currentExecEmail">
+                        <span id="execEmail">{{this.email}}</span>
+                        <span id="execId" class="hidden">{{this.id}}</span>
+                    </td>
+                    <td id="currentExecName"><span>{{this.name}}</span></td>
+                    <td class="centered">
+                        <div id="edit-remove">
+                            <div id="edit" class="action-btn edit">
+                                <button onclick="editRow(this.parentElement.parentElement.parentElement.parentElement)">
+                                    <span>Edit</span>
+                                </button>
+                            </div>
+                            <div id="remove" class="action-btn remove padding-top-15">
+                                <button onclick="removeExec(this.parentElement.parentElement.parentElement.parentElement)">
+                                    <span class="fas fa-minus-circle"></span>
+                                    <span>Remove</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div id="cancel-save" class="button-group hidden">
+                            <button class="cancel" onclick="cancelEdit(this.parentElement.parentElement.parentElement)">Cancel</button>
+                            <button class="save" onclick="saveEdit(this.parentElement.parentElement.parentElement)">Save</button>
+                        </div>
+                    </td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+        <div class="container-fluid centered">
+            <div class="action-btn add padding-10" tabIndex="0" role="button" onclick="openCreateExecModal()">
+                <span class="fas fa-plus-circle"></span>
+                <span>Add New Exec</span>
+            </div>
+        </div>
+    </div>
 </div>
 
+<div class="modal-wrapper">
+    <modal class="hidden"></modal>
+</div>
+<script type="text/javascript">
+    window.onload = load;
+    var modalTimer;
 
-<script>
-    
-    function load() {
-        var spinner = document.getElementById("year");
-        var currentYear = new Date().getFullYear();
-
-        for (var i = currentYear - 3; i < currentYear + 3; i++) {
-            var option = document.createElement("option");
-
-            if (i === currentYear) {
-                option.selected = true;
-            }
-            option.value = i;
-            option.innerText = i;
-
-            spinner.add(option);
+    function getDefaultYear() {
+        var route = window.location.pathname.split("/");
+        if (route.length === 4) {
+            return route[3];
+        } else {
+            return new Date().getFullYear();
         }
     }
 
+    function load() {
+        var spinner = $("select#year");
+        var currentYear = new Date().getFullYear();
+        var defaultYear = getDefaultYear();
+        var option;
 
-    window.onload = load;
-    
-    function changed(spinner) {
-        document.getElementById("email").value = spinner.value + "@socis.ca";
+        for (var i = currentYear + 1; i > currentYear - 5; i--) {
+            option = new Option(i, i, i === parseInt(defaultYear),);
+            $(option).html(i);
+            spinner.append(option);
+        }
+        spinner.get(0).selectedIndex = (currentYear + 1 - defaultYear);
     }
 
-    function createExeec() {
+    function getExec() {
+        var year = $("#year").get(0);
+        window.location = "/admin/exec/" + year.options[year.selectedIndex].value
+    }
 
+    function changeRole() {
+        var roles = $("#role")[0];
+        $("#newExecEmail")[0].innerText =  roles.options[roles.selectedIndex].value + "@socis.ca";
+    }
 
+    function clearCreateExecModal() {
+        var newExecName = $("table > tbody > tr:last > td > input#newExecName");
+        newExecName.get(0).value = "";
+    }
+
+    function closeCreateExecModal() {
+        var lastRow = $("table > tbody > tr:last");
+        lastRow.remove();
+        var addBtn = $(".action-btn.cancel");
+        addBtn[0].innerHTML = "<span class=\"fas fa-plus-circle\"></span><span>Add New Exec</span>";
+        addBtn[0].classList.replace("cancel", "add");
+        addBtn[0].onclick = openCreateExecModal;
+    }
+
+    function openCreateExecModal() {
+        var table = $("table > tbody");
+        table.append(
+            "<tr>" + 
+                "<td class=\"padding-top-10\">" + 
+                    "<select name=\"role\" id=\"role\" onchange=\"changeRole()\" class=\"form-control\">" + 
+                        "{{#each roles}}" +
+                            "<option value=\"{{this.value}}\">{{this.name}}</option>" +
+                        "{{/each}}" +
+                    "</select>" + 
+                "</td>" + 
+                "<td id=\"newExecEmail\">{{roles.0.email}}</td>" + 
+                "<td><input id=\"newExecName\" class=\"form-control\" type=\"text\" value=\"\" placeholder=\"Enter Name...\"></td>" + 
+                "<td class=\"centered\">" + 
+                    "<div class=\"button-group\">" + 
+                        "<button class=\"cancel\" onclick=\"clearCreateExecModal()\">" +
+                            "Clear" + 
+                        "</button>" +
+                        "<button class=\"save\" onclick=\"createExec()\">" + 
+                            "Save" + 
+                        "</button>" +
+                    "</div>" + 
+                "</td>" + 
+            "</tr>"
+        );
+        var addBtn = $(".action-btn.add");
+        addBtn[0].innerHTML = "<span>Cancel</span>";
+        addBtn[0].classList.replace("add", "cancel");
+        addBtn[0].onclick = closeCreateExecModal;
+    }
+
+    function createExec() {
         var exec = {
-            name:  document.getElementById("name").value ,
-            email:  document.getElementById("email").value ,
-            year:  document.getElementById("year").value ,
-            role:  document.getElementById("role").value
+            name: document.getElementById("newExecName").value,
+            email: document.getElementById("newExecEmail").innerText,
+            year: document.getElementById("year").value,
+            role: $("#role option:selected")[0].value,
+            order: 0,
         };
-
-
         // upload the post and the attachments here
-        $.ajax({url: "/admin/exec",
+
+        $.ajax({
+            url: "/api/v1/execs",
             type: "POST",
             contentType: "application/json",
-            data: JSON.stringify(exec),
-            complete: function(xhr, status){
-
+            data: JSON.stringify([exec]),
+            complete: (xhr, status) => {
                 var responseCode = xhr.status;
-                var response = JSON.parse(xhr.responseText);
 
                 if (responseCode === 201) {
-                    uploadFilesForPost(response);
+                    var response = JSON.parse(xhr.responseText);
+                    createSuccessModal();
+                    location.reload();
+                    return;
+                } else if (responseCode === 200) {
+                    createSuccessModal();
+                    location.reload();
                     return;
                 }
 
-                alert("error! " + response.message);
+                createErrorModal();
+                },
+        });
+    }
+
+    function editRow(row) {
+        var name = row.querySelector("td#currentExecName");
+        name.innerHTML = "<input type=\"text\" class=\"form-control\" value=\"" + name.querySelector("span").innerText + "\">";
+        row.querySelector("td > div#cancel-save").classList.remove("hidden");
+        row.querySelector("td > div#edit-remove").classList.add("hidden");
+    }
+
+    function cancelEdit(row) {
+        var name = row.querySelector("td#currentExecName");
+        name.innerHTML = "<span>" + name.querySelector("input").value + "</span>";  
+        row.querySelector("td > div#edit-remove").classList.remove("hidden");
+        row.querySelector("td > div#cancel-save").classList.add("hidden");
+    }
+
+    function saveEdit(row) {
+        var exec = {
+            id: row.querySelector("td#currentExecEmail > span#execId").innerText,
+            name: row.querySelector("td#currentExecName > input").value,
+            email: row.querySelector("td#currentExecEmail").innerText,
+            role: row.querySelector("td#currentExecRole").innerText,
+            year: getDefaultYear(),
+        }
+
+        $.ajax({
+            url: "/api/v1/execs",
+            type: "PATCH",
+            contentType: "application/json",
+            data: JSON.stringify([exec]),
+            complete: (xhr, status) => {
+                var responseCode = xhr.status;
+
+                if (responseCode === 200 || responseCode === 204) {
+                    createSuccessModal();
+                    cancelEdit(row);
+                } else {
+                    createErrorModal();
+                }
+            }
+        });
+    }
+
+    function removeExec(exec) {
+        var execId = exec.querySelector("td#currentExecEmail > span#execId");
+        $.ajax({
+            url: "/api/v1/execs/" + exec.querySelector("td#currentExecEmail > span#execId").innerText,
+            type: "DELETE",
+            complete: (xhr, status) => {
+                var responseCode = xhr.status;
+
+                if (responseCode === 200 || responseCode === 204) {
+                    createSuccessModal();
+                    exec.parentNode.removeChild(exec);
+                } else {
+                    createErrorModal();
+                }
             },
         });
+    }
+
+    function createSuccessModal() {
+        closeModal();
+        var successModal = $("modal");
+        successModal.removeClass("hidden");
+        successModal.addClass("success");
+        successModal.get(0).innerHTML = "<div>Success!" + 
+        "<i class=\"fas fa-sm fa-times close-icon pointer\" onclick=\"closeModal()\"></i> </div>";
+        modalTimer = setTimeout(closeModal, 10000);
+    }
+
+    function createErrorModal(message) {
+        closeModal();
+        var errorModal = $("modal");
+        errorModal.removeClass("hidden");
+        errorModal.addClass("error");
+        errorModal.get(0).innerHTML = "<i class=\"fas fa-sm fa-times close-icon pointer\" onclick=\"closeModal()\"></i>" + 
+        ((message && message.length > 0) ? message : " Oops something went wrong.");
+        modalTimer = setTimeout(closeModal, 10000);
+    }
+
+    function closeModal() {
+        clearTimeout(modalTimer);
+        var modal = $("modal");
+        modal.get(0).innerHTML = "";
+        modal.removeClass();
+        modal.addClass("hidden");
     }
 
 </script>
