@@ -64,7 +64,7 @@ Once everything you need is installed run:
 To start the local server, all you need to do is run `npm start` from the website's root directory.
 If you open up your browser and navigate to `localhost:3000`, you should now be able to see the site running locally.
 
-_Note that after making any local changes, the start script will automatically reload the changed._
+_Note that after making any local changes, the start script will automatically reload the changed files._
 
 
 
