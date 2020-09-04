@@ -52,7 +52,7 @@
     "chai-as-promised": "^7.1.1",
     "cross-env": "^5.2.0",
     "eslint": "^5.16.0",
-    "node-sass": "^4.12.0",
+    "node-sass": "^4.13.1",
     "mocha": "^6.2.0",
     "nyc": "^14.0.0",
     "stylelint": "^9.10.1",
